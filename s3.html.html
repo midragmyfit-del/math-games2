@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>למד לצייר כלי תחבורה</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .title {
+            text-align: center;
+            color: #333;
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .main-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .canvas-container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            flex: 1;
+            min-width: 300px;
+        }
+        .canvas-title {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        canvas {
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            cursor: none;
+            display: block;
+            margin: 0 auto;
+            background: white;
+        }
+        #cursor {
+            position: fixed;
+            border: 3px solid #fff;
+            box-shadow: 0 0 0 2px #000, inset 0 0 0 2px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            display: none;
+            transform: translate(-50%, -50%);
+        }
+        #cursor::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1px;
+            height: 10px;
+            background: #000;
+            box-shadow: 1px 0 0 #fff, -1px 0 0 #fff;
+        }
+        #cursor::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 1px;
+            background: #000;
+            box-shadow: 0 1px 0 #fff, 0 -1px 0 #fff;
+        }
+        .controls {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .control-section { text-align: center; }
+        .section-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .instruction-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.3em;
+            font-weight: bold;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        .step-counter {
+            font-size: 1.1em;
+            color: #666;
+            margin-top: 10px;
+        }
+        .button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+        }
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .nav-buttons { display: flex; gap: 10px; }
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            justify-items: center;
+        }
+        .color-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 3px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .color-btn:hover { transform: scale(1.2); }
+        .color-btn.selected {
+            border-color: #FFD700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+            transform: scale(1.2);
+        }
+        .tool-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .tool-btn {
+            padding: 10px 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-size: 1.5em;
+            transition: all 0.3s;
+        }
+        .tool-btn:hover { transform: scale(1.1); }
+        .tool-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+        .drawing-menu {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            max-width: 600px;
+            width: 90%;
+        }
+        .drawing-menu.hidden { display: none; }
+        .menu-title {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .drawing-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .drawing-option {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+        }
+        .drawing-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: #667eea;
+        }
+        .drawing-icon { font-size: 3em; margin-bottom: 10px; }
+        .drawing-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+        .difficulty-stars {
+            color: #FFD700;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        .overlay.hidden { display: none; }
+        .size-slider { width: 100%; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div id="cursor"></div>
+    <div class="overlay hidden" id="overlay"></div>
+    
+    <div class="drawing-menu" id="drawingMenu">
+        <div class="menu-title">🚗 בחר כלי תחבורה לצייר</div>
+        <div class="drawing-options">
+            <div class="drawing-option" onclick="selectDrawing('car')">
+                <div class="drawing-icon">🚗</div>
+                <div class="drawing-name">מכונית</div>
+                <div class="difficulty-stars">★★★☆☆</div>
+            </div>
+            <div class="drawing-option" onclick="selectDrawing('plane')">
+                <div class="drawing-icon">✈️</div>
+                <div class="drawing-name">מטוס</div>
+                <div class="difficulty-stars">★★★☆☆</div>
+            </div>
+            <div class="drawing-option" onclick="selectDrawing('train')">
+                <div class="drawing-icon">🚂</div>
+                <div class="drawing-name">רכבת</div>
+                <div class="difficulty-stars">★★★★☆</div>
+            </div>
+            <div class="drawing-option" onclick="selectDrawing('ship')">
+                <div class="drawing-icon">🚢</div>
+                <div class="drawing-name">ספינה</div>
+                <div class="difficulty-stars">★★★☆☆</div>
+            </div>
+            <div class="drawing-option" onclick="selectDrawing('helicopter')">
+                <div class="drawing-icon">🚁</div>
+                <div class="drawing-name">מסוק</div>
+                <div class="difficulty-stars">★★★★☆</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="title">🚗 למד לצייר כלי תחבורה 🎨</div>
+    
+    <div class="main-container">
+        <div class="canvas-container">
+            <div class="canvas-title">הדוגמה - עקוב אחרי השלבים 👀</div>
+            <canvas id="exampleCanvas" width="400" height="400"></canvas>
+        </div>
+        
+        <div class="controls">
+            <div class="control-section">
+                <div class="instruction-box" id="instruction">בחר כלי תחבורה מהתפריט כדי להתחיל!</div>
+                <div class="step-counter" id="stepCounter"></div>
+            </div>
+            
+            <div class="control-section">
+                <div class="section-title">כלים 🛠️</div>
+                <div class="tool-buttons">
+                    <button class="tool-btn active" id="drawBtn" onclick="selectDrawTool()">✏️ עט</button>
+                    <button class="tool-btn" id="eraserBtn" onclick="selectEraser()">🧹 מחק</button>
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <div class="section-title">צבעים 🎨</div>
+                <div class="color-palette" id="colorPalette"></div>
+            </div>
+            
+            <div class="control-section">
+                <div class="section-title">עובי מכחול</div>
+                <input type="range" class="size-slider" id="brushSize" min="2" max="15" value="5">
+            </div>
+            
+            <div class="control-section">
+                <div class="nav-buttons">
+                    <button class="button" id="prevBtn" onclick="prevStep()" disabled>⬅️ קודם</button>
+                    <button class="button" id="nextBtn" onclick="nextStep()" disabled>הבא ➡️</button>
+                </div>
+            </div>
+            
+            <button class="button" onclick="clearMyCanvas()">🗑️ נקה את הציור שלי</button>
+            <button class="button" onclick="saveDrawing()">💾 שמור את הציור שלי</button>
+            <button class="button" onclick="showMenu()">🎨 בחר כלי תחבורה אחר</button>
+        </div>
+        
+        <div class="canvas-container">
+            <div class="canvas-title">הציור שלך - צייר כאן! ✏️</div>
+            <canvas id="myCanvas" width="400" height="400"></canvas>
+        </div>
+    </div>
+
+    <script>
+        var ex = document.getElementById('exampleCanvas');
+        var my = document.getElementById('myCanvas');
+        var exCtx = ex.getContext('2d');
+        var myCtx = my.getContext('2d');
+        var cursor = document.getElementById('cursor');
+        
+        var curr = null;
+        var step = 0;
+        var draw = false;
+        var col = '#000000';
+        var size = 5;
+        var erase = false;
+        
+        function updCursor() {
+            var s = erase ? size * 4 : size * 2;
+            cursor.style.width = s + 'px';
+            cursor.style.height = s + 'px';
+            if (erase) {
+                cursor.style.borderColor = '#fff';
+                cursor.style.boxShadow = '0 0 0 2px #ff0000, inset 0 0 0 2px #ff0000';
+            } else {
+                cursor.style.borderColor = '#fff';
+                cursor.style.boxShadow = '0 0 0 2px #000, inset 0 0 0 2px ' + col;
+            }
+        }
+        
+        my.addEventListener('mouseenter', function() {
+            cursor.style.display = 'block';
+            updCursor();
+        });
+        
+        my.addEventListener('mouseleave', function() {
+            cursor.style.display = 'none';
+        });
+        
+        my.addEventListener('mousemove', function(e) {
+            cursor.style.left = e.pageX + 'px';
+            cursor.style.top = e.pageY + 'px';
+        });
+        
+        var cols = [
+            '#000000','#FFFFFF','#FF0000','#00FF00','#0000FF',
+            '#FFFF00','#FFA500','#800080','#FF00FF','#00FFFF',
+            '#FFC0CB','#00BFFF','#87CEEB','#FFD700','#FF69B4',
+            '#FF1493','#8B4513','#FFE4B5','#FFDAB9','#8B0000',
+            '#DC143C','#006400','#228B22','#0066CC','#FF4444'
+        ];
+        
+        var data = {
+            car: {
+                name: 'מכונית',
+                steps: [
+                    { instruction: 'שלב 1: כביש אפור', draw: function(c){ 
+                        c.fillStyle='#555';
+                        c.fillRect(0,310,400,90);
+                    }},
+                    { instruction: 'שלב 2: פסי כביש צהובים', draw: function(c){ 
+                        c.strokeStyle='#FFFF00';
+                        c.lineWidth=4;
+                        c.setLineDash([25,20]);
+                        c.beginPath();
+                        c.moveTo(0,355);
+                        c.lineTo(400,355);
+                        c.stroke();
+                        c.setLineDash([]);
+                    }},
+                    { instruction: 'שלב 3: גוף המכונית (תחתון)', draw: function(c){ 
+                        c.fillStyle='#FF4444';
+                        c.fillRect(70,200,260,80);
+                        c.strokeStyle='#CC0000';
+                        c.lineWidth=3;
+                        c.strokeRect(70,200,260,80);
+                    }},
+                    { instruction: 'שלב 4: גג המכונית', draw: function(c){ 
+                        c.fillStyle='#FF4444';
+                        c.fillRect(110,160,180,50);
+                        c.strokeStyle='#CC0000';
+                        c.lineWidth=3;
+                        c.strokeRect(110,160,180,50);
+                    }},
+                    { instruction: 'שלב 5: חלון קדמי', draw: function(c){ 
+                        c.fillStyle='#87CEEB';
+                        c.fillRect(120,170,65,35);
+                        c.strokeStyle='#333';
+                        c.lineWidth=2;
+                        c.strokeRect(120,170,65,35);
+                    }},
+                    { instruction: 'שלב 6: חלון אחורי', draw: function(c){ 
+                        c.fillStyle='#87CEEB';
+                        c.fillRect(215,170,65,35);
+                        c.strokeStyle='#333';
+                        c.lineWidth=2;
+                        c.strokeRect(215,170,65,35);
+                    }},
+                    { instruction: 'שלב 7: פנס קדמי', draw: function(c){ 
+                        c.fillStyle='#FFFF00';
+                        c.fillRect(60,210,15,20);
+                        c.strokeStyle='#FFA500';
+                        c.lineWidth=2;
+                        c.strokeRect(60,210,15,20);
+                    }},
+                    { instruction: 'שלב 8: פנס אחורי', draw: function(c){ 
+                        c.fillStyle='#FF0000';
+                        c.fillRect(325,210,15,20);
+                        c.strokeStyle='#8B0000';
+                        c.lineWidth=2;
+                        c.strokeRect(325,210,210,20);
+                    }},
+                    { instruction: 'שלב 9: גלגל שמאלי (חיצוני)', draw: function(c){ 
+                        c.fillStyle='#333';
+                        c.beginPath();
+                        c.arc(120,280,33,0,Math.PI*2);
+                        c.fill();
+                    }},
+                    { instruction: 'שלב 10: גלגל ימני (חיצוני)', draw: function(c){ 
+                        c.fillStyle='#333';
+                        c.beginPath();
+                        c.arc(280,280,33,0,Math.PI*2);
+                        c.fill();
+                    }},
+                    { instruction: 'שלב 11: חישוק שמאלי', draw: function(c){ 
+                        c.fillStyle='#999';
+                        c.beginPath();
+                        c.arc(120,280,20,0,Math.PI*2);
+                        c.fill();
+                    }},
+                    { instruction: 'שלב 12: חישוק ימני', draw: function(c){ 
+                        c.fillStyle='#999';
+                        c.beginPath();
+                        c.arc(280,280,20,0,Math.PI*2);
+                        c.fill();
+                    }}
+                ]
+            },
+            plane: {
+                name: 'מטוס',
+                steps: [
+                    { instruction: 'שלב 1: שמיים כחולים', draw: function(c){ 
+                        var grad = c.createLinearGradient(0,0,0,400);
+                        grad.addColorStop(0,'#87CEEB');
+                        grad.addColorStop(1,'#E0F6FF');
+                        c.fillStyle=grad;
+                        c.fillRect(0,0,400,400);
+                    }},
+                    { instruction: 'שלב 2: ענן שמאלי', draw: function(c){ 
+                        c.fillStyle='rgba(255,255,255,0.7)';
+                        c.beginPath();
+                        c.arc(70,70,25,0,Math.PI*2);
+                        c.arc(95,70,30,0,Math.PI*2);
+                        c.arc(120,70,25,0,Math.PI*2);
+                        c.fill();
+                    }},
+                    { instruction: 'שלב 3: ענן ימני', draw: function(c){ 
+                        c.fillStyle='rgba(255,255,255,0.7)';
+                        c.beginPath();
+                        c.arc(270,110,23,0,Math.PI*2);
+                        c.arc(293,110,28,0,Math.PI*2);
+                        c.arc(316,110,23,0,Math.PI*2);
+                        c.fill();
+                    }},
+                    { instruction: 'שלב 4: גוף המטוס', draw: function(c){ 
+                        c.fillStyle='#FFFFFF';
+                        c.beginPath();
+                        c.ellipse(200,200,105,33,0,0,Math.PI*2);
+                        c.fill();
+                        c.strokeStyle='#333';
+                        c.lineWidth=4;
+                        c.stroke();
+                    }},
+                    { instruction: 'שלב 5: 5 חלונות', draw: function(c){ 
+                        c.fillStyle='#87CEEB';
+                        for(var i=0; i<5; i++) {
+                            c.beginPath();
+                            c.arc(130+i*33,200,11,0,Math.PI*2);
+                            c.fill();
+                            c.strokeStyle='#333';
+                            c.lineWidth=2;
+                            c.stroke();
+                        }
+                    }},
+                    { instruction: 'שלב 6: כנף עליונה', draw: function(c){ 
+                        c.fillStyle='#FF4444';
+                        c.beginPath();
+                        c.moveTo(200,187);
+                        c.lineTo(105,160);
+                        c.lineTo(112,173);
+                        c.lineTo(200,193);
+                        c.closePath();
+                        c.fill();
+                        c.strokeStyle='#333';
+                        c.lineWidth=3;
+                        c.stroke();
+                    }},
+                    { instruction: 'שלב 7: כנף תחתונה', draw: function(c){ 
+                        c.fillStyle='#FF4444';
+                        c.beginPath();
+                        c.moveTo(200,213);
+                        c.lineTo(105,240);
+                        c.lineTo(112,227);
+                        c.lineTo(200,207);
+                        c.closePath();
+                        c.fill();
+                        c.strokeStyle='#333';
+                        c.lineWidth=3;
+                        c.stroke();
+                    }},
+                    { instruction: 'שלב 8: זנב עליון', draw: function(c){ 
+                        c.fillStyle='#FF4444';
+                        c.beginPath();
+                        c.moveTo(305,187);
+                        c.lineTo(333,160);
+                        c.lineTo(312,200);
+                        c.closePath();
+                        c.fill();
+                        c.strokeStyle='#333';
+                        c.lineWidth=3;
+                        c.stroke();
+                    }},
+                    { instruction: 'שלב 9: זנב תחתון', draw: function(c){ 
+                        c.fillStyle='#FF4444';
+                        c.beginPath();
+                        c.moveTo(305,213);
+                        c.lineTo(320,230);
+                        c.lineTo(312,200);
+                        c.closePath();
+                        c.fill();
+                        c.strokeStyle='#333';
+                        c.lineWidth=3;
+                        c.stroke();
+                    }},
+                    { instruction: 'שלב 10: חרטום צהוב', draw: function(c){ 
+                        c.fillStyle='#FFD700';
+                        c.beginPath();
+                        c.ellipse(95,200,20,16,0,0,Math.PI*2);
+                        c.fill();
+                        c.strokeStyle='#333';
+                        c.lineWidth=2;
+                        c.stroke();
+                    }}
+                ]
+            },
+            train: {
+                name: 'רכבת',
+                steps: [
+                    { instruction: 'שלב 1: פסי רכבת', draw: function(c){ 
+                        c.fillStyle='#8B4513';
+                        c.fillRect(0,293,400,10);
+                        c.fillRect(0,320,400,10);
+                    }},
+                    { instruction: 'שלב 2: אבני חצץ', draw: function(c){ 
+                        c.fillStyle='#999';
+                        for(var i=0; i<20; i++) {
+                            c.fillRect(i*20+7,303,13,17);
+                        }
+                    }},
+                    { instruction: 'שלב 3: גוף הקטר', draw: function(c){ 
+                        c.fillStyle='#0066CC';
+                        c.fillRect(40,187,133,107);
+                        c.strokeStyle='#003366';
+                        c.lineWidth=3;
+                        c.strokeRect(40,187,133,107);
+                    }},
+                    { instruction: 'שלב 4: גג הקטר', draw: function(c){ 
+                        c.fillStyle='#003366';
+                        c.fillRect(40,173,133,20);
+                    }},
+                    { instruction: 'שלב 5: תא נהג', draw: function(c){ 
+                        c.fillStyle='#004488';
+                        c.fillRect(53,133,67,53);
+                        c.strokeStyle='#003366';
+                        c.lineWidth=2;
+                        c.strokeRect(53,133,67,53);
+                    }},
+                    { instruction: 'שלב 6: גג תא נהג (משולש)', draw: function(c){ 
+                        c.fillStyle='#003366';
+                        c.beginPath();
+                        c.moveTo(47,133);
+                        c.lineTo(87,113);
+                        c.lineTo(127,133);
+                        c.closePath();
+                        c.fill();
+                        c.strokeStyle='#001a33';
+                        c.lineWidth=2;
+                        c.stroke();
+                    }},
+                    { instruction: 'שלב 7: חלון תא נהג', draw: function(c){ 
+                        c.fillStyle='#87CEEB';
+                        c.fillRect(67,147,40,33);
+                        c.strokeStyle='#333';
+                        c.lineWidth=2;
+                        c.strokeRect(67,147,40,33);
+                    }},
+                    { instruction: 'שלב 8: ארובה', draw: function(c){ 
+                        c.fillStyle='#333';
+                        c.fillRect(133,107,20,33);
+                        c.strokeStyle='#000';
+                        c.lineWidth=2;
+                        c.strokeRect(133,107,20,33);
+                    }},
+                    { instruction: 'שלב 9: עשן (3 עיגולים)', draw: function(c){ 
+                        c.fillStyle='rgba(150,150,150,0.6)';
+                        c.beginPath();
+                        c.arc(143,80,16,0,Math.PI*2);
+                        c.fill();
+                        c.beginPath();
+                        c.arc(153,60,20,0,Math.PI*2);
+                        c.fill();
+                        c.beginPath();
+                        c.arc(167,40,24,0,Math.PI*2);
+                        c.fill();
+                    }},
+                    { instruction: 'שלב 10: חלונות קטר (2)', draw: function(c){ 
+                        c.fillStyle='#87CEEB';
+                        c.fillRect(60,207,33,27);
+                        c.fillRect(113,207,33,27);
+                        c.strokeStyle='#333';
+                        c.lineWidth=2;
+                        c.strokeRect(60,207,33,27);
+                        c.strokeRect(113,207,33,27);
+                    }},
+                    { instruction: 'שלב 11: פגוש זהב', draw: function(c){ 
+                        c.fillStyle='#FFD700';
+                        c.fillRect(27,280,20,13);
+                        c.strokeStyle='#CC9900';
+                        c.lineWidth=2;
+                        c.strokeRect(27,280,20,13);
+                    }},
+                    { instruction: 'שלב 12: גלגלי קטר (3)', draw: function(c){ 
+                        c.fillStyle='#333';
+                        for(var i=0; i<3; i++) {
+                            c.beginPath();
+                            c.arc(67+i*40,293,24,0,Math.PI*2);
+                            c.fill();
+                            c.strokeStyle='#666';
+                            c.lineWidth=4;
+                            c.stroke();
+                        }
+                    }},
+                    { instruction: 'שלב 13: גוף הקרון', draw: function(c){ 
+                        c.fillStyle='#CC3333';
+                        c.fillRect(200,200,160,93);
+                        c.strokeStyle='#992222';
+                        c.lineWidth=3;
+                        c.strokeRect(200,200,160,93);
+                    }},
+                    { instruction: 'שלב 14: גג הקרון', draw: function(c){ 
+                        c.fillStyle='#992222';
+                        c.fillRect(200,187,160,20);
+                    }},
+                    { instruction: 'שלב 15: חלונות קרון (3)', draw: function(c){ 
+                        c.fillStyle='#87CEEB';
+                        for(var i=0; i<3; i++) {
+                            c.fillRect(220+i*47,220,33,33);
+                            c.strokeStyle='#333';
+                            c.lineWidth=2;
+                            c.strokeRect(220+i*47,220,33,33);
+                        }
+                    }},
+                    { instruction: 'שלב 16: גלגלי קרון (2)', draw: function(c){ 
+                        c.fillStyle='#333';
+                        c.beginPath();
+                        c.arc(233,293,24,0,Math.PI*2);
+                        c.fill();
+                        c.strokeStyle='#666';
+                        c.lineWidth=4;
+                        c.stroke();
+                        c.beginPath();
+                        c.arc(327,293,24,0,Math.PI*2);
+                        c.fill();
+                        c.stroke();
+                    }},
+                    { instruction: 'שלב 17: חיבור בין קטר לקרון', draw: function(c){ 
+                        c.strokeStyle='#333';
+                        c.lineWidth=5;
+                        c.lineCap='round';
+                        c.beginPath();
+                        c.moveTo(173,253);
+                        c.lineTo(200,253);
+                        c.stroke();
+                    }}
+                ]
+            },
+            ship: {
+                name: 'ספינה',
+                steps: [
+                    { instruction: 'שלב 1: שמיים', draw: function(c){ 
+                        var grad = c.createLinearGradient(0,0,0,267);
+                        grad.addColorStop(0,'#87CEEB');
+                        grad.addColorStop(1,'#B0D4F1');
+                        c.fillStyle=grad;
+                        c.fillRect(0,0,400,267);
+                    }},
+                    { instruction: 'שלב 2: ים', draw: function(c){ 
+                        var grad = c.createLinearGradient(0,267,0,400);
+                        grad.addColorStop(0,'#4A90E2');
+                        grad.addColorStop(1,'#2E5C8A');
+                        c.fillStyle=grad;
+                        c.fillRect(0,267,400,133);
+                    }},
+                    { instruction: 'שלב 3: שמש', draw: function(c){ 
+                        c.fillStyle='#FFD700';
+                        c.beginPath();
+                        c.arc(333,67,33,0,Math.PI*2);
+                        c.fill();
+                    }},
+                    { instruction: 'שלב 4: קרני שמש (8)', draw: function(c){ 
+                        c.strokeStyle='#FFD700';
+                        c.lineWidth=4;
+                        c.lineCap='round';
+                        for(var i=0; i<8; i++) {
+                            var a = (i*45) * Math.PI/180;
+                            c.beginPath();
+                            c.moveTo(333+Math.cos(a)*40, 67+Math.sin(a)*40);
+                            c.lineTo(333+Math.cos(a)*60, 67+Math.sin(a)*60);
+                            c.stroke();
+                        }
+                    }},
+                    { instruction: 'שלב 5: גלים (5 שורות)', draw: function(c){ 
+                        c.strokeStyle='rgba(255,255,255,0.5)';
+                        c.lineWidth=3;
+                        for(var i=0; i<5; i++) {
+                            c.beginPath();
+                            for(var x=0; x<=400; x+=27) {
+                                c.lineTo(x, 293+i*20+Math.sin(x*0.1)*7);
+                            }
+                            c.stroke();
+                        }
+                    }},
+                    { instruction: 'שלב 6: גוף הספינה (טרפז)', draw: function(c){ 
+                        c.fillStyle='#8B4513';
+                        c.beginPath();
+                        c.moveTo(67,267);
+                        c.lineTo(53,320);
+                        c.lineTo(293,320);
+                        c.lineTo(280,267);
+                        c.closePath();
+                        c.fill();
+                        c.strokeStyle='#654321';
+                        c.lineWidth=4;
+                        c.stroke();
+                    }},
+                    { instruction: 'שלב 7: סיפון', draw: function(c){ 
+                        c.fillStyle='#A0522D';
+                        c.fillRect(67,240,213,27);
+                        c.strokeStyle='#654321';
+                        c.lineWidth=3;
+                        c.strokeRect(67,240,213,27);
+                    }},
+                    { instruction: 'שלב 8: תא מפקד', draw: function(c){ 
+                        c.fillStyle='#FFFFFF';
+                        c.fillRect(133,187,80,53);
+                        c.strokeStyle='#333';
+                        c.lineWidth=3;
+                        c.strokeRect(133,187,80,53);
+                    }},
+                    { instruction: 'שלב 9: חלונות תא מפקד (2)', draw: function(c){ 
+                        c.fillStyle='#87CEEB';
+                        c.fillRect(147,200,20,20);
+                        c.fillRect(180,200,20,20);
+                        c.strokeStyle='#333';
+                        c.lineWidth=2;
+                        c.strokeRect(147,200,20,20);
+                        c.strokeRect(180,200,20,20);
+                    }},
+                    { instruction: 'שלב 10: ארובה אדומה', draw: function(c){ 
+                        c.fillStyle='#FF4444';
+                        c.fillRect(100,147,27,53);
+                        c.strokeStyle='#8B0000';
+                        c.lineWidth=3;
+                        c.strokeRect(100,147,27,53);
+                    }},
+                    { instruction: 'שלב 11: עשן (3 עיגולים)', draw: function(c){ 
+                        c.fillStyle='rgba(100,100,100,0.5)';
+                        c.beginPath();
+                        c.arc(113,127,13,0,Math.PI*2);
+                        c.fill();
+                        c.beginPath();
+                        c.arc(120,107,16,0,Math.PI*2);
+                        c.fill();
+                        c.beginPath();
+                        c.arc(127,87,19,0,Math.PI*2);
+                        c.fill();
+                    }},
+                    { instruction: 'שלב 12: חלונות בצד (4)', draw: function(c){ 
+                        c.fillStyle='#FFD700';
+                        for(var i=0; i<4; i++) {
+                            c.fillRect(80+i*40,280,20,13);
+                        }
+                    }},
+                    { instruction: 'שלב 13: עוגן', draw: function(c){ 
+                        c.strokeStyle='#333';
+                        c.lineWidth=4;
+                        c.lineCap='round';
+                        c.beginPath();
+                        c.arc(267,280,11,0,Math.PI*2);
+                        c.stroke();
+                        c.beginPath();
+                        c.moveTo(267,291);
+                        c.lineTo(267,313);
+                        c.stroke();
+                        c.beginPath();
+                        c.moveTo(253,307);
+                        c.lineTo(267,313);
+                        c.lineTo(281,307);
+                        c.stroke();
+                    }}
+                ]
+            },
+            helicopter: {
+                name: 'מסוק',
+                steps: [
+                    { instruction: 'שלב 1: שמיים', draw: function(c){ 
+                        var grad = c.createLinearGradient(0,0,0,400);
+                        grad.addColorStop(0,'#87CEEB');
+                        grad.addColorStop(1,'#E0F6FF');
+                        c.fillStyle=grad;
+                        c.fillRect(0,0,400,400);
+                    }},
+                    { instruction: 'שלב 2: ענן תחתון שמאלי', draw: function(c){ 
+                        c.fillStyle='rgba(255,255,255,0.6)';
+                        c.beginPath();
+                        c.arc(80,307,33,0,Math.PI*2);
+                        c.arc(113,307,40,0,Math.PI*2);
+                        c.arc(147,307,33,0,Math.PI*2);
+                        c.fill();
+                    }},
+                    { instruction: 'שלב 3: ענן תחתון ימני', draw: function(c){ 
+                        c.fillStyle='rgba(255,255,255,0.6)';
+                        c.beginPath();
+                        c.arc(240,333,27,0,Math.PI*2);
+                        c.arc(267,333,33,0,Math.PI*2);
+                        c.arc(293,333,27,0,Math.PI*2);
+                        c.fill();
+                    }},
+                    { instruction: 'שלב 4: גוף המסוק (אליפסה)', draw: function(c){ 
+                        c.fillStyle='#00AA00';
+                        c.beginPath();
+                        c.ellipse(200,187,67,33,0,0,Math.PI*2);
+                        c.fill();
+                        c.strokeStyle='#006600';
+                        c.lineWidth=4;
+                        c.stroke();
+                    }},
+                    { instruction: 'שלב 5: תא הטייס (חצי עיגול)', draw: function(c){ 
+                        c.fillStyle='#87CEEB';
+                        c.beginPath();
+                        c.arc(200,173,33,0,Math.PI,true);
+                        c.fill();
+                        c.strokeStyle='#333';
+                        c.lineWidth=3;
+                        c.stroke();
+                    }},
+                    { instruction: 'שלב 6: קו חלוקה בחלון', draw: function(c){ 
+                        c.strokeStyle='#333';
+                        c.lineWidth=3;
+                        c.beginPath();
+                        c.moveTo(200,140);
+                        c.lineTo(200,173);
+                        c.stroke();
+                    }},
+                    { instruction: 'שלב 7: זנב', draw: function(c){ 
+                        c.strokeStyle='#006600';
+                        c.lineWidth=11;
+                        c.lineCap='round';
+                        c.beginPath();
+                        c.moveTo(267,187);
+                        c.lineTo(333,180);
+                        c.stroke();
+                    }},
+                    { instruction: 'שלב 8: מדחף זנב (מוט)', draw: function(c){ 
+                        c.fillStyle='#333';
+                        c.fillRect(329,167,5,27);
+                    }},
+                    { instruction: 'שלב 9: להב מדחף זנב', draw: function(c){ 
+                        c.strokeStyle='rgba(51,51,51,0.3)';
+                        c.lineWidth=3;
+                        c.beginPath();
+                        c.moveTo(333,153);
+                        c.lineTo(333,193);
+                        c.stroke();
+                    }},
+                    { instruction: 'שלב 10: מוט מדחף ראשי', draw: function(c){ 
+                        c.fillStyle='#333';
+                        c.fillRect(197,107,5,40);
+                    }},
+                    { instruction: 'שלב 11: מנוע עליון', draw: function(c){ 
+                        c.fillStyle='#444';
+                        c.beginPath();
+                        c.arc(200,147,20,0,Math.PI*2);
+                        c.fill();
+                    }},
+                    { instruction: 'שלב 12: להבי מדחף (מטושטשים)', draw: function(c){ 
+                        c.strokeStyle='rgba(51,51,51,0.2)';
+                        c.lineWidth=5;
+                        c.beginPath();
+                        c.ellipse(200,113,107,11,0,0,Math.PI*2);
+                        c.stroke();
+                        c.strokeStyle='rgba(51,51,51,0.3)';
+                        c.lineWidth=8;
+                        c.beginPath();
+                        c.ellipse(200,113,107,16,Math.PI/4,0,Math.PI*2);
+                        c.stroke();
+                    }},
+                    { instruction: 'שלב 13: רגל שמאלית (סקיד)', draw: function(c){ 
+                        c.strokeStyle='#333';
+                        c.lineWidth=5;
+                        c.lineCap='round';
+                        c.beginPath();
+                        c.moveTo(160,200);
+                        c.lineTo(153,227);
+                        c.lineTo(180,227);
+                        c.stroke();
+                    }},
+                    { instruction: 'שלב 14: רגל ימנית (סקיד)', draw: function(c){ 
+                        c.strokeStyle='#333';
+                        c.lineWidth=5;
+                        c.lineCap='round';
+                        c.beginPath();
+                        c.moveTo(240,200);
+                        c.lineTo(247,227);
+                        c.lineTo(220,227);
+                        c.stroke();
+                    }},
+                    { instruction: 'שלב 15: מוט חיבור תחתון', draw: function(c){ 
+                        c.strokeStyle='#333';
+                        c.lineWidth=5;
+                        c.lineCap='round';
+                        c.beginPath();
+                        c.moveTo(153,227);
+                        c.lineTo(247,227);
+                        c.stroke();
+                    }},
+                    { instruction: 'שלב 16: פנס תחתון', draw: function(c){ 
+                        c.fillStyle='#FFD700';
+                        c.beginPath();
+                        c.arc(200,207,7,0,Math.PI*2);
+                        c.fill();
+                    }}
+                ]
+            }
+        };
+        
+        function init() {
+            var p = document.getElementById('colorPalette');
+            for (var i = 0; i < cols.length; i++) {
+                var b = document.createElement('div');
+                b.className = 'color-btn' + (cols[i] === col ? ' selected' : '');
+                b.style.background = cols[i];
+                b.setAttribute('data-color', cols[i]);
+                b.onclick = function() {
+                    col = this.getAttribute('data-color');
+                    erase = false;
+                    var all = document.querySelectorAll('.color-btn');
+                    for (var j = 0; j < all.length; j++) all[j].classList.remove('selected');
+                    this.classList.add('selected');
+                    document.getElementById('drawBtn').classList.add('active');
+                    document.getElementById('eraserBtn').classList.remove('active');
+                    updCursor();
+                };
+                p.appendChild(b);
+            }
+        }
+        
+        function selectDrawTool() {
+            erase = false;
+            document.getElementById('drawBtn').classList.add('active');
+            document.getElementById('eraserBtn').classList.remove('active');
+            updCursor();
+        }
+        
+        function selectEraser() {
+            erase = true;
+            document.getElementById('eraserBtn').classList.add('active');
+            document.getElementById('drawBtn').classList.remove('active');
+            var all = document.querySelectorAll('.color-btn');
+            for (var i = 0; i < all.length; i++) all[i].classList.remove('selected');
+            updCursor();
+        }
+        
+        document.getElementById('brushSize').addEventListener('input', function(e) {
+            size = parseInt(e.target.value);
+            updCursor();
+        });
+        
+        function showMenu() {
+            document.getElementById('drawingMenu').classList.remove('hidden');
+            document.getElementById('overlay').classList.remove('hidden');
+        }
+        
+        function hideMenu() {
+            document.getElementById('drawingMenu').classList.add('hidden');
+            document.getElementById('overlay').classList.add('hidden');
+        }
+        
+        function selectDrawing(n) {
+            curr = data[n];
+            step = 0;
+            exCtx.clearRect(0, 0, 400, 400);
+            myCtx.clearRect(0, 0, 400, 400);
+            upd();
+            hideMenu();
+            document.getElementById('nextBtn').disabled = false;
+        }
+        
+        function clearMyCanvas() {
+            myCtx.clearRect(0, 0, 400, 400);
+        }
+        
+        function saveDrawing() {
+            if (!curr) { alert('בחר כלי תחבורה תחילה!'); return; }
+            var l = document.createElement('a');
+            l.download = 'ציור_' + curr.name + '.png';
+            l.href = my.toDataURL();
+            l.click();
+        }
+        
+        function upd() {
+            if (!curr) return;
+            exCtx.clearRect(0, 0, 400, 400);
+            for (var i = 0; i <= step; i++) curr.steps[i].draw(exCtx);
+            document.getElementById('instruction').textContent = curr.steps[step].instruction;
+            document.getElementById('stepCounter').textContent = 'שלב ' + (step + 1) + ' מתוך ' + curr.steps.length;
+            document.getElementById('prevBtn').disabled = step === 0;
+            document.getElementById('nextBtn').disabled = step === curr.steps.length - 1;
+        }
+        
+        function nextStep() {
+            if (curr && step < curr.steps.length - 1) { step++; upd(); }
+        }
+        
+        function prevStep() {
+            if (step > 0) { step--; upd(); }
+        }
+        
+        my.addEventListener('mousedown', function(e) {
+            draw = true;
+            var r = my.getBoundingClientRect();
+            myCtx.beginPath();
+            myCtx.moveTo(e.clientX - r.left, e.clientY - r.top);
+        });
+        
+        my.addEventListener('mousemove', function(e) {
+            if (!draw) return;
+            var r = my.getBoundingClientRect();
+            myCtx.lineCap = 'round';
+            myCtx.lineJoin = 'round';
+            if (erase) {
+                myCtx.globalCompositeOperation = 'destination-out';
+                myCtx.lineWidth = size * 2;
+            } else {
+                myCtx.globalCompositeOperation = 'source-over';
+                myCtx.strokeStyle = col;
+                myCtx.lineWidth = size;
+            }
+            myCtx.lineTo(e.clientX - r.left, e.clientY - r.top);
+            myCtx.stroke();
+        });
+        
+        my.addEventListener('mouseup', function() { draw = false; });
+        my.addEventListener('mouseout', function() { draw = false; });
+        
+        my.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            draw = true;
+            var t = e.touches[0];
+            var r = my.getBoundingClientRect();
+            myCtx.beginPath();
+            myCtx.moveTo(t.clientX - r.left, t.clientY - r.top);
+        });
+        
+        my.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+            if (!draw) return;
+            var t = e.touches[0];
+            var r = my.getBoundingClientRect();
+            myCtx.lineCap = 'round';
+            myCtx.lineJoin = 'round';
+            if (erase) {
+                myCtx.globalCompositeOperation = 'destination-out';
+                myCtx.lineWidth = size * 2;
+            } else {
+                myCtx.globalCompositeOperation = 'source-over';
+                myCtx.strokeStyle = col;
+                myCtx.lineWidth = size;
+            }
+            myCtx.lineTo(t.clientX - r.left, t.clientY - r.top);
+            myCtx.stroke();
+        });
+        
+        my.addEventListener('touchend', function() { draw = false; });
+        
+        init();
+    </script>
+</body>
+</html>
+                
