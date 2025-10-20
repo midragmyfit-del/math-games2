@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>למד לצייר אוכל מתקדם</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .title {
+            text-align: center;
+            color: #333;
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .main-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .canvas-container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            flex: 1;
+            min-width: 300px;
+        }
+        .canvas-title {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        canvas {
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            cursor: none;
+            display: block;
+            margin: 0 auto;
+            background: white;
+        }
+        #cursor {
+            position: fixed;
+            border: 3px solid #fff;
+            box-shadow: 0 0 0 2px #000, inset 0 0 0 2px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            display: none;
+            transform: translate(-50%, -50%);
+        }
+        #cursor::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1px;
+            height: 10px;
+            background: #000;
+            box-shadow: 1px 0 0 #fff, -1px 0 0 #fff;
+        }
+        #cursor::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 1px;
+            background: #000;
+            box-shadow: 0 1px 0 #fff, 0 -1px 0 #fff;
+        }
+        .controls {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .control-section { text-align: center; }
+        .section-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .instruction-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.3em;
+            font-weight: bold;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        .step-counter {
+            font-size: 1.1em;
+            color: #666;
+            margin-top: 10px;
+        }
+        .button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+        }
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .nav-buttons { display: flex; gap: 10px; }
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            justify-items: center;
+        }
+        .color-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 3px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .color-btn:hover { transform: scale(1.2); }
+        .color-btn.selected {
+            border-color: #FFD700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+            transform: scale(1.2);
+        }
+        .tool-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .tool-btn {
+            padding: 10px 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-size: 1.5em;
+            transition: all 0.3s;
+        }
+        .tool-btn:hover { transform: scale(1.1); }
+        .tool-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+        .drawing-menu {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            max-width: 600px;
+            width: 90%;
+        }
+        .drawing-menu.hidden { display: none; }
+        .menu-title {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .drawing-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .drawing-option {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+        }
+        .drawing-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: #667eea;
+        }
+        .drawing-icon { font-size: 3em; margin-bottom: 10px; }
+        .drawing-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+        .difficulty-stars {
+            color: #FFD700;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        .overlay.hidden { display: none; }
+        .size-slider { width: 100%; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div id="cursor"></div>
+    <div class="overlay hidden" id="overlay"></div>
+    
+    <div class="drawing-menu" id="drawingMenu">
+        <div class="menu-title">🍕 בחר מאכל לצייר</div>
+        <div class="drawing-options">
+            <div class="drawing-option" onclick="selectDrawing('pizza')">
+                <div class="drawing-icon">🍕</div>
+                <div class="drawing-name">פיצה</div>
+                <div class="difficulty-stars">★★★☆☆</div>
+            </div>
+            <div class="drawing-option" onclick="selectDrawing('icecream')">
+                <div class="drawing-icon">🍨</div>
+                <div class="drawing-name">גלידה</div>
+                <div class="difficulty-stars">★★★★☆</div>
+            </div>
+            <div class="drawing-option" onclick="selectDrawing('cake')">
+                <div class="drawing-icon">🎂</div>
+                <div class="drawing-name">עוגה</div>
+                <div class="difficulty-stars">★★★★★</div>
+            </div>
+            <div class="drawing-option" onclick="selectDrawing('apple')">
+                <div class="drawing-icon">🍎</div>
+                <div class="drawing-name">תפוח</div>
+                <div class="difficulty-stars">★★☆☆☆</div>
+            </div>
+            <div class="drawing-option" onclick="selectDrawing('banana')">
+                <div class="drawing-icon">🍌</div>
+                <div class="drawing-name">בננה</div>
+                <div class="difficulty-stars">★★☆☆☆</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="title">🍕 למד לצייר אוכל מתקדם 🖌️</div>
+    
+    <div class="main-container">
+        <div class="canvas-container">
+            <div class="canvas-title">הדוגמה - עקוב אחרי השלבים 👀</div>
+            <canvas id="exampleCanvas" width="400" height="400"></canvas>
+        </div>
+        
+        <div class="controls">
+            <div class="control-section">
+                <div class="instruction-box" id="instruction">בחר מאכל מהתפריט כדי להתחיל!</div>
+                <div class="step-counter" id="stepCounter"></div>
+            </div>
+            
+            <div class="control-section">
+                <div class="section-title">כלים 🛠️</div>
+                <div class="tool-buttons">
+                    <button class="tool-btn active" id="drawBtn" onclick="selectDrawTool()">✏️ עט</button>
+                    <button class="tool-btn" id="eraserBtn" onclick="selectEraser()">🧹 מחק</button>
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <div class="section-title">צבעים 🎨</div>
+                <div class="color-palette" id="colorPalette"></div>
+            </div>
+            
+            <div class="control-section">
+                <div class="section-title">עובי מכחול</div>
+                <input type="range" class="size-slider" id="brushSize" min="2" max="15" value="5">
+            </div>
+            
+            <div class="control-section">
+                <div class="nav-buttons">
+                    <button class="button" id="prevBtn" onclick="prevStep()" disabled>⬅️ קודם</button>
+                    <button class="button" id="nextBtn" onclick="nextStep()" disabled>הבא ➡️</button>
+                </div>
+            </div>
+            
+            <button class="button" onclick="clearMyCanvas()">🗑️ נקה את הציור שלי</button>
+            <button class="button" onclick="saveDrawing()">💾 שמור את הציור שלי</button>
+            <button class="button" onclick="showMenu()">🎨 בחר מאכל אחר</button>
+        </div>
+        
+        <div class="canvas-container">
+            <div class="canvas-title">הציור שלך - צייר כאן! ✏️</div>
+            <canvas id="myCanvas" width="400" height="400"></canvas>
+        </div>
+    </div>
+
+    <script>
+        var ex = document.getElementById('exampleCanvas');
+        var my = document.getElementById('myCanvas');
+        var exCtx = ex.getContext('2d');
+        var myCtx = my.getContext('2d');
+        var cursor = document.getElementById('cursor');
+        
+        var curr = null;
+        var step = 0;
+        var draw = false;
+        var col = '#000000';
+        var size = 5;
+        var erase = false;
+        
+        function updCursor() {
+            var s = erase ? size * 4 : size * 2;
+            cursor.style.width = s + 'px';
+            cursor.style.height = s + 'px';
+            if (erase) {
+                cursor.style.borderColor = '#fff';
+                cursor.style.boxShadow = '0 0 0 2px #ff0000, inset 0 0 0 2px #ff0000';
+            } else {
+                cursor.style.borderColor = '#fff';
+                cursor.style.boxShadow = '0 0 0 2px #000, inset 0 0 0 2px ' + col;
+            }
+        }
+        
+        my.addEventListener('mouseenter', function() {
+            cursor.style.display = 'block';
+            updCursor();
+        });
+        
+        my.addEventListener('mouseleave', function() {
+            cursor.style.display = 'none';
+        });
+        
+        my.addEventListener('mousemove', function(e) {
+            cursor.style.left = e.pageX + 'px';
+            cursor.style.top = e.pageY + 'px';
+        });
+        
+        var cols = [
+            '#000000','#FFFFFF','#FF0000','#00FF00','#0000FF',
+            '#FFFF00','#FFA500','#800080','#FF00FF','#00FFFF',
+            '#FFC0CB','#00BFFF','#87CEEB','#FFD700','#FF69B4',
+            '#FF1493','#8B4513','#FFE4B5','#FFDAB9','#8B0000',
+            '#DC143C','#006400'
+        ];
+        
+        var data = {
+            pizza: {
+                name: 'פיצה',
+                steps: [
+                    { instruction: 'שלב 1: עיגול גדול', draw: function(c){ c.strokeStyle='#D2691E'; c.lineWidth=4; c.beginPath(); c.arc(200,200,150,0,Math.PI*2); c.stroke(); }},
+                    { instruction: 'שלב 2: מלא בבז׳', draw: function(c){ c.fillStyle='#FFE4B5'; c.beginPath(); c.arc(200,200,150,0,Math.PI*2); c.fill(); c.strokeStyle='#D2691E'; c.lineWidth=4; c.stroke(); }},
+                    { instruction: 'שלב 3: רוטב אדום', draw: function(c){ c.fillStyle='#FF6347'; c.beginPath(); c.arc(200,200,135,0,Math.PI*2); c.fill(); }},
+                    { instruction: 'שלב 4: גבינה צהובה', draw: function(c){ c.fillStyle='#FFD700'; c.beginPath(); c.arc(200,200,125,0,Math.PI*2); c.fill(); }},
+                    { instruction: 'שלב 5: פפרוני', draw: function(c){ c.fillStyle='#DC143C'; var p=[[200,140],[250,170],[260,220],[230,270],[170,270],[140,220],[150,170],[200,200]]; for(var i=0;i<p.length;i++){ c.beginPath(); c.arc(p[i][0],p[i][1],20,0,Math.PI*2); c.fill(); c.strokeStyle='#8B0000'; c.lineWidth=2; c.stroke(); }}},
+                    { instruction: 'שלב 6: חיתוך', draw: function(c){ c.strokeStyle='#000'; c.lineWidth=3; for(var i=0;i<8;i++){ var a=(i*45)*Math.PI/180; c.beginPath(); c.moveTo(200,200); c.lineTo(200+Math.cos(a)*150,200+Math.sin(a)*150); c.stroke(); }}}
+                ]
+            },
+            icecream: {
+                name: 'גלידה',
+                steps: [
+                    { instruction: 'שלב 1: גביע', draw: function(c){ c.fillStyle='#DEB887'; c.beginPath(); c.moveTo(200,400); c.lineTo(140,230); c.lineTo(260,230); c.closePath(); c.fill(); c.strokeStyle='#8B4513'; c.lineWidth=3; c.stroke(); }},
+                    { instruction: 'שלב 2: רשת', draw: function(c){ c.strokeStyle='#8B4513'; c.lineWidth=3; for(var y=240;y<390;y+=20){ c.beginPath(); c.moveTo(145+(y-230)*0.35,y); c.lineTo(255-(y-230)*0.35,y); c.stroke(); } for(var i=-4;i<=4;i++){ c.beginPath(); c.moveTo(200+i*15,230); c.lineTo(200+i*7,400); c.stroke(); }}},
+                    { instruction: 'שלב 3: כדור חום', draw: function(c){ c.fillStyle='#8B4513'; c.beginPath(); c.arc(200,230,60,0,Math.PI*2); c.fill(); c.strokeStyle='#654321'; c.lineWidth=3; c.stroke(); }},
+                    { instruction: 'שלב 4: כדור ורוד', draw: function(c){ c.fillStyle='#FFB6C1'; c.beginPath(); c.arc(200,180,55,0,Math.PI*2); c.fill(); c.strokeStyle='#FF69B4'; c.lineWidth=3; c.stroke(); }},
+                    { instruction: 'שלב 5: כדור ירוק', draw: function(c){ c.fillStyle='#90EE90'; c.beginPath(); c.arc(200,135,50,0,Math.PI*2); c.fill(); c.strokeStyle='#228B22'; c.lineWidth=3; c.stroke(); }},
+                    { instruction: 'שלב 6: דובדבן', draw: function(c){ c.fillStyle='#DC143C'; c.beginPath(); c.arc(200,100,15,0,Math.PI*2); c.fill(); c.strokeStyle='#228B22'; c.lineWidth=3; c.beginPath(); c.moveTo(200,85); c.quadraticCurveTo(190,75,185,70); c.stroke(); c.fillStyle='#228B22'; c.beginPath(); c.ellipse(180,68,8,12,-0.5,0,Math.PI*2); c.fill(); }}
+                ]
+            },
+            cake: {
+                name: 'עוגה',
+                steps: [
+                    { instruction: 'שלב 1: שכבה תחתונה', draw: function(c){ c.fillStyle='#8B4513'; c.fillRect(80,280,240,80); c.strokeStyle='#654321'; c.lineWidth=3; c.strokeRect(80,280,240,80); }},
+                    { instruction: 'שלב 2: קרם', draw: function(c){ c.fillStyle='#FFB6C1'; c.fillRect(80,270,240,15); }},
+                    { instruction: 'שלב 3: שכבה שנייה', draw: function(c){ c.fillStyle='#A0522D'; c.fillRect(90,210,220,70); c.strokeStyle='#654321'; c.lineWidth=3; c.strokeRect(90,210,220,70); }},
+                    { instruction: 'שלב 4: קרם', draw: function(c){ c.fillStyle='#FFB6C1'; c.fillRect(90,200,220,15); }},
+                    { instruction: 'שלב 5: שכבה עליונה', draw: function(c){ c.fillStyle='#D2691E'; c.fillRect(100,150,200,60); c.strokeStyle='#654321'; c.lineWidth=3; c.strokeRect(100,150,200,60); }},
+                    { instruction: 'שלב 6: ציפוי', draw: function(c){ c.fillStyle='#FFF'; c.fillRect(100,140,200,15); c.beginPath(); for(var x=100;x<=300;x+=15){ c.arc(x,155,8,0,Math.PI*2); c.arc(x+7,155,8,0,Math.PI*2); } c.fill(); }},
+                    { instruction: 'שלב 7: נרות', draw: function(c){ var cl=['#FF0000','#00FF00','#0000FF','#FFFF00','#FF00FF']; var p=[130,170,210,250,280]; for(var i=0;i<p.length;i++){ var x=p[i]; c.fillStyle=cl[i]; c.fillRect(x-5,100,10,50); c.strokeStyle='#000'; c.lineWidth=2; c.strokeRect(x-5,100,10,50); c.fillStyle='#FFA500'; c.beginPath(); c.moveTo(x,85); c.lineTo(x-8,100); c.lineTo(x+8,100); c.closePath(); c.fill(); c.fillStyle='#FFFF00'; c.beginPath(); c.ellipse(x,90,5,8,0,0,Math.PI*2); c.fill(); }}}
+                ]
+            },
+            apple: {
+                name: 'תפוח',
+                steps: [
+                    { instruction: 'שלב 1: עיגול', draw: function(c){ c.strokeStyle='#8B0000'; c.lineWidth=3; c.beginPath(); c.arc(200,220,120,0,Math.PI*2); c.stroke(); }},
+                    { instruction: 'שלב 2: מלא אדום', draw: function(c){ c.fillStyle='#FF0000'; c.beginPath(); c.arc(200,220,120,0,Math.PI*2); c.fill(); c.strokeStyle='#8B0000'; c.lineWidth=3; c.stroke(); }},
+                    { instruction: 'שלב 3: שקע', draw: function(c){ c.fillStyle='#DC143C'; c.beginPath(); c.ellipse(200,120,35,20,0,0,Math.PI); c.fill(); }},
+                    { instruction: 'שלב 4: גבעול', draw: function(c){ c.fillStyle='#8B4513'; c.fillRect(195,80,10,45); c.strokeStyle='#654321'; c.lineWidth=2; c.strokeRect(195,80,10,45); }},
+                    { instruction: 'שלב 5: עלה', draw: function(c){ c.fillStyle='#228B22'; c.beginPath(); c.ellipse(230,100,25,15,0.5,0,Math.PI*2); c.fill(); c.strokeStyle='#006400'; c.lineWidth=2; c.stroke(); c.beginPath(); c.moveTo(205,100); c.quadraticCurveTo(218,95,230,100); c.stroke(); }},
+                    { instruction: 'שלב 6: ברק', draw: function(c){ c.fillStyle='rgba(255,255,255,0.6)'; c.beginPath(); c.ellipse(160,180,35,50,-0.3,0,Math.PI*2); c.fill(); c.fillStyle='#FFB6C1'; c.beginPath(); c.arc(240,250,20,0,Math.PI*2); c.fill(); }}
+                ]
+            },
+            banana: {
+                name: 'בננה',
+                steps: [
+                    { instruction: 'שלב 1: קו עליון', draw: function(c){ c.strokeStyle='#000'; c.lineWidth=3; c.lineCap='round'; c.beginPath(); c.moveTo(100,210); c.quadraticCurveTo(155,120,255,145); c.quadraticCurveTo(330,165,350,220); c.stroke(); }},
+                    { instruction: 'שלב 2: קו תחתון', draw: function(c){ c.strokeStyle='#000'; c.lineWidth=3; c.lineCap='round'; c.beginPath(); c.moveTo(100,290); c.quadraticCurveTo(145,180,245,215); c.quadraticCurveTo(310,235,330,300); c.stroke(); }},
+                    { instruction: 'שלב 3: צהוב', draw: function(c){ c.fillStyle='#FFD700'; c.beginPath(); c.moveTo(100,210); c.quadraticCurveTo(155,120,255,145); c.quadraticCurveTo(330,165,350,220); c.lineTo(330,300); c.quadraticCurveTo(310,235,245,215); c.quadraticCurveTo(145,180,100,290); c.closePath(); c.fill(); c.strokeStyle='#000'; c.lineWidth=3; c.stroke(); }},
+                    { instruction: 'שלב 4: קצה', draw: function(c){ c.fillStyle='#8B4513'; c.beginPath(); c.arc(100,250,30,0,Math.PI*2); c.fill(); c.fillStyle='#228B22'; c.fillRect(90,220,20,15); c.fillStyle='#006400'; c.fillRect(85,215,30,8); }},
+                    { instruction: 'שלב 5: קווים', draw: function(c){ c.strokeStyle='#DAA520'; c.lineWidth=3; for(var i=0;i<6;i++){ c.beginPath(); var sx=130+i*35; var sy=200-i*10; c.moveTo(sx,sy); c.quadraticCurveTo(sx+15,sy+30,sx+25,sy+60); c.stroke(); }}},
+                    { instruction: 'שלב 6: כתמים', draw: function(c){ c.fillStyle='#8B4513'; var s=[[140,200],[180,175],[220,185],[260,205],[290,230],[310,260]]; for(var i=0;i<s.length;i++){ c.beginPath(); c.ellipse(s[i][0],s[i][1],8,5,0.3,0,Math.PI*2); c.fill(); }}}
+                ]
+            }
+        };
+        
+        function init() {
+            var p = document.getElementById('colorPalette');
+            for (var i = 0; i < cols.length; i++) {
+                var b = document.createElement('div');
+                b.className = 'color-btn' + (cols[i] === col ? ' selected' : '');
+                b.style.background = cols[i];
+                b.setAttribute('data-color', cols[i]);
+                b.onclick = function() {
+                    col = this.getAttribute('data-color');
+                    erase = false;
+                    var all = document.querySelectorAll('.color-btn');
+                    for (var j = 0; j < all.length; j++) all[j].classList.remove('selected');
+                    this.classList.add('selected');
+                    document.getElementById('drawBtn').classList.add('active');
+                    document.getElementById('eraserBtn').classList.remove('active');
+                    updCursor();
+                };
+                p.appendChild(b);
+            }
+        }
+        
+        function selectDrawTool() {
+            erase = false;
+            document.getElementById('drawBtn').classList.add('active');
+            document.getElementById('eraserBtn').classList.remove('active');
+            updCursor();
+        }
+        
+        function selectEraser() {
+            erase = true;
+            document.getElementById('eraserBtn').classList.add('active');
+            document.getElementById('drawBtn').classList.remove('active');
+            var all = document.querySelectorAll('.color-btn');
+            for (var i = 0; i < all.length; i++) all[i].classList.remove('selected');
+            updCursor();
+        }
+        
+        document.getElementById('brushSize').addEventListener('input', function(e) {
+            size = parseInt(e.target.value);
+            updCursor();
+        });
+        
+        function showMenu() {
+            document.getElementById('drawingMenu').classList.remove('hidden');
+            document.getElementById('overlay').classList.remove('hidden');
+        }
+        
+        function hideMenu() {
+            document.getElementById('drawingMenu').classList.add('hidden');
+            document.getElementById('overlay').classList.add('hidden');
+        }
+        
+        function selectDrawing(n) {
+            curr = data[n];
+            step = 0;
+            exCtx.clearRect(0, 0, 400, 400);
+            myCtx.clearRect(0, 0, 400, 400);
+            upd();
+            hideMenu();
+            document.getElementById('nextBtn').disabled = false;
+        }
+        
+        function clearMyCanvas() {
+            myCtx.clearRect(0, 0, 400, 400);
+        }
+        
+        function saveDrawing() {
+            if (!curr) { alert('בחר מאכל תחילה!'); return; }
+            var l = document.createElement('a');
+            l.download = 'ציור_' + curr.name + '.png';
+            l.href = my.toDataURL();
+            l.click();
+        }
+        
+        function upd() {
+            if (!curr) return;
+            exCtx.clearRect(0, 0, 400, 400);
+            for (var i = 0; i <= step; i++) curr.steps[i].draw(exCtx);
+            document.getElementById('instruction').textContent = curr.steps[step].instruction;
+            document.getElementById('stepCounter').textContent = 'שלב ' + (step + 1) + ' מתוך ' + curr.steps.length;
+            document.getElementById('prevBtn').disabled = step === 0;
+            document.getElementById('nextBtn').disabled = step === curr.steps.length - 1;
+        }
+        
+        function nextStep() {
+            if (curr && step < curr.steps.length - 1) { step++; upd(); }
+        }
+        
+        function prevStep() {
+            if (step > 0) { step--; upd(); }
+        }
+        
+        my.addEventListener('mousedown', function(e) {
+            draw = true;
+            var r = my.getBoundingClientRect();
+            myCtx.beginPath();
+            myCtx.moveTo(e.clientX - r.left, e.clientY - r.top);
+        });
+        
+        my.addEventListener('mousemove', function(e) {
+            if (!draw) return;
+            var r = my.getBoundingClientRect();
+            myCtx.lineCap = 'round';
+            myCtx.lineJoin = 'round';
+            if (erase) {
+                myCtx.globalCompositeOperation = 'destination-out';
+                myCtx.lineWidth = size * 2;
+            } else {
+                myCtx.globalCompositeOperation = 'source-over';
+                myCtx.strokeStyle = col;
+                myCtx.lineWidth = size;
+            }
+            myCtx.lineTo(e.clientX - r.left, e.clientY - r.top);
+            myCtx.stroke();
+        });
+        
+        my.addEventListener('mouseup', function() { draw = false; });
+        my.addEventListener('mouseout', function() { draw = false; });
+        
+        my.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            draw = true;
+            var t = e.touches[0];
+            var r = my.getBoundingClientRect();
+            myCtx.beginPath();
+            myCtx.moveTo(t.clientX - r.left, t.clientY - r.top);
+        });
+        
+        my.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+            if (!draw) return;
+            var t = e.touches[0];
+            var r = my.getBoundingClientRect();
+            myCtx.lineCap = 'round';
+            myCtx.lineJoin = 'round';
+            if (erase) {
+                myCtx.globalCompositeOperation = 'destination-out';
+                myCtx.lineWidth = size * 2;
+            } else {
+                myCtx.globalCompositeOperation = 'source-over';
+                myCtx.strokeStyle = col;
+                myCtx.lineWidth = size;
+            }
+            myCtx.lineTo(t.clientX - r.left, t.clientY - r.top);
+            myCtx.stroke();
+        });
+        
+        my.addEventListener('touchend', function() { draw = false; });
+        
+        init();
+    </script>
+</body>
+</html>
