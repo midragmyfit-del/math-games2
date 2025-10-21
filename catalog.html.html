@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הקטלוג - סשני לימוד ציור</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        #passwordScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+        .password-box { background: white; padding: 40px; border-radius: 25px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); text-align: center; max-width: 400px; width: 90%; }
+        .password-box h2 { color: #667eea; font-size: 2em; margin-bottom: 20px; }
+        .password-box p { color: #666; margin-bottom: 25px; font-size: 1.1em; }
+        #passwordInput { width: 100%; padding: 15px; font-size: 1.3em; border: 3px solid #667eea; border-radius: 15px; text-align: center; margin-bottom: 20px; outline: none; }
+        #submitBtn { width: 100%; padding: 15px; font-size: 1.2em; font-weight: bold; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 15px; cursor: pointer; }
+        #errorMsg { color: #ff4444; margin-top: 15px; font-weight: bold; display: none; }
+        #mainContent { display: none; }
+        .header { text-align: center; color: white; margin-bottom: 40px; }
+        .header h1 { font-size: 3.5em; font-weight: bold; text-shadow: 3px 3px 6px rgba(0,0,0,0.4); margin-bottom: 10px; }
+        .header p { font-size: 1.3em; opacity: 0.9; }
+        .sessions-container { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; padding: 20px; }
+        .session-card { background: white; border-radius: 25px; padding: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); transition: all 0.4s ease; }
+        .session-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+        .session-header { text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 3px solid #667eea; }
+        .session-number { display: inline-block; background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 10px 25px; border-radius: 50px; font-size: 1.1em; font-weight: bold; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(102,126,234,0.4); }
+        .session-title { font-size: 1.8em; font-weight: bold; color: #333; margin-bottom: 10px; }
+        .session-description { color: #666; font-size: 1.1em; }
+        .stats { display: flex; justify-content: space-around; background: linear-gradient(135deg, #667eea15, #764ba215); padding: 15px; border-radius: 15px; margin-bottom: 20px; }
+        .stat-item { text-align: center; }
+        .stat-number { font-size: 1.8em; font-weight: bold; color: #667eea; }
+        .stat-label { font-size: 0.9em; color: #666; }
+        .drawings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+        .drawing-item { background: linear-gradient(135deg, #f5f7fa, #c3cfe2); border-radius: 15px; padding: 15px; text-align: center; transition: all 0.3s; border: 3px solid transparent; }
+        .drawing-item:hover { border-color: #667eea; transform: scale(1.05); box-shadow: 0 5px 15px rgba(102,126,234,0.3); }
+        .drawing-icon { font-size: 3em; margin-bottom: 10px; }
+        .drawing-name { font-size: 1em; font-weight: bold; color: #333; margin-bottom: 5px; }
+        .difficulty-stars { color: #FF8C00; font-size: 1.2em; font-weight: bold; text-shadow: 0 0 10px rgba(255,140,0,0.6), 0 2px 4px rgba(0,0,0,0.5); letter-spacing: 2px; margin-top: 5px; }
+        .open-button { width: 100%; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 15px; font-size: 1.2em; font-weight: bold; border-radius: 15px; cursor: pointer; transition: all 0.3s; box-shadow: 0 5px 15px rgba(102,126,234,0.3); text-decoration: none; display: block; text-align: center; }
+        .open-button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102,126,234,0.5); }
+        @media (max-width: 768px) { .header h1 { font-size: 2.5em; } .sessions-container { grid-template-columns: 1fr; } .drawings-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div id="passwordScreen">
+        <div class="password-box">
+            <h2>🔒 כניסה מאובטחת</h2>
+            <p>הזן סיסמה כדי להיכנס לקטלוג</p>
+            <input type="password" id="passwordInput" placeholder="הזן סיסמה" maxlength="4">
+            <button id="submitBtn">✓ כניסה</button>
+            <div id="errorMsg">❌ סיסמה שגויה!</div>
+        </div>
+    </div>
+
+    <div id="mainContent">
+        <div class="header">
+            <h1>🎨 הקטלוג 🎨</h1>
+            <p>סשני לימוד ציור שלב אחר שלב</p>
+        </div>
+        <div class="sessions-container"></div>
+    </div>
+
+    <script>
+        const sessions = [
+            {num:0,title:"ציורים בסיסיים",desc:"צעדים ראשונים בציור",count:5,diff:"★★",drawings:[{icon:"🌸",name:"פרח",stars:"★★★☆☆"},{icon:"🚗",name:"מכונית",stars:"★★☆☆☆"},{icon:"⚽",name:"כדור",stars:"★★★☆☆"},{icon:"🐟",name:"דג",stars:"★★☆☆☆"}]},
+            {num:1,title:"אוכל מתקדם",desc:"ציורי מאכלים טעימים",count:5,diff:"★★★",drawings:[{icon:"🍕",name:"פיצה",stars:"★★★☆☆"},{icon:"🍨",name:"גלידה",stars:"★★★★☆"},{icon:"🎂",name:"עוגה",stars:"★★★★★"},{icon:"🍎",name:"תפוח",stars:"★★☆☆☆"}]},
+            {num:2,title:"נופים",desc:"נופים יפים ומרהיבים",count:4,diff:"★★★",drawings:[{icon:"🌅",name:"שקיעה בים",stars:"★★★☆☆"},{icon:"🏔️",name:"הרים",stars:"★★★☆☆"},{icon:"🌃",name:"עיר בלילה",stars:"★★★★☆"},{icon:"🌲",name:"יער ונחל",stars:"★★★★☆"}]},
+            {num:3,title:"כלי תחבורה",desc:"מכוניות, מטוסים ועוד",count:5,diff:"★★★",drawings:[{icon:"🚗",name:"מכונית",stars:"★★★☆☆"},{icon:"✈️",name:"מטוס",stars:"★★★☆☆"},{icon:"🚂",name:"רכבת",stars:"★★★★☆"},{icon:"🚢",name:"ספינה",stars:"★★★☆☆"}]},
+            {num:4,title:"ציורי ים",desc:"עולם מתחת למים",count:5,diff:"★★★",drawings:[{icon:"🐠",name:"דג טרופי",stars:"★★★☆☆"},{icon:"🦀",name:"סרטן",stars:"★★★★☆"},{icon:"🐙",name:"תמנון",stars:"★★★☆☆"},{icon:"⛵",name:"סירת מפרש",stars:"★★☆☆☆"}]},
+            {num:5,title:"ציורים קלים",desc:"קל ופשוט למתחילים",count:5,diff:"★★",drawings:[{icon:"☀️",name:"שמש מחייכת",stars:"★★☆☆☆"},{icon:"🏠",name:"בית חמוד",stars:"★★☆☆☆"},{icon:"🐱",name:"חתול פשוט",stars:"★★☆☆☆"},{icon:"🌳",name:"עץ ירוק",stars:"★★☆☆☆"}]},
+            {num:6,title:"צורות חמודות",desc:"לבבות, פרפרים ובלונים",count:5,diff:"★★",drawings:[{icon:"❤️",name:"לב אדום",stars:"★☆☆☆☆"},{icon:"🎈",name:"תפוח אדום",stars:"★★☆☆☆"},{icon:"🌈",name:"קשת בענן",stars:"★★☆☆☆"},{icon:"🦋",name:"פרפר צבעוני",stars:"★★☆☆☆"}]},
+            {num:7,title:"חיות חמודות",desc:"חתולים, דגים וינשופים",count:5,diff:"★★★",drawings:[{icon:"🐱",name:"חתול חמוד",stars:"★★☆☆☆"},{icon:"🐟",name:"דג צבעוני",stars:"★★☆☆☆"},{icon:"🐝",name:"דבורה חמודה",stars:"★★☆☆☆"},{icon:"🦉",name:"ינשוף לילה",stars:"★★★☆☆"}]},
+            {num:8,title:"עוד צורות חמודות",desc:"דבורות, צבים וקרקסים",count:4,diff:"★★★",drawings:[{icon:"🐝",name:"דבורה וכוורת",stars:"★★★☆☆"},{icon:"🐢",name:"צב חמוד",stars:"★★★☆☆"},{icon:"🌵",name:"קקטוס מחייך",stars:"★★★☆☆"},{icon:"🎪",name:"אוהל קרקס",stars:"★★★★☆"}]},
+            {num:9,title:"צורות חמודות",desc:"טווס, צפרדע, דקל ועוד",count:5,diff:"★★★",drawings:[{icon:"🦚",name:"טווס מרהיב",stars:"★★★★☆"},{icon:"🐸",name:"צפרדע חמודה",stars:"★★☆☆☆"},{icon:"🌴",name:"דקל טרופי",stars:"★★★★☆"},{icon:"🌙",name:"ירח וכוכבים",stars:"★★☆☆☆"}]},
+            {num:10,title:"יצורים קסומים",desc:"רוח רפאים, דרקון, בת ים",count:4,diff:"★★★",drawings:[{icon:"👻",name:"רוח רפאים",stars:"★★☆☆☆"},{icon:"🎃",name:"דלעת",stars:"★★★☆☆"},{icon:"🐉",name:"דרקון",stars:"★★★★☆"},{icon:"🧜‍♀️",name:"בת ים",stars:"★★★★☆"}]},
+            {num:11,title:"חגים ואירועים",desc:"מתנות, חנוכייה ועוד",count:4,diff:"★★★",drawings:[{icon:"🎁",name:"מתנה עטופה",stars:"★★☆☆☆"},{icon:"🎭",name:"מסכת פורים",stars:"★★★☆☆"},{icon:"🕎",name:"חנוכייה",stars:"★★★☆☆"},{icon:"🏠",name:"בית ממתקים",stars:"★★★★☆"}]},
+            {num:12,title:"חיות חמודות",desc:"פרפר, דג זהב, חתול וינשוף",count:4,diff:"★★",drawings:[{icon:"🦋",name:"פרפר צבעוני",stars:"★★☆☆☆"},{icon:"🐠",name:"דג זהב",stars:"★★☆☆☆"},{icon:"🐱",name:"חתול ישן",stars:"★★★☆☆"},{icon:"🦉",name:"ינשוף על ענף",stars:"★★★☆☆"}]},
+            {num:13,title:"עונות וחגים",desc:"איש שלג, דלעת, לבבות ושמש",count:4,diff:"★★",drawings:[{icon:"⛄",name:"איש שלג",stars:"★★☆☆☆"},{icon:"🎃",name:"דלעת הלוווין",stars:"★★★☆☆"},{icon:"💕",name:"לבבות אהבה",stars:"★★☆☆☆"},{icon:"☀️",name:"שמש מחייכת",stars:"★☆☆☆☆"}]},
+            {num:14,title:"אוצרות ומלכות",desc:"חרב, גביע, יהלום וכתר",count:4,diff:"★★★",drawings:[{icon:"⚔️",name:"חרב אבירים",stars:"★★☆☆☆"},{icon:"🏆",name:"גביע מנצח",stars:"★★☆☆☆"},{icon:"💎",name:"יהלום מבריק",stars:"★★★☆☆"},{icon:"👑",name:"כתר מלכותי",stars:"★★★☆☆"}]},
+            {num:15,title:"מוזיקה וחפצים",desc:"מטריה, גיטרה, פסנתר ותיק",count:4,diff:"★★★",drawings:[{icon:"☂️",name:"מטריה צבעונית",stars:"★★☆☆☆"},{icon:"🎸",name:"גיטרה",stars:"★★★☆☆"},{icon:"🎹",name:"פסנתר",stars:"★★★☆☆"},{icon:"🎒",name:"תיק גב",stars:"★★★☆☆"}]},
+            {num:16,title:"פרחים",desc:"חמניה, ורד, צבעוני ועוד",count:5,diff:"★★★★",drawings:[{icon:"🌻",name:"חמניה",stars:"★★★☆☆"},{icon:"🌹",name:"ורד",stars:"★★★★☆"},{icon:"🌷",name:"צבעוני",stars:"★★☆☆☆"},{icon:"🌺",name:"פרח טרופי",stars:"★★★★★"},{icon:"🍄",name:"פטריה",stars:"★★☆☆☆"}]},
+            {num:17,title:"אוכל, חיות ומבנים",desc:"אבטיח, מגדלור, גשר ותוכי",count:4,diff:"★★★",drawings:[{icon:"🍉",name:"פרוסת אבטיח",stars:"★☆☆☆☆"},{icon:"🗼",name:"מגדלור",stars:"★★★☆☆"},{icon:"🌉",name:"גשר",stars:"★★★☆☆"},{icon:"🦜",name:"תוכי צבעוני",stars:"★★★★☆"}]},
+            {num:18,title:"אפקטים מדהימים",desc:"ברק, פיצוץ, אש והתזת מים",count:4,diff:"★★★",drawings:[{icon:"⚡",name:"ברק בשמיים",stars:"★★☆☆☆"},{icon:"💥",name:"ענן פיצוץ",stars:"★★★☆☆"},{icon:"🔥",name:"להבות אש",stars:"★★★☆☆"},{icon:"💧",name:"התזת מים",stars:"★★★☆☆"}]}
+        ];
+
+        const container = document.querySelector('.sessions-container');
+        sessions.forEach(s => {
+            container.innerHTML += `<div class="session-card"><div class="session-header"><div class="session-number">סשן ${s.num}</div><div class="session-title">${s.title}</div><div class="session-description">${s.desc}</div></div><div class="stats"><div class="stat-item"><div class="stat-number">${s.count}</div><div class="stat-label">ציורים</div></div><div class="stat-item"><div class="stat-number">${s.diff}</div><div class="stat-label">קושי</div></div></div><div class="drawings-grid">${s.drawings.map(d=>`<div class="drawing-item"><div class="drawing-icon">${d.icon}</div><div class="drawing-name">${d.name}</div><div class="difficulty-stars">${d.stars}</div></div>`).join('')}</div><a href="https://midragmyfit-del.github.io/math-games2/s${s.num}.html" target="_blank" class="open-button">🚀 פתח את הסשן</a></div>`;
+        });
+
+        document.getElementById('submitBtn').onclick = function() {
+            const pass = document.getElementById('passwordInput').value;
+            if (pass === '4376') {
+                document.getElementById('passwordScreen').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+                setTimeout(() => { document.getElementById('errorMsg').style.display = 'none'; }, 2000);
+            }
+        };
+
+        document.getElementById('passwordInput').onkeypress = function(e) {
+            if (e.key === 'Enter') document.getElementById('submitBtn').click();
+        };
+    </script>
+</body>
+</html>
