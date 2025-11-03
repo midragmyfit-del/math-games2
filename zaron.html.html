@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מאסטר מתמטיקה - אתר לימוד מתמטיקה</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-x: hidden;
+        }
+
+        /* הסתרת דפים */
+        .page {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* דף הבית */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 5%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .hero {
+            padding: 6rem 5% 5rem;
+            text-align: center;
+            position: relative;
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.95);
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            line-height: 1.6;
+        }
+
+        .cta-button {
+            background: white;
+            color: #667eea;
+            padding: 1.2rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .floating-numbers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .number {
+            position: absolute;
+            font-size: 3rem;
+            color: rgba(255,255,255,0.2);
+            animation: float 6s infinite ease-in-out;
+            font-weight: bold;
+        }
+
+        .features {
+            background: white;
+            padding: 6rem 5%;
+            clip-path: polygon(0 5%, 100% 0, 100% 95%, 0 100%);
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.8rem;
+            color: #333;
+            margin-bottom: 4rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .feature-card:nth-child(2) {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .feature-card:nth-child(3) {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .stats {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 4rem 5%;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* דף בחירת כיתה */
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+            padding-top: 80px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header .header-logo {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .header p {
+            font-size: 22px;
+            opacity: 0.95;
+        }
+
+        .how-it-works {
+            max-width: 800px;
+            margin: 0 auto 40px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 40px;
+            border-radius: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .how-it-works h2 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 25px;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 20px;
+        }
+
+        .step {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px 15px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1f2937;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .grades-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+
+        .grade-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grade-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .grade-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .grade-card:nth-child(1) { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .grade-card:nth-child(2) { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+        .grade-card:nth-child(3) { background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%); color: white; }
+        .grade-card:nth-child(4) { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; }
+        
+        .special-card {
+            background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+            color: #1f2937;
+            border: 4px solid #ffd700;
+        }
+
+        .special-card::after {
+            content: '✨';
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            font-size: 40px;
+        }
+
+        .grade-title {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .grade-description {
+            font-size: 18px;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+
+        .grade-age {
+            font-size: 16px;
+            opacity: 0.9;
+            background: rgba(255,255,255,0.2);
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+        }
+
+        /* כפתור תכנית לימוד שנתית */
+        .yearly-plan-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 25px;
+            padding: 30px 40px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .yearly-plan-button:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.5);
+        }
+
+        .plan-icon {
+            font-size: 60px;
+            margin-left: 25px;
+        }
+
+        .plan-content {
+            flex: 1;
+            text-align: right;
+        }
+
+        .plan-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .plan-subtitle {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .plan-arrow {
+            font-size: 36px;
+            color: white;
+            margin-left: 20px;
+            transition: transform 0.3s;
+        }
+
+        .yearly-plan-button:hover .plan-arrow {
+            transform: translateX(-8px);
+        }
+
+
+        /* דף נושאים */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px 20px;
+        }
+
+        .header-card {
+            background: white;
+            border-radius: 30px;
+            padding: 50px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+        }
+
+        .book-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .header-card h1 {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .header-card p {
+            font-size: 22px;
+            color: #666;
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .topic-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .topic-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        }
+
+        .topic-content {
+            flex: 1;
+            text-align: right;
+        }
+
+        .topic-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .topic-description {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .topic-icon {
+            font-size: 56px;
+            margin-left: 20px;
+        }
+
+        .arrow {
+            font-size: 24px;
+            color: #667eea;
+            margin-left: 15px;
+        }
+
+        /* כפתור חזרה */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            color: #667eea;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 1000;
+            border: none;
+            font-size: 16px;
+        }
+
+        .back-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        /* אנימציות */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-30px) rotate(180deg);
+            }
+        }
+
+        /* רספונסיבי */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .hero p { font-size: 1.1rem; }
+            .cta-button { padding: 1rem 2rem; font-size: 1rem; width: 90%; max-width: 300px; }
+            .features { padding: 4rem 5%; }
+            .features h2 { font-size: 2rem; }
+            .features-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .header h1 { font-size: 32px; }
+            .header .header-logo { font-size: 40px; }
+            .how-it-works { padding: 25px 20px; }
+            .steps { grid-template-columns: 1fr; }
+            .grades-container { grid-template-columns: 1fr; }
+            .topics-grid { grid-template-columns: 1fr; }
+            .topic-title { font-size: 24px; }
+            .topic-icon { font-size: 48px; }
+            .back-button { top: 10px; right: 10px; padding: 10px 20px; font-size: 14px; }
+            .yearly-plan-button { padding: 20px 25px; margin-bottom: 30px; }
+            .plan-icon { font-size: 48px; margin-left: 15px; }
+            .plan-title { font-size: 24px; }
+            .plan-subtitle { font-size: 16px; }
+            .plan-arrow { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- דף 1: דף הבית -->
+    <div id="home-page" class="page active">
+        <nav class="navbar">
+            <div class="logo">🎓 מאסטר מתמטיקה</div>
+            <ul class="nav-links">
+                <li><a onclick="scrollToSection('features')">תכונות</a></li>
+                <li><a onclick="scrollToSection('about')">אודות</a></li>
+                <li><a onclick="scrollToSection('contact')">צור קשר</a></li>
+            </ul>
+        </nav>
+
+        <section class="hero">
+            <div class="floating-numbers">
+                <div class="number" style="top: 10%; left: 10%; animation-delay: 0s;">+</div>
+                <div class="number" style="top: 20%; left: 80%; animation-delay: 1s;">×</div>
+                <div class="number" style="top: 60%; left: 15%; animation-delay: 2s;">÷</div>
+                <div class="number" style="top: 70%; left: 85%; animation-delay: 1.5s;">−</div>
+                <div class="number" style="top: 40%; left: 90%; animation-delay: 0.5s;">√</div>
+                <div class="number" style="top: 50%; left: 5%; animation-delay: 2.5s;">π</div>
+            </div>
+            <h1>ברוכים הבאים למאסטר מתמטיקה! 🚀</h1>
+            <p>למד מתמטיקה בצורה הכי כיפית ומרגשת! משחקים, תרגילים ואתגרים מהנים</p>
+            <button class="cta-button" onclick="goToPage('grades')">התחל ללמוד עכשיו!</button>
+        </section>
+
+        <section class="features" id="features">
+            <h2>למה מאסטר מתמטיקה? 🌟</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎮</div>
+                    <h3>למידה דרך משחק</h3>
+                    <p>תרגילים אינטראקטיביים ומשחקים מהנים שהופכים את המתמטיקה לחוויה מרגשת</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3>מסלולים מותאמים אישית</h3>
+                    <p>מסלול לימוד המותאם לרמה ולקצב הלמידה האישי של כל ילד</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏆</div>
+                    <h3>פרסים והישגים</h3>
+                    <p>אספו כוכבים, פתחו תגים והשיגו הצלחות שיגרמו לכם להמשיך להתקדם</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">10,000+</div>
+                    <div class="stat-label">תלמידים מרוצים</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">תרגילים ומשחקים</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">שיפור בציונים</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">כיף ושמחה!</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- דף 2: בחירת כיתה -->
+    <div id="grades-page" class="page">
+        <button class="back-button" onclick="goToPage('home')">← חזרה לדף הראשי</button>
+        
+        <div class="header">
+            <div class="header-logo">🎓</div>
+            <h1>בחרו את הכיתה שלכם</h1>
+            <p>לחצו על הכיתה כדי להתחיל ללמוד!</p>
+        </div>
+
+        <div class="how-it-works">
+            <h2>הפכו למאסטרים במתמטיקה! 👑</h2>
+            <div class="steps">
+                <div class="step">💪 למדו 20 דקות ביום!</div>
+                <div class="step">💎 פתחו תיבת אוצר!</div>
+                <div class="step">⭐ צברו כוכבים!</div>
+                <div class="step">🏆 זכו בפרסים מיוחדים!</div>
+            </div>
+        </div>
+
+        <div class="grades-container">
+            <div class="grade-card" onclick="goToPage('alef')">
+                <div class="grade-icon">🏡</div>
+                <div class="grade-title">כיתה א'</div>
+                <div class="grade-description">ברוכים הבאים להרפתקת המתמטיקה!</div>
+                <div class="grade-age">גילאי 6-7</div>
+            </div>
+
+            <div class="grade-card" onclick="alert('דף כיתה ב׳ בבנייה! 🚀')">
+                <div class="grade-icon">🚀</div>
+                <div class="grade-title">כיתה ב'</div>
+                <div class="grade-description">ממשיכים את ההרפתקה!</div>
+                <div class="grade-age">גילאי 7-8</div>
+            </div>
+
+            <div class="grade-card" onclick="alert('דף כיתה ג׳ בבנייה! 🚀')">
+                <div class="grade-icon">🎯</div>
+                <div class="grade-title">כיתה ג'</div>
+                <div class="grade-description">שנת המעבר למתמטיקה מתקדמת!</div>
+                <div class="grade-age">גילאי 8-9</div>
+            </div>
+
+            <div class="grade-card" onclick="alert('דף כיתה ד׳ בבנייה! 🚀')">
+                <div class="grade-icon">🏆</div>
+                <div class="grade-title">כיתה ד'</div>
+                <div class="grade-description">שנה מרתקת של חשיבה מתקדמת!</div>
+                <div class="grade-age">גילאי 9-10</div>
+            </div>
+
+            <div class="grade-card special-card" onclick="window.open('https://silverhasamot-stack.github.io/game-master/prize.html', '_blank')">
+                <div class="grade-icon">💎</div>
+                <div class="grade-title">חנות הפרסים</div>
+                <div class="grade-description">פתח תיבת אוצר והמר כוכבים לפרסים</div>
+                <div class="grade-age">לכל הגילאים ⭐</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- דף 3: נושאי כיתה א' -->
+    <div id="alef-page" class="page">
+        <button class="back-button" onclick="goToPage('grades')">← חזרה לבחירת כיתה</button>
+        
+        <div class="container">
+            <div class="header-card">
+                <div class="book-icon">📚</div>
+                <h1>כיתה א'</h1>
+                <p>בחרו נושא ללימוד</p>
+            </div>
+
+            <!-- כפתור תכנית לימוד שנתית -->
+            <div class="yearly-plan-button" onclick="window.open('https://midragmyfit-del.github.io/math-games2/a0.html', '_blank')">
+                <div class="plan-icon">📋</div>
+                <div class="plan-content">
+                    <div class="plan-title">תכנית לימוד שנתית לדוגמא</div>
+                    <div class="plan-subtitle">מדריך מלא לכל שנת הלימודים</div>
+                </div>
+                <div class="plan-arrow">→</div>
+            </div>
+
+            <div class="topics-grid">
+                <div class="topic-card" onclick="window.open('https://midragmyfit-del.github.io/math-games2/a1.html', '_blank')">
+                    <div class="topic-content">
+                        <div class="topic-title">מספרים עד 20</div>
+                        <div class="topic-description">קריאה וספירה</div>
+                    </div>
+                    <div class="topic-icon">⭐</div>
+                    <div class="arrow">←</div>
+                </div>
+
+                <div class="topic-card" onclick="window.open('https://midragmyfit-del.github.io/math-games2/a2.html', '_blank')">
+                    <div class="topic-content">
+                        <div class="topic-title">לימוד ומשחק גאומטריה</div>
+                        <div class="topic-description">צורות ומבנים</div>
+                    </div>
+                    <div class="topic-icon">⭐</div>
+                    <div class="arrow">←</div>
+                </div>
+
+                <div class="topic-card" onclick="window.open('https://midragmyfit-del.github.io/math-games2/a3.html', '_blank')">
+                    <div class="topic-content">
+                        <div class="topic-title">מיקום במרחב</div>
+                        <div class="topic-description">כיוונים ומיקומים</div>
+                    </div>
+                    <div class="topic-icon">⭐</div>
+                    <div class="arrow">←</div>
+                </div>
+
+                <div class="topic-card" onclick="window.open('https://midragmyfit-del.github.io/math-games2/a4.html', '_blank')">
+                    <div class="topic-content">
+                        <div class="topic-title">חיבור וחיסור עד 10</div>
+                        <div class="topic-description">פעולות חשבון בסיסיות</div>
+                    </div>
+                    <div class="topic-icon">⭐</div>
+                    <div class="arrow">←</div>
+                </div>
+
+                <div class="topic-card" onclick="window.open('https://midragmyfit-del.github.io/math-games2/a5.html', '_blank')">
+                    <div class="topic-content">
+                        <div class="topic-title">דפוסים</div>
+                        <div class="topic-description">זיהוי והמשך דפוסים</div>
+                    </div>
+                    <div class="topic-icon">⭐</div>
+                    <div class="arrow">←</div>
+                </div>
+
+                <div class="topic-card" onclick="window.open('https://midragmyfit-del.github.io/math-games2/a6.html', '_blank')">
+                    <div class="topic-content">
+                        <div class="topic-title">חיבור וחיסור עד 20</div>
+                        <div class="topic-description">פעולות חשבון מתקדמות</div>
+                    </div>
+                    <div class="topic-icon">⭐</div>
+                    <div class="arrow">←</div>
+                </div>
+
+                <div class="topic-card" onclick="window.open('https://midragmyfit-del.github.io/math-games2/a7.html', '_blank')">
+                    <div class="topic-content">
+                        <div class="topic-title">השוואת מספרים</div>
+                        <div class="topic-description">גדול, קטן ושווה</div>
+                    </div>
+                    <div class="topic-icon">⭐</div>
+                    <div class="arrow">←</div>
+                </div>
+
+                <div class="topic-card" onclick="window.open('https://midragmyfit-del.github.io/math-games2/a8.html', '_blank')">
+                    <div class="topic-content">
+                        <div class="topic-title">לימודי מדידה</div>
+                        <div class="topic-description">אורך, משקל ונפח</div>
+                    </div>
+                    <div class="topic-icon">⭐</div>
+                    <div class="arrow">←</div>
+                </div>
+
+                <div class="topic-card" onclick="window.open('https://midragmyfit-del.github.io/math-games2/a9.html', '_blank')">
+                    <div class="topic-content">
+                        <div class="topic-title">זוגיים ואי זוגיים</div>
+                        <div class="topic-description">ספירה בדילוגים</div>
+                    </div>
+                    <div class="topic-icon">⭐</div>
+                    <div class="arrow">←</div>
+                </div>
+
+                <div class="topic-card" onclick="window.open('https://midragmyfit-del.github.io/math-games2/a10.html', '_blank')">
+                    <div class="topic-content">
+                        <div class="topic-title">זמן שעון וחודשים</div>
+                        <div class="topic-description">קריאת שעון ולוח שנה</div>
+                    </div>
+                    <div class="topic-icon">⭐</div>
+                    <div class="arrow">←</div>
+                </div>
+
+                <div class="topic-card" onclick="window.open('https://midragmyfit-del.github.io/math-games2/a11.html', '_blank')">
+                    <div class="topic-content">
+                        <div class="topic-title">חישובי כסף</div>
+                        <div class="topic-description">מטבעות ושטרות</div>
+                    </div>
+                    <div class="topic-icon">⭐</div>
+                    <div class="arrow">←</div>
+                </div>
+
+                <div class="topic-card" onclick="window.open('https://midragmyfit-del.github.io/math-games2/a12.html', '_blank')">
+                    <div class="topic-content">
+                        <div class="topic-title">מספרים עד 100</div>
+                        <div class="topic-description">ומדידות מתקדמות</div>
+                    </div>
+                    <div class="topic-icon">⭐</div>
+                    <div class="arrow">←</div>
+                </div>
+
+                <div class="topic-card" onclick="window.open('https://midragmyfit-del.github.io/math-games2/a13.html', '_blank')">
+                    <div class="topic-content">
+                        <div class="topic-title">משחקי מתמטיקה 1</div>
+                        <div class="topic-description">משחקים מהנים ללמידה</div>
+                    </div>
+                    <div class="topic-icon">⭐</div>
+                    <div class="arrow">←</div>
+                </div>
+
+                <div class="topic-card" onclick="window.open('https://midragmyfit-del.github.io/math-games2/a14.html', '_blank')">
+                    <div class="topic-content">
+                        <div class="topic-title">משחקי מתמטיקה 2</div>
+                        <div class="topic-description">עוד משחקים מרתקים</div>
+                    </div>
+                    <div class="topic-icon">⭐</div>
+                    <div class="arrow">←</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // פונקציה למעבר בין דפים
+        function goToPage(pageName) {
+            // הסתרת כל הדפים
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // הצגת הדף המבוקש
+            document.getElementById(pageName + '-page').classList.add('active');
+            
+            // גלילה לראש הדף
+            window.scrollTo(0, 0);
+        }
+
+        // פונקציה לגלילה לסקשן בדף הבית
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+</html>
