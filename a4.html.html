@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>חיבור וחיסור - כיתה א'</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #f5576c;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #f093fb;
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            min-width: 150px;
+        }
+        
+        .tab-button:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .lesson-section {
+            background: #fff5f7;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 3px solid #f093fb;
+        }
+        
+        .lesson-section h2 {
+            color: #f5576c;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .example-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border: 2px solid #f093fb;
+            font-size: 1.4em;
+            text-align: center;
+            direction: ltr;
+        }
+        
+        .math-equation {
+            font-size: 2em;
+            color: #f5576c;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .visual-dots {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 15px 0;
+            align-items: center;
+        }
+        
+        .dot {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .dot.crossed {
+            position: relative;
+            opacity: 0.3;
+        }
+        
+        .dot.crossed::after {
+            content: '✗';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: red;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .game-container {
+            background: #fff5f7;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            border: 3px solid #f093fb;
+        }
+        
+        .game-question {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: #f5576c;
+            font-weight: bold;
+            direction: ltr;
+        }
+        
+        .game-options {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .option-button {
+            padding: 20px 40px;
+            font-size: 1.8em;
+            background: white;
+            border: 3px solid #f5576c;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            min-width: 100px;
+        }
+        
+        .option-button:hover:not(:disabled) {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .option-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .feedback {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            min-height: 40px;
+        }
+        
+        .correct {
+            color: #4caf50;
+        }
+        
+        .incorrect {
+            color: #f5576c;
+        }
+        
+        .score {
+            font-size: 1.5em;
+            margin-top: 20px;
+            color: #f5576c;
+            font-weight: bold;
+        }
+        
+        .round-counter {
+            font-size: 1.3em;
+            margin-top: 10px;
+            color: #f093fb;
+            font-weight: bold;
+        }
+        
+        .game-complete {
+            background: linear-gradient(135deg, #4caf50 0%, #81c784 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        
+        .restart-button {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background: linear-gradient(135deg, #4caf50 0%, #81c784 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .restart-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+        
+        .next-button {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .next-button:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+        
+        .next-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .family-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .family-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #f093fb;
+        }
+        
+        .family-card .equation {
+            font-size: 1.3em;
+            color: #f5576c;
+            font-weight: bold;
+            margin: 5px 0;
+            direction: ltr;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>➕➖ חיבור וחיסור ➕➖</h1>
+        <div class="subtitle">📖 לתלמידי כיתה א' 📖</div>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('lesson1')">📚 חיבור עד 10</button>
+            <button class="tab-button" onclick="showTab('lesson2')">📘 חיסור עד 10</button>
+            <button class="tab-button" onclick="showTab('lesson3')">👨‍👩‍👧‍👦 משפחות עובדות</button>
+            <button class="tab-button" onclick="showTab('game1')">🎮 משחק חיבור</button>
+            <button class="tab-button" onclick="showTab('game2')">🎯 משחק חיסור</button>
+            <button class="tab-button" onclick="showTab('game3')">✨ משחק משפחות</button>
+        </div>
+        
+        <div id="lesson1" class="tab-content active">
+            <div class="lesson-section">
+                <h2>➕ מהו חיבור?</h2>
+                <p style="font-size: 1.3em; margin-bottom: 20px;">
+                    <strong>חיבור</strong> זה כשאנחנו מצרפים דברים יחד! 🎈
+                </p>
+                
+                <div class="example-box">
+                    <div style="font-size: 1.2em; margin-bottom: 10px;">דוגמה 1:</div>
+                    <div class="math-equation">3 + 2 = 5</div>
+                    <div class="visual-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div style="width: 20px; text-align: center; font-size: 2em;">+</div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div style="width: 20px; text-align: center; font-size: 2em;">=</div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                    <p style="direction: rtl;">יש לי 3 עיגולים, מוסיף עוד 2 עיגולים, מקבל 5 עיגולים!</p>
+                </div>
+                
+                <div class="example-box">
+                    <div style="font-size: 1.2em; margin-bottom: 10px;">דוגמה 2:</div>
+                    <div class="math-equation">4 + 5 = 9</div>
+                    <div class="visual-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div style="width: 20px; text-align: center; font-size: 2em;">+</div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                
+                <div class="example-box">
+                    <div style="font-size: 1.2em; margin-bottom: 10px;">דוגמה 3:</div>
+                    <div class="math-equation">6 + 4 = 10</div>
+                    <p style="direction: rtl;">שש ועוד ארבע שווה עשר! 🎉</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="lesson2" class="tab-content">
+            <div class="lesson-section">
+                <h2>➖ מהו חיסור?</h2>
+                <p style="font-size: 1.3em; margin-bottom: 20px;">
+                    <strong>חיסור</strong> זה כשאנחנו מורידים או לוקחים דברים! 🎈
+                </p>
+                
+                <div class="example-box">
+                    <div style="font-size: 1.2em; margin-bottom: 10px;">דוגמה 1:</div>
+                    <div class="math-equation">5 - 2 = 3</div>
+                    <div class="visual-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot crossed"></div>
+                        <div class="dot crossed"></div>
+                    </div>
+                    <p style="direction: rtl;">היו לי 5 עיגולים, הורדתי 2, נשארו לי 3!</p>
+                </div>
+                
+                <div class="example-box">
+                    <div style="font-size: 1.2em; margin-bottom: 10px;">דוגמה 2:</div>
+                    <div class="math-equation">8 - 3 = 5</div>
+                    <div class="visual-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot crossed"></div>
+                        <div class="dot crossed"></div>
+                        <div class="dot crossed"></div>
+                    </div>
+                </div>
+                
+                <div class="example-box">
+                    <div style="font-size: 1.2em; margin-bottom: 10px;">דוגמה 3:</div>
+                    <div class="math-equation">10 - 6 = 4</div>
+                    <p style="direction: rtl;">עשר פחות שש שווה ארבע! 🎉</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="lesson3" class="tab-content">
+            <div class="lesson-section">
+                <h2>👨‍👩‍👧‍👦 משפחות של עובדות</h2>
+                <p style="font-size: 1.3em; margin-bottom: 20px;">
+                    משפחת עובדות היא קבוצה של תרגילים שמשתמשים באותם מספרים! 🏠
+                </p>
+                
+                <div class="example-box">
+                    <div style="font-size: 1.3em; margin-bottom: 15px; direction: rtl;">
+                        <strong>משפחה 1:</strong> המספרים 2, 3, 5
+                    </div>
+                    <div class="family-grid">
+                        <div class="family-card">
+                            <div class="equation">2 + 3 = 5</div>
+                        </div>
+                        <div class="family-card">
+                            <div class="equation">3 + 2 = 5</div>
+                        </div>
+                        <div class="family-card">
+                            <div class="equation">5 - 2 = 3</div>
+                        </div>
+                        <div class="family-card">
+                            <div class="equation">5 - 3 = 2</div>
+                        </div>
+                    </div>
+                    <p style="direction: rtl; margin-top: 15px;">
+                        💡 <strong>שימו לב:</strong> כל התרגילים משתמשים באותם 3 מספרים!
+                    </p>
+                </div>
+                
+                <div class="example-box">
+                    <div style="font-size: 1.3em; margin-bottom: 15px; direction: rtl;">
+                        <strong>משפחה 2:</strong> המספרים 4, 5, 9
+                    </div>
+                    <div class="family-grid">
+                        <div class="family-card">
+                            <div class="equation">4 + 5 = 9</div>
+                        </div>
+                        <div class="family-card">
+                            <div class="equation">5 + 4 = 9</div>
+                        </div>
+                        <div class="family-card">
+                            <div class="equation">9 - 4 = 5</div>
+                        </div>
+                        <div class="family-card">
+                            <div class="equation">9 - 5 = 4</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="example-box">
+                    <div style="font-size: 1.3em; margin-bottom: 15px; direction: rtl;">
+                        <strong>משפחה 3:</strong> המספרים 3, 7, 10
+                    </div>
+                    <div class="family-grid">
+                        <div class="family-card">
+                            <div class="equation">3 + 7 = 10</div>
+                        </div>
+                        <div class="family-card">
+                            <div class="equation">7 + 3 = 10</div>
+                        </div>
+                        <div class="family-card">
+                            <div class="equation">10 - 3 = 7</div>
+                        </div>
+                        <div class="family-card">
+                            <div class="equation">10 - 7 = 3</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game1" class="tab-content">
+            <div class="game-container">
+                <h2>🎮 משחק חיבור עד 10</h2>
+                <div class="round-counter" id="round1">סיבוב: 1/12</div>
+                <div class="game-question" id="question1"></div>
+                <div class="game-options" id="options1"></div>
+                <div class="feedback" id="feedback1"></div>
+                <div class="score" id="score1">ניקוד: 0</div>
+                <button class="next-button" id="nextBtn1" onclick="nextQuestion1()" disabled>שאלה הבאה</button>
+                <div id="complete1" style="display: none;">
+                    <div class="game-complete">🎉 כל הכבוד! סיימת את כל 12 השאלות! 🎉</div>
+                    <button class="restart-button" onclick="restartGame1()">סיבוב נוסף</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game2" class="tab-content">
+            <div class="game-container">
+                <h2>🎯 משחק חיסור עד 10</h2>
+                <div class="round-counter" id="round2">סיבוב: 1/12</div>
+                <div class="game-question" id="question2"></div>
+                <div class="game-options" id="options2"></div>
+                <div class="feedback" id="feedback2"></div>
+                <div class="score" id="score2">ניקוד: 0</div>
+                <button class="next-button" id="nextBtn2" onclick="nextQuestion2()" disabled>שאלה הבאה</button>
+                <div id="complete2" style="display: none;">
+                    <div class="game-complete">🎉 כל הכבוד! סיימת את כל 12 השאלות! 🎉</div>
+                    <button class="restart-button" onclick="restartGame2()">סיבוב נוסף</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game3" class="tab-content">
+            <div class="game-container">
+                <h2>✨ משחק משפחות עובדות</h2>
+                <div style="font-size: 1.2em; margin-bottom: 20px; direction: rtl;">מצא את התרגיל שמשתמש באותם מספרים!</div>
+                <div class="round-counter" id="round3">סיבוב: 1/12</div>
+                <div class="game-question" id="question3"></div>
+                <div class="game-options" id="options3"></div>
+                <div class="feedback" id="feedback3"></div>
+                <div class="score" id="score3">ניקוד: 0</div>
+                <button class="next-button" id="nextBtn3" onclick="nextQuestion3()" disabled>שאלה הבאה</button>
+                <div id="complete3" style="display: none;">
+                    <div class="game-complete">🎉 כל הכבוד! סיימת את כל 12 השאלות! 🎉</div>
+                    <button class="restart-button" onclick="restartGame3()">סיבוב נוסף</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let score1 = 0, score2 = 0, score3 = 0;
+        let currentAnswer1, currentAnswer2, currentAnswer3;
+        let round1 = 1, round2 = 1, round3 = 1;
+        let answered1 = false, answered2 = false, answered3 = false;
+        const maxRounds = 12;
+        
+        let audioContext;
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+            console.log('Audio not supported');
+        }
+
+        function playSound(freq, duration) {
+            if (!audioContext) return;
+            try {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.frequency.value = freq;
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                osc.start();
+                osc.stop(audioContext.currentTime + duration);
+            } catch (e) {}
+        }
+
+        function playCorrectSound() {
+            if (!audioContext) return;
+            try {
+                const melody = [523.25, 659.25, 783.99, 1046.50];
+                melody.forEach((freq, i) => {
+                    setTimeout(() => {
+                        const osc = audioContext.createOscillator();
+                        const gain = audioContext.createGain();
+                        osc.connect(gain);
+                        gain.connect(audioContext.destination);
+                        osc.frequency.value = freq;
+                        osc.type = 'sine';
+                        gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                        osc.start();
+                        osc.stop(audioContext.currentTime + 0.3);
+                    }, i * 120);
+                });
+            } catch (e) {}
+        }
+
+        function showTab(tabName) {
+            try {
+                playSound(600, 0.1);
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+                document.getElementById(tabName).classList.add('active');
+                event.target.classList.add('active');
+            } catch (e) {}
+        }
+
+        function createOptions(correctAnswer) {
+            const options = [correctAnswer];
+            let attempts = 0;
+            
+            while (options.length < 4 && attempts < 50) {
+                attempts++;
+                const offset = Math.floor(Math.random() * 7) - 3;
+                const wrong = correctAnswer + offset;
+                
+                if (wrong >= 0 && wrong <= 10 && !options.includes(wrong)) {
+                    options.push(wrong);
+                }
+            }
+            
+            while (options.length < 4) {
+                const random = Math.floor(Math.random() * 11);
+                if (!options.includes(random)) {
+                    options.push(random);
+                }
+            }
+            
+            return options.sort(() => Math.random() - 0.5);
+        }
+
+        // משחק 1: חיבור
+        function generateQuestion1() {
+            try {
+                answered1 = false;
+                document.getElementById('nextBtn1').disabled = true;
+                
+                const num1 = Math.floor(Math.random() * 6) + 1;
+                const num2 = Math.floor(Math.random() * (11 - num1));
+                currentAnswer1 = num1 + num2;
+                document.getElementById('question1').textContent = `${num1} + ${num2} = ?`;
+                
+                const options = createOptions(currentAnswer1);
+                document.getElementById('options1').innerHTML = options
+                    .map(n => `<button class="option-button" onclick="checkAnswer1(${n})">${n}</button>`).join('');
+            } catch (e) {}
+        }
+
+        function checkAnswer1(answer) {
+            if (answered1) return;
+            try {
+                answered1 = true;
+                document.querySelectorAll('#options1 button').forEach(btn => btn.disabled = true);
+                document.getElementById('nextBtn1').disabled = false;
+                
+                const feedback = document.getElementById('feedback1');
+                if (answer === currentAnswer1) {
+                    playCorrectSound();
+                    feedback.textContent = '🎉 כל הכבוד! תשובה נכונה!';
+                    feedback.className = 'feedback correct';
+                    score1 += 10;
+                } else {
+                    playSound(300, 0.3);
+                    feedback.textContent = '❌ התשובה הנכונה היא ' + currentAnswer1;
+                    feedback.className = 'feedback incorrect';
+                }
+                document.getElementById('score1').textContent = 'ניקוד: ' + score1;
+            } catch (e) {}
+        }
+
+        function nextQuestion1() {
+            if (!answered1) return;
+            try {
+                playSound(600, 0.1);
+                document.getElementById('feedback1').textContent = '';
+                round1++;
+                
+                if (round1 > maxRounds) {
+                    document.getElementById('question1').style.display = 'none';
+                    document.getElementById('options1').style.display = 'none';
+                    document.getElementById('nextBtn1').style.display = 'none';
+                    document.getElementById('round1').style.display = 'none';
+                    document.getElementById('complete1').style.display = 'block';
+                } else {
+                    document.getElementById('round1').textContent = `סיבוב: ${round1}/${maxRounds}`;
+                    generateQuestion1();
+                }
+            } catch (e) {}
+        }
+        
+        function restartGame1() {
+            try {
+                playSound(600, 0.1);
+                round1 = 1;
+                score1 = 0;
+                answered1 = false;
+                document.getElementById('score1').textContent = 'ניקוד: 0';
+                document.getElementById('round1').textContent = `סיבוב: 1/${maxRounds}`;
+                document.getElementById('question1').style.display = 'block';
+                document.getElementById('options1').style.display = 'flex';
+                document.getElementById('nextBtn1').style.display = 'inline-block';
+                document.getElementById('round1').style.display = 'block';
+                document.getElementById('complete1').style.display = 'none';
+                document.getElementById('feedback1').textContent = '';
+                generateQuestion1();
+            } catch (e) {}
+        }
+
+        // משחק 2: חיסור
+        function generateQuestion2() {
+            try {
+                answered2 = false;
+                document.getElementById('nextBtn2').disabled = true;
+                
+                const num1 = Math.floor(Math.random() * 9) + 2;
+                const num2 = Math.floor(Math.random() * num1);
+                currentAnswer2 = num1 - num2;
+                document.getElementById('question2').textContent = `${num1} - ${num2} = ?`;
+                
+                const options = createOptions(currentAnswer2);
+                document.getElementById('options2').innerHTML = options
+                    .map(n => `<button class="option-button" onclick="checkAnswer2(${n})">${n}</button>`).join('');
+            } catch (e) {}
+        }
+
+        function checkAnswer2(answer) {
+            if (answered2) return;
+            try {
+                answered2 = true;
+                document.querySelectorAll('#options2 button').forEach(btn => btn.disabled = true);
+                document.getElementById('nextBtn2').disabled = false;
+                
+                const feedback = document.getElementById('feedback2');
+                if (answer === currentAnswer2) {
+                    playCorrectSound();
+                    feedback.textContent = '🎉 מעולה! תשובה נכונה!';
+                    feedback.className = 'feedback correct';
+                    score2 += 10;
+                } else {
+                    playSound(300, 0.3);
+                    feedback.textContent = '❌ התשובה הנכונה היא ' + currentAnswer2;
+                    feedback.className = 'feedback incorrect';
+                }
+                document.getElementById('score2').textContent = 'ניקוד: ' + score2;
+            } catch (e) {}
+        }
+
+        function nextQuestion2() {
+            if (!answered2) return;
+            try {
+                playSound(600, 0.1);
+                document.getElementById('feedback2').textContent = '';
+                round2++;
+                
+                if (round2 > maxRounds) {
+                    document.getElementById('question2').style.display = 'none';
+                    document.getElementById('options2').style.display = 'none';
+                    document.getElementById('nextBtn2').style.display = 'none';
+                    document.getElementById('round2').style.display = 'none';
+                    document.getElementById('complete2').style.display = 'block';
+                } else {
+                    document.getElementById('round2').textContent = `סיבוב: ${round2}/${maxRounds}`;
+                    generateQuestion2();
+                }
+            } catch (e) {}
+        }
+        
+        function restartGame2() {
+            try {
+                playSound(600, 0.1);
+                round2 = 1;
+                score2 = 0;
+                answered2 = false;
+                document.getElementById('score2').textContent = 'ניקוד: 0';
+                document.getElementById('round2').textContent = `סיבוב: 1/${maxRounds}`;
+                document.getElementById('question2').style.display = 'block';
+                document.getElementById('options2').style.display = 'flex';
+                document.getElementById('nextBtn2').style.display = 'inline-block';
+                document.getElementById('round2').style.display = 'block';
+                document.getElementById('complete2').style.display = 'none';
+                document.getElementById('feedback2').textContent = '';
+                generateQuestion2();
+            } catch (e) {}
+        }
+
+        // משחק 3: משפחות
+        function generateQuestion3() {
+            try {
+                answered3 = false;
+                document.getElementById('nextBtn3').disabled = true;
+                
+                const families = [[2,3,5],[2,4,6],[3,4,7],[3,5,8],[4,5,9],[2,5,7],[3,6,9],[4,6,10],[1,9,10],[2,8,10]];
+                const [a,b,c] = families[Math.floor(Math.random() * families.length)];
+                const eqs = [`${a}+${b}=${c}`, `${b}+${a}=${c}`, `${c}-${a}=${b}`, `${c}-${b}=${a}`];
+                const base = eqs[Math.floor(Math.random() * eqs.length)];
+                document.getElementById('question3').innerHTML = `<div style="direction:ltr;">${base}</div><div style="direction:rtl;font-size:0.7em;margin-top:10px;">מצא תרגיל מאותה משפחה:</div>`;
+                currentAnswer3 = [a,b,c].sort((x,y)=>x-y).join(',');
+                
+                const correct = eqs.filter(e => e !== base);
+                const correctAnswer = correct[Math.floor(Math.random() * correct.length)];
+                
+                const wrongFamilies = families.filter(f => f.join(',') !== [a,b,c].join(','));
+                const wrong1Fam = wrongFamilies[Math.floor(Math.random() * wrongFamilies.length)];
+                const wrong2Fam = wrongFamilies.filter(f => f.join(',') !== wrong1Fam.join(','))[Math.floor(Math.random() * (wrongFamilies.length - 1))];
+                
+                const wrongEqs1 = [`${wrong1Fam[0]}+${wrong1Fam[1]}=${wrong1Fam[2]}`, `${wrong1Fam[2]}-${wrong1Fam[0]}=${wrong1Fam[1]}`];
+                const wrongEqs2 = [`${wrong2Fam[0]}+${wrong2Fam[1]}=${wrong2Fam[2]}`, `${wrong2Fam[2]}-${wrong2Fam[0]}=${wrong2Fam[1]}`];
+                const wrong1 = wrongEqs1[Math.floor(Math.random() * wrongEqs1.length)];
+                const wrong2 = wrongEqs2[Math.floor(Math.random() * wrongEqs2.length)];
+                
+                const opts = [correctAnswer, wrong1, wrong2].sort(() => Math.random() - 0.5);
+                document.getElementById('options3').innerHTML = opts
+                    .map(eq => `<button class="option-button" onclick="checkAnswer3('${eq}')" style="direction:ltr;">${eq}</button>`).join('');
+            } catch (e) {}
+        }
+
+        function checkAnswer3(answer) {
+            if (answered3) return;
+            try {
+                answered3 = true;
+                document.querySelectorAll('#options3 button').forEach(btn => btn.disabled = true);
+                document.getElementById('nextBtn3').disabled = false;
+                
+                const feedback = document.getElementById('feedback3');
+                const ansNums = answer.match(/\d+/g).map(Number).sort((a,b)=>a-b).join(',');
+                if (ansNums === currentAnswer3) {
+                    playCorrectSound();
+                    feedback.textContent = '🎉 יפה מאוד! זאת אותה משפחה!';
+                    feedback.className = 'feedback correct';
+                    score3 += 10;
+                } else {
+                    playSound(300, 0.3);
+                    feedback.textContent = '❌ זו משפחה אחרת!';
+                    feedback.className = 'feedback incorrect';
+                }
+                document.getElementById('score3').textContent = 'ניקוד: ' + score3;
+            } catch (e) {}
+        }
+
+        function nextQuestion3() {
+            if (!answered3) return;
+            try {
+                playSound(600, 0.1);
+                document.getElementById('feedback3').textContent = '';
+                round3++;
+                
+                if (round3 > maxRounds) {
+                    document.getElementById('question3').style.display = 'none';
+                    document.getElementById('options3').style.display = 'none';
+                    document.getElementById('nextBtn3').style.display = 'none';
+                    document.getElementById('round3').style.display = 'none';
+                    document.getElementById('complete3').style.display = 'block';
+                } else {
+                    document.getElementById('round3').textContent = `סיבוב: ${round3}/${maxRounds}`;
+                    generateQuestion3();
+                }
+            } catch (e) {}
+        }
+        
+        function restartGame3() {
+            try {
+                playSound(600, 0.1);
+                round3 = 1;
+                score3 = 0;
+                answered3 = false;
+                document.getElementById('score3').textContent = 'ניקוד: 0';
+                document.getElementById('round3').textContent = `סיבוב: 1/${maxRounds}`;
+                document.getElementById('question3').style.display = 'block';
+                document.getElementById('options3').style.display = 'flex';
+                document.getElementById('nextBtn3').style.display = 'inline-block';
+                document.getElementById('round3').style.display = 'block';
+                document.getElementById('complete3').style.display = 'none';
+                document.getElementById('feedback3').textContent = '';
+                generateQuestion3();
+            } catch (e) {}
+        }
+
+        // אתחול
+        try {
+            generateQuestion1();
+            generateQuestion2();
+            generateQuestion3();
+        } catch (e) {
+            console.error('Error initializing:', e);
+        }
+    </script>
+</body>
+</html>
