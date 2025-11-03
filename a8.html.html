@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מדידה - כיתה א׳</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 30px;
+            color: white;
+            margin-bottom: 30px;
+        }
+        .hero h1 { font-size: 64px; margin-bottom: 20px; }
+        .hero-icon { font-size: 80px; margin-bottom: 20px; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .card {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .nav-btn {
+            background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 40px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .nav-btn:hover { transform: translateY(-5px); }
+        .nav-btn-icon { font-size: 64px; display: block; margin-bottom: 15px; }
+        .btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        .btn-primary { background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%); color: white; }
+        .btn-secondary { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
+        .btn:hover { transform: scale(1.05); }
+        .lesson-page {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            min-height: 500px;
+        }
+        .lesson-page h2 { color: #43cea2; font-size: 42px; margin-bottom: 30px; text-align: center; }
+        .lesson-page h3 { color: #185a9d; font-size: 32px; margin: 25px 0 15px 0; }
+        .lesson-page p { font-size: 22px; line-height: 1.8; color: #333; margin-bottom: 20px; }
+        .compare-box {
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+        }
+        .page-dots { display: flex; gap: 10px; }
+        .dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .dot.active { background: #43cea2; width: 40px; border-radius: 10px; }
+        .question-card {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 40px;
+            border-radius: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .question-text { font-size: 32px; font-weight: bold; color: #2d3436; margin-bottom: 30px; }
+        .visuals {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        .visual-item { text-align: center; }
+        .visual-icon { font-size: 180px; margin-bottom: 20px; }
+        .visual-label { font-size: 28px; font-weight: bold; color: #2d3436; }
+        .options {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 35px 0;
+            flex-wrap: wrap;
+        }
+        .option-btn {
+            min-width: 200px;
+            padding: 25px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            color: white;
+        }
+        .option-btn:hover { transform: scale(1.1); }
+        .feedback {
+            text-align: center;
+            padding: 25px;
+            border-radius: 15px;
+            font-size: 32px;
+            font-weight: bold;
+            margin-top: 25px;
+        }
+        .feedback-success { background: #d4edda; color: #155724; }
+        .feedback-error { background: #f8d7da; color: #721c24; }
+        .success-screen {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 50px;
+            border-radius: 25px;
+            text-align: center;
+        }
+        .success-screen h2 { font-size: 52px; margin-bottom: 20px; color: white; }
+        .success-icon { font-size: 100px; margin-bottom: 25px; }
+        .score-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container" id="app"></div>
+    <script>
+        var state = { screen: 'home', page: 0, score: 0, q: 0, done: false, ans: null };
+        
+        var pages = [
+            '<div class="hero-icon">📏</div><h2>מדידה</h2><p style="font-size: 28px;">נלמד להשוות גדלים!</p>',
+            '<h2>ארוך וקצר 📏</h2><p>ארוך = יותר אורך. קצר = פחות אורך.</p><div class="compare-box"><p style="font-size: 80px; line-height: 1.5;">🚃🚃🚂</p><p style="font-size: 28px; font-weight: bold;">רכבת ארוכה</p><br><p style="font-size: 80px;">🚗</p><p style="font-size: 28px; font-weight: bold;">מכונית קצרה</p></div>',
+            '<h2>גבוה ונמוך 📐</h2><p>גבוה = למעלה יותר. נמוך = למטה יותר.</p><div class="compare-box"><p style="font-size: 100px;">🌳</p><p style="font-size: 28px; font-weight: bold;">עץ גבוה</p><br><p style="font-size: 100px;">🌻</p><p style="font-size: 28px; font-weight: bold;">פרח נמוך</p></div>',
+            '<h2>כבד וקל ⚖️</h2><p>כבד = קשה להרים. קל = קל להרים.</p><div class="compare-box"><p style="font-size: 100px;">🪨</p><p style="font-size: 28px; font-weight: bold;">אבן כבדה</p><br><p style="font-size: 100px;">🎈</p><p style="font-size: 28px; font-weight: bold;">בלון קל</p></div>',
+            '<h2>מלא וריק 🥛</h2><p>מלא = יש הרבה בפנים. ריק = אין כלום.</p><div class="compare-box"><p style="font-size: 100px;">🎒</p><p style="font-size: 28px; font-weight: bold;">תיק מלא</p><br><p style="font-size: 100px;">👜</p><p style="font-size: 28px; font-weight: bold;">תיק ריק</p></div>',
+            '<div class="hero-icon">🌟</div><h2>כל הכבוד!</h2><p style="font-size: 26px;">למדנו הרבה על מדידה!</p><p style="font-size: 32px; color: #11998e; font-weight: bold; margin-top: 30px;">עכשיו בואו נתרגל! 🎮</p>'
+        ];
+        
+        var qs = [
+            { t: 'איזה יותר ארוך?', v: [['🚃🚃🚂','רכבת'],['🚗','מכונית']], o: ['רכבת','מכונית'], c: 0 },
+            { t: 'מי יותר גבוה?', v: [['🌳','עץ'],['🌻','פרח']], o: ['עץ','פרח'], c: 0 },
+            { t: 'מה יותר כבד?', v: [['🪨','אבן'],['🎈','בלון']], o: ['אבן','בלון'], c: 0 },
+            { t: 'מה מלא?', v: [['🎒','תיק עם ספרים'],['👜','תיק ריק']], o: ['תיק עם ספרים','תיק ריק'], c: 0 },
+            { t: 'מי יותר נמוך?', v: [['👨','אבא'],['👶','תינוק']], o: ['אבא','תינוק'], c: 1 },
+            { t: 'מה יותר קצר?', v: [['🐍','נחש ארוך'],['🐛','זחל קטן']], o: ['נחש ארוך','זחל קטן'], c: 1 },
+            { t: 'מה יותר קל?', v: [['📚','ספרים'],['🪶','נוצה']], o: ['ספרים','נוצה'], c: 1 },
+            { t: 'מה ריק?', v: [['🥛','כוס עם חלב'],['🫗','כוס ריקה']], o: ['כוס עם חלב','כוס ריקה'], c: 1 },
+            { t: 'מי יותר גבוה?', v: [['🦒','ג׳ירפה'],['🐕','כלב']], o: ['ג׳ירפה','כלב'], c: 0 },
+            { t: 'מה יותר כבד?', v: [['🐘','פיל'],['🐭','עכבר']], o: ['פיל','עכבר'], c: 0 },
+            { t: 'איזה יותר ארוך?', v: [['🚌🚌','שני אוטובוסים'],['🚲','אופניים']], o: ['שני אוטובוסים','אופניים'], c: 0 },
+            { t: 'מי יותר גבוה?', v: [['🏢','בניין'],['🏠','בית']], o: ['בניין','בית'], c: 0 },
+            { t: 'מה יותר קל?', v: [['🏐','כדור'],['🧱','לבנה']], o: ['כדור','לבנה'], c: 0 },
+            { t: 'מה מלא יותר?', v: [['🥤','כוס מלאה'],['🫗','כוס חצי מלאה']], o: ['כוס מלאה','כוס חצי מלאה'], c: 0 },
+            { t: 'מה יותר קצר?', v: [['📏📏','שני סרגלים'],['✏️','עפרון']], o: ['שני סרגלים','עפרון'], c: 1 },
+            { t: 'מי יותר נמוך?', v: [['🌲','אורן'],['🍄','פטרייה']], o: ['אורן','פטרייה'], c: 1 },
+            { t: 'מה יותר כבד?', v: [['📦','קופסה מלאה'],['🎁','מתנה קטנה']], o: ['קופסה מלאה','מתנה קטנה'], c: 0 },
+            { t: 'איזה יותר ארוך?', v: [['🐍','נחש'],['🐢','צב']], o: ['נחש','צב'], c: 0 },
+            { t: 'מה ריק יותר?', v: [['📦','קופסה ריקה'],['🎁','מתנה ארוזה']], o: ['קופסה ריקה','מתנה ארוזה'], c: 0 },
+            { t: 'מי יותר גבוה?', v: [['🗼','מגדל'],['⛪','כנסייה']], o: ['מגדל','כנסייה'], c: 0 },
+            { t: 'מה יותר קל?', v: [['🎈','בלון'],['⚽','כדורגל']], o: ['בלון','כדורגל'], c: 0 },
+            { t: 'איזה יותר ארוך?', v: [['🛣️🛣️','כביש ארוך'],['🏘️','רחוב']], o: ['כביש ארוך','רחוב'], c: 0 },
+            { t: 'מה יותר כבד?', v: [['🎸','גיטרה'],['🎵','תו מוזיקלי']], o: ['גיטרה','תו מוזיקלי'], c: 0 },
+            { t: 'מי יותר נמוך?', v: [['🪑','כיסא'],['🗄️','ארון']], o: ['כיסא','ארון'], c: 0 }
+        ];
+        
+        function sound(t) {
+            try {
+                var c = new (window.AudioContext||window.webkitAudioContext)();
+                var o = c.createOscillator();
+                var g = c.createGain();
+                o.connect(g); g.connect(c.destination);
+                o.type = 'sine';
+                if(t=='c') { o.frequency.value=523; g.gain.setValueAtTime(0.15,c.currentTime); g.gain.exponentialRampToValueAtTime(0.01,c.currentTime+0.15); o.start(); o.stop(c.currentTime+0.15); }
+                else if(t=='s') { [523,659,784].forEach(function(f,i){ var x=c.createOscillator(); var y=c.createGain(); x.connect(y); y.connect(c.destination); x.type='sine'; x.frequency.value=f; var z=c.currentTime+(i*0.1); y.gain.setValueAtTime(0.12,z); y.gain.exponentialRampToValueAtTime(0.01,z+0.4); x.start(z); x.stop(z+0.4); }); }
+                else { o.frequency.value=415; g.gain.setValueAtTime(0.1,c.currentTime); o.frequency.exponentialRampToValueAtTime(349,c.currentTime+0.2); g.gain.exponentialRampToValueAtTime(0.01,c.currentTime+0.25); o.start(); o.stop(c.currentTime+0.25); }
+            } catch(e) {}
+        }
+        
+        function go(s) { sound('c'); state.screen=s; if(s=='g') newQ(); render(); }
+        function next() { sound('c'); if(state.page<pages.length-1) state.page++; render(); }
+        function prev() { sound('c'); if(state.page>0) state.page--; render(); }
+        function gotoP(p) { sound('c'); state.page=p; render(); }
+        
+        function newQ() {
+            var available = qs;
+            if(state.ans) {
+                var filtered = qs.filter(function(x){ return x.t!=state.ans.t; });
+                if(filtered.length > 0) available = filtered;
+            }
+            state.ans = available[Math.floor(Math.random()*available.length)];
+            state.fb = null;
+            render();
+        }
+        
+        function check(i) {
+            sound('c');
+            if(i==state.ans.c) {
+                sound('s');
+                state.score += 10;
+                state.q++;
+                state.fb = {m:'🎉 מצוין!',t:'success'};
+                render();
+                setTimeout(function(){ 
+                    var feedback = document.querySelector('.feedback');
+                    if(feedback) feedback.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+                setTimeout(function(){ 
+                    if(state.q>=8) { state.done=true; render(); }
+                    else newQ();
+                }, 1500);
+            } else {
+                sound('w');
+                state.fb = {m:'💪 נסה שוב!',t:'error'};
+                render();
+                setTimeout(function(){ 
+                    var feedback = document.querySelector('.feedback');
+                    if(feedback) feedback.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+                setTimeout(function(){ state.fb=null; render(); }, 1000);
+            }
+        }
+        
+        function reset() { sound('c'); state={screen:'g',page:0,score:0,q:0,done:false,ans:null}; newQ(); }
+        
+        function render() {
+            var h = '';
+            if(state.screen=='home') {
+                h = '<div class="hero"><div class="hero-icon">📏</div><h1>מדידה</h1><p>לכיתה א׳ - להשוות גדלים</p></div>';
+                h += '<div class="card"><div class="nav-grid">';
+                h += '<button class="nav-btn" onclick="go(\'l\')"><span class="nav-btn-icon">📚</span>חוברת למידה</button>';
+                h += '<button class="nav-btn" onclick="go(\'g\')"><span class="nav-btn-icon">🎯</span>משחק השוואות</button>';
+                h += '</div></div>';
+            } else if(state.screen=='l') {
+                h = '<div class="card"><div style="text-align:center;margin-bottom:30px;">';
+                h += '<button class="btn btn-secondary" onclick="go(\'home\')">🏠 חזרה לתפריט</button></div>';
+                h += '<div class="lesson-page">'+pages[state.page]+'</div>';
+                h += '<div class="pagination">';
+                h += '<button class="btn btn-primary" onclick="next()" '+(state.page==pages.length-1?'disabled style="opacity:0.5;"':'')+'>הבא ←</button>';
+                h += '<div class="page-dots">';
+                for(var i=0;i<pages.length;i++) h += '<div class="dot '+(i==state.page?'active':'')+'" onclick="gotoP('+i+')"></div>';
+                h += '</div><button class="btn btn-primary" onclick="prev()" '+(state.page==0?'disabled style="opacity:0.5;"':'')+'>→ הקודם</button></div></div>';
+            } else if(state.screen=='g') {
+                if(state.done) {
+                    h = '<div class="card" style="text-align:center;"><div class="success-screen">';
+                    h += '<div class="success-icon">🏆</div><h2>כל הכבוד!</h2><p style="font-size:28px;margin-bottom:20px;">סיימת את המשחק! 🎉</p>';
+                    h += '<div style="background:rgba(255,255,255,0.3);padding:20px;border-radius:15px;margin:20px 0;">';
+                    h += '<p style="font-size:32px;font-weight:bold;">ניקוד סופי: '+state.score+' 🌟</p></div>';
+                    h += '<button class="btn btn-secondary" style="font-size:22px;padding:20px 40px;" onclick="reset()">🔄 שחק שוב</button> ';
+                    h += '<button class="btn" style="background:white;color:#43cea2;font-size:22px;padding:20px 40px;" onclick="go(\'home\')">🏠 חזרה לתפריט</button>';
+                    h += '</div></div>';
+                } else {
+                    h = '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;">';
+                    h += '<button class="btn btn-secondary" onclick="go(\'home\')">🏠 תפריט</button>';
+                    h += '<div style="font-size:36px;color:#43cea2;font-weight:bold;">משחק השוואות 🎯</div>';
+                    h += '<div class="score-badge">נקודות: '+state.score+' | שאלה: '+(state.q+1)+'/8</div></div></div>';
+                    h += '<div class="card"><div class="question-card"><div class="question-text">'+state.ans.t+'</div>';
+                    h += '<div class="visuals">';
+                    state.ans.v.forEach(function(v){ h += '<div class="visual-item"><div class="visual-icon">'+v[0]+'</div><div class="visual-label">'+v[1]+'</div></div>'; });
+                    h += '</div></div><div class="options">';
+                    state.ans.o.forEach(function(o,i){ h += '<button class="option-btn" onclick="check('+i+')">'+o+'</button>'; });
+                    h += '</div>';
+                    if(state.fb) h += '<div class="feedback feedback-'+state.fb.t+'">'+state.fb.m+'</div>';
+                    h += '</div>';
+                }
+            }
+            document.getElementById('app').innerHTML = h;
+        }
+        
+        render();
+    </script>
+</body>
+</html>
