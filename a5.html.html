@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>דפוסים וסדרות - כיתה א׳</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .main-card {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 30px;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .hero h1 {
+            font-size: 64px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .hero p {
+            font-size: 28px;
+            opacity: 0.95;
+        }
+        
+        .icon-large {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .nav-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 40px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .nav-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .nav-button .icon {
+            font-size: 64px;
+            display: block;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .lesson-page {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 20px;
+            min-height: 500px;
+        }
+        
+        .lesson-page h2 {
+            color: #667eea;
+            font-size: 42px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .lesson-page h3 {
+            color: #764ba2;
+            font-size: 32px;
+            margin: 25px 0 15px 0;
+        }
+        
+        .lesson-page p {
+            font-size: 22px;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .example-box {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .example-box .items {
+            font-size: 56px;
+            margin: 20px 0;
+            letter-spacing: 10px;
+        }
+        
+        .tip-box {
+            background: #fff3cd;
+            border-right: 5px solid #ffc107;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+        }
+        
+        .tip-box strong {
+            color: #856404;
+            font-size: 24px;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+        }
+        
+        .page-dots {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .dot.active {
+            background: #667eea;
+            width: 40px;
+            border-radius: 10px;
+        }
+        
+        .game-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .game-title {
+            font-size: 36px;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .score-badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .pattern-display {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 40px;
+            border-radius: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .pattern-items {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .pattern-box {
+            width: 90px;
+            height: 90px;
+            background: white;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        
+        .pattern-box:hover {
+            transform: scale(1.1);
+        }
+        
+        .question-box {
+            background: #fff3cd;
+            border: 4px dashed #ffc107;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        .options {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 35px 0;
+        }
+        
+        .option-btn {
+            width: 110px;
+            height: 110px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            border-radius: 20px;
+            font-size: 60px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            color: white;
+        }
+        
+        .option-btn:hover {
+            transform: scale(1.15);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+        }
+        
+        .feedback {
+            text-align: center;
+            padding: 25px;
+            border-radius: 15px;
+            font-size: 32px;
+            font-weight: bold;
+            margin-top: 25px;
+            animation: slideIn 0.5s;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .feedback-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .feedback-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .category-btn {
+            padding: 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .category-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .item-btn {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border: none;
+            border-radius: 15px;
+            font-size: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .item-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .pattern-builder {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 25px 0;
+        }
+        
+        .built-pattern {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            min-height: 120px;
+            margin-bottom: 25px;
+        }
+        
+        .built-item {
+            position: relative;
+        }
+        
+        .remove-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 35px;
+            height: 35px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .built-item:hover .remove-btn {
+            opacity: 1;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+            font-size: 24px;
+        }
+        
+        .success-modal {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 50px;
+            border-radius: 25px;
+            text-align: center;
+            margin-top: 25px;
+        }
+        
+        .success-modal h2 {
+            font-size: 52px;
+            margin-bottom: 20px;
+        }
+        
+        .success-modal .icon {
+            font-size: 100px;
+            margin-bottom: 25px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 42px; }
+            .pattern-box, .item-btn { width: 70px; height: 70px; font-size: 40px; }
+            .option-btn { width: 90px; height: 90px; font-size: 50px; }
+            .lesson-page { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="app"></div>
+    </div>
+
+    <script>
+        var currentScreen = 'home';
+        var lessonPage = 0;
+        var game1State = {
+            level: 1,
+            score: 0,
+            currentPattern: null,
+            feedback: null,
+            completed: false
+        };
+        var game2State = {
+            category: 'colors',
+            pattern: [],
+            success: false,
+            completedCount: 0
+        };
+
+        var lessonPages = [
+            {
+                title: 'ברוכים הבאים!',
+                content: '<div class="icon-large">✨</div><h2>דפוסים וסדרות</h2><p style="font-size: 28px;">בשיעור הזה נלמד על דפוסים מגניבים!</p><div class="example-box"><p style="font-size: 24px;">דפוס זה משהו שחוזר על עצמו שוב ושוב 🔄</p></div>'
+            },
+            {
+                title: 'מה זה דפוס?',
+                content: '<h2>מה זה דפוס? 🤔</h2><p><strong>דפוס</strong> זה משהו שחוזר על עצמו באותו סדר!</p><h3>דוגמאות מהחיים:</h3><div class="example-box"><p style="font-size: 24px;">🌞 יום → 🌙 לילה → 🌞 יום → 🌙 לילה</p></div><div class="example-box"><p style="font-size: 24px;">📅 ראשון, שני, שלישי, רביעי...</p></div><div class="tip-box"><strong>💡 טיפ:</strong> חפשו דפוסים סביבכם - יש אותם בכל מקום!</div>'
+            },
+            {
+                title: 'דפוסי צבעים',
+                content: '<h2>דפוסי צבעים 🎨</h2><h3>דפוס פשוט:</h3><div class="example-box"><div class="items">🔴 🔵 🔴 🔵 🔴 🔵</div><p>אדום, כחול, אדום, כחול...</p></div><h3>דפוס עם 3 צבעים:</h3><div class="example-box"><div class="items">🔴 🟡 🟢 🔴 🟡 🟢</div><p>אדום, צהוב, ירוק...</p></div><h3>דפוס עם חזרה:</h3><div class="example-box"><div class="items">🔵 🔵 🟡 🔵 🔵 🟡</div><p>כחול, כחול, צהוב...</p></div>'
+            },
+            {
+                title: 'דפוסי צורות',
+                content: '<h2>דפוסי צורות ⭐</h2><div class="example-box"><h3>כוכב וירח:</h3><div class="items">⭐ 🌙 ⭐ 🌙 ⭐ 🌙</div></div><div class="example-box"><h3>לב ועיגול:</h3><div class="items">❤️ ⚪ ⚪ ❤️ ⚪ ⚪</div></div><div class="example-box"><h3>שמש ופרח:</h3><div class="items">☀️ 🌸 🌸 ☀️ 🌸 🌸</div></div>'
+            },
+            {
+                title: 'דפוסי מספרים',
+                content: '<h2>דפוסי מספרים 🔢</h2><div class="example-box"><h3>דפוס 1, 2:</h3><div class="items" style="direction: ltr;">1 2 1 2 1 2</div></div><div class="example-box"><h3>דפוס 1, 2, 3:</h3><div class="items" style="direction: ltr;">1 2 3 1 2 3</div></div><div class="example-box"><h3>דפוס עם חזרה:</h3><div class="items" style="direction: ltr;">1 1 2 1 1 2</div></div>'
+            },
+            {
+                title: 'איך ממשיכים דפוס?',
+                content: '<h2>איך ממשיכים דפוס? 🎯</h2><h3>שלב 1: מצא מה חוזר</h3><div class="example-box"><div class="items">🔴 🔵 🔴 🔵 🔴</div><p>הדפוס: אדום, כחול (וזה חוזר!)</p></div><h3>שלב 2: תמשיך!</h3><div class="example-box"><div class="items">🔴 🔵 🔴 🔵 🔴 ❓</div><p style="font-size: 32px; color: #11998e; font-weight: bold;">התשובה: 🔵 כחול!</p></div><div class="tip-box"><strong>💡 טיפ חשוב!</strong> אפשר לומר את הדפוס בקול - זה עוזר למצוא מה חוזר!</div>'
+            },
+            {
+                title: 'יצירת דפוסים',
+                content: '<h2>יצירת דפוסים משלך! ✨</h2><h3>רעיונות לדפוסים:</h3><div class="example-box"><p style="font-size: 22px;">🎨 צייר דפוס עם צבעים</p></div><div class="example-box"><p style="font-size: 22px;">🧱 בנה דפוס עם קוביות</p></div><div class="example-box"><p style="font-size: 22px;">👏 עשה דפוס עם תנועות</p></div><div class="example-box"><p style="font-size: 22px;">🎵 צור דפוס עם צלילים</p></div><div class="tip-box"><strong>תרגול בבית:</strong> חפש דפוסים בבית שלך! על הרצפה, על הקיר, על הבגדים... 🔍</div>'
+            },
+            {
+                title: 'סיכום',
+                content: '<div class="icon-large">🌟</div><h2>כל הכבוד! 🎉</h2><p style="font-size: 26px;">למדנו הרבה על דפוסים!</p><div class="example-box"><h3>מה למדנו:</h3><p style="font-size: 22px; text-align: right;">✅ מה זה דפוס<br>✅ דפוסי צבעים<br>✅ דפוסי צורות<br>✅ דפוסי מספרים<br>✅ איך ממשיכים דפוס<br>✅ איך יוצרים דפוסים</p></div><div style="text-align: center; margin-top: 30px;"><p style="font-size: 32px; color: #11998e; font-weight: bold;">עכשיו בואו נתרגל במשחקים! 🎮</p></div>'
+            }
+        ];
+
+        var patterns = [
+            { level: 1, pattern: ['🔴', '🔵', '🔴', '🔵', '🔴'], options: ['🔴', '🔵', '🟡'], correct: '🔵', text: 'איזה צבע ממשיך?' },
+            { level: 1, pattern: ['🟡', '🟢', '🟡', '🟢', '🟡'], options: ['🟡', '🟢', '🔴'], correct: '🟢', text: 'מה הצבע הבא?' },
+            { level: 1, pattern: ['🔵', '🔵', '🟡', '🔵', '🔵'], options: ['🔵', '🟡', '🟢'], correct: '🟡', text: 'איזה צבע חסר?' },
+            { level: 1, pattern: ['🟣', '🟠', '🟣', '🟠', '🟣'], options: ['🟣', '🟠', '🔴'], correct: '🟠', text: 'תמשיך את הדפוס!' },
+            { level: 2, pattern: ['⭐', '🌙', '⭐', '🌙', '⭐'], options: ['⭐', '🌙', '☀️'], correct: '🌙', text: 'איזו צורה ממשיכה?' },
+            { level: 2, pattern: ['❤️', '❤️', '⭐', '❤️', '❤️'], options: ['❤️', '⭐', '🌙'], correct: '⭐', text: 'מה הצורה הבאה?' },
+            { level: 2, pattern: ['☀️', '🌸', '🌸', '☀️', '🌸'], options: ['☀️', '🌸', '⭐'], correct: '🌸', text: 'תמשיך את הדפוס!' },
+            { level: 2, pattern: ['💎', '⚡', '💎', '⚡', '💎'], options: ['💎', '⚡', '🌙'], correct: '⚡', text: 'מה חסר?' },
+            { level: 3, pattern: ['1', '2', '1', '2', '1'], options: ['1', '2', '3'], correct: '2', text: 'איזה מספר ממשיך?' },
+            { level: 3, pattern: ['1', '2', '3', '1', '2'], options: ['1', '2', '3'], correct: '3', text: 'מה המספר הבא?' },
+            { level: 3, pattern: ['2', '2', '1', '2', '2'], options: ['1', '2', '3'], correct: '1', text: 'השלם את הדפוס!' },
+            { level: 3, pattern: ['3', '1', '3', '1', '3'], options: ['1', '2', '3'], correct: '1', text: 'איזה מספר חסר?' }
+        ];
+
+        var items = {
+            colors: { title: 'צבעים 🎨', items: ['🔴', '🔵', '🟡', '🟢', '🟣', '🟠', '⚫', '⚪'] },
+            shapes: { title: 'צורות ⭐', items: ['⭐', '🌙', '❤️', '☀️', '🌸', '⚡', '💎', '🔷'] },
+            numbers: { title: 'מספרים 🔢', items: ['1', '2', '3', '4', '5', '6', '7', '8'] },
+            animals: { title: 'חיות 🐶', items: ['🐶', '🐱', '🐰', '🦁', '🐼', '🐸', '🦋', '🐝'] }
+        };
+
+        function playSound(type) {
+            try {
+                var ctx = new (window.AudioContext || window.webkitAudioContext)();
+                var osc = ctx.createOscillator();
+                var gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.type = 'sine';
+                
+                if (type === 'click') {
+                    osc.frequency.value = 523.25;
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.15);
+                } else if (type === 'success') {
+                    var notes = [523.25, 659.25, 783.99];
+                    for (var i = 0; i < notes.length; i++) {
+                        var o = ctx.createOscillator();
+                        var g = ctx.createGain();
+                        o.connect(g);
+                        g.connect(ctx.destination);
+                        o.type = 'sine';
+                        o.frequency.value = notes[i];
+                        var t = ctx.currentTime + (i * 0.1);
+                        g.gain.setValueAtTime(0.12, t);
+                        g.gain.exponentialRampToValueAtTime(0.01, t + 0.4);
+                        o.start(t);
+                        o.stop(t + 0.4);
+                    }
+                } else if (type === 'wrong') {
+                    osc.frequency.value = 415.30;
+                    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(349.23, ctx.currentTime + 0.2);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.25);
+                }
+            } catch(e) {}
+        }
+
+        function goHome() {
+            playSound('click');
+            currentScreen = 'home';
+            render();
+        }
+
+        function startLesson() {
+            playSound('click');
+            currentScreen = 'lesson';
+            lessonPage = 0;
+            render();
+        }
+
+        function startGame1() {
+            playSound('click');
+            currentScreen = 'game1';
+            game1State = {
+                level: 1,
+                score: 0,
+                currentPattern: null,
+                feedback: null,
+                completed: false
+            };
+            newPattern();
+        }
+
+        function startGame2() {
+            playSound('click');
+            currentScreen = 'game2';
+            game2State = {
+                category: 'colors',
+                pattern: [],
+                success: false,
+                completedCount: 0
+            };
+            render();
+        }
+
+        function nextPage() {
+            playSound('click');
+            if (lessonPage < lessonPages.length - 1) {
+                lessonPage++;
+                render();
+            }
+        }
+
+        function prevPage() {
+            playSound('click');
+            if (lessonPage > 0) {
+                lessonPage--;
+                render();
+            }
+        }
+
+        function goToPage(page) {
+            playSound('click');
+            lessonPage = page;
+            render();
+        }
+
+        function newPattern() {
+            var pool = patterns.filter(function(p) { return p.level === game1State.level; });
+            if (game1State.currentPattern) {
+                var available = pool.filter(function(p) {
+                    return JSON.stringify(p.pattern) !== JSON.stringify(game1State.currentPattern.pattern);
+                });
+                pool = available.length > 0 ? available : pool;
+            }
+            game1State.currentPattern = pool[Math.floor(Math.random() * pool.length)];
+            game1State.feedback = null;
+            render();
+        }
+
+        function checkAnswer(ans) {
+            playSound('click');
+            if (ans === game1State.currentPattern.correct) {
+                playSound('success');
+                game1State.score += 10;
+                game1State.feedback = { msg: '🎉 מצוין! זה נכון!', type: 'success' };
+                render();
+                setTimeout(function() {
+                    if (game1State.score >= game1State.level * 30) {
+                        if (game1State.level < 3) {
+                            game1State.level++;
+                            game1State.feedback = { msg: '🌟 עלית לשלב ' + game1State.level + '!', type: 'success' };
+                            render();
+                            setTimeout(newPattern, 2000);
+                        } else {
+                            game1State.feedback = { msg: '🏆 סיימת את כל השלבים!', type: 'success' };
+                            render();
+                            setTimeout(function() {
+                                game1State.completed = true;
+                                render();
+                            }, 2000);
+                        }
+                    } else {
+                        newPattern();
+                    }
+                }, 1500);
+            } else {
+                playSound('wrong');
+                game1State.feedback = { msg: '💪 נסה שוב!', type: 'error' };
+                render();
+                setTimeout(function() {
+                    game1State.feedback = null;
+                    render();
+                }, 1000);
+            }
+        }
+
+        function selectCategory(cat) {
+            playSound('click');
+            game2State.category = cat;
+            render();
+        }
+
+        function addItem(item) {
+            playSound('click');
+            if (game2State.pattern.length < 12) {
+                game2State.pattern.push(item);
+                render();
+            }
+        }
+
+        function removeItem(index) {
+            playSound('click');
+            game2State.pattern.splice(index, 1);
+            render();
+        }
+
+        function clearPattern() {
+            playSound('click');
+            game2State.pattern = [];
+            game2State.success = false;
+            render();
+        }
+
+        function checkPattern() {
+            playSound('click');
+            if (game2State.pattern.length < 4) {
+                playSound('wrong');
+                alert('הדפוס קצר מדי! צריך לפחות 4 איברים');
+                return;
+            }
+            var arr = game2State.pattern;
+            var found = false;
+            for (var len = 1; len <= Math.floor(arr.length / 2); len++) {
+                var base = arr.slice(0, len);
+                var matches = 0;
+                for (var i = 0; i < arr.length; i += len) {
+                    var seg = arr.slice(i, i + len);
+                    if (seg.length === len) {
+                        var isMatch = true;
+                        for (var j = 0; j < seg.length; j++) {
+                            if (seg[j] !== base[j]) {
+                                isMatch = false;
+                                break;
+                            }
+                        }
+                        if (isMatch) matches++;
+                    } else if (seg.length > 0) {
+                        var isPartial = true;
+                        for (var j = 0; j < seg.length; j++) {
+                            if (seg[j] !== base[j]) {
+                                isPartial = false;
+                                break;
+                            }
+                        }
+                        if (isPartial) matches += 0.5;
+                    }
+                }
+                if (matches >= 1.5) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
+                playSound('success');
+                game2State.success = true;
+                render();
+            } else {
+                playSound('wrong');
+                alert('זה לא נראה כמו דפוס שחוזר על עצמו... נסה שוב! 💪');
+            }
+        }
+
+        function newPattern2() {
+            playSound('click');
+            game2State.pattern = [];
+            game2State.success = false;
+            game2State.completedCount++;
+            render();
+        }
+
+        function render() {
+            var app = document.getElementById('app');
+            var html = '';
+
+            if (currentScreen === 'home') {
+                html = '<div class="hero">';
+                html += '<div class="icon-large">✨</div>';
+                html += '<h1>דפוסים וסדרות</h1>';
+                html += '<p>לכיתה א׳ - למידה והתרגול</p>';
+                html += '</div>';
+                html += '<div class="main-card">';
+                html += '<div class="nav-buttons">';
+                html += '<button class="nav-button" onclick="startLesson()">';
+                html += '<span class="icon">📚</span>';
+                html += '<div>חוברת למידה</div>';
+                html += '<p style="font-size: 18px; margin-top: 10px; opacity: 0.9;">למד על דפוסים!</p>';
+                html += '</button>';
+                html += '<button class="nav-button" onclick="startGame1()">';
+                html += '<span class="icon">🎯</span>';
+                html += '<div>משחק 1</div>';
+                html += '<p style="font-size: 18px; margin-top: 10px; opacity: 0.9;">המשך את הדפוס</p>';
+                html += '</button>';
+                html += '<button class="nav-button" onclick="startGame2()">';
+                html += '<span class="icon">🎨</span>';
+                html += '<div>משחק 2</div>';
+                html += '<p style="font-size: 18px; margin-top: 10px; opacity: 0.9;">בנה דפוס משלך</p>';
+                html += '</button>';
+                html += '</div>';
+                html += '</div>';
+            } else if (currentScreen === 'lesson') {
+                html = '<div class="main-card">';
+                html += '<div style="text-align: center; margin-bottom: 30px;">';
+                html += '<button class="btn btn-secondary" onclick="goHome()">🏠 חזרה לתפריט</button>';
+                html += '</div>';
+                html += '<div class="lesson-page">';
+                html += lessonPages[lessonPage].content;
+                html += '</div>';
+                html += '<div class="pagination">';
+                html += '<button class="btn btn-primary" onclick="nextPage()" ' + (lessonPage === lessonPages.length - 1 ? 'disabled style="opacity: 0.5;"' : '') + '>הבא ←</button>';
+                html += '<div class="page-dots">';
+                for (var i = 0; i < lessonPages.length; i++) {
+                    html += '<div class="dot ' + (i === lessonPage ? 'active' : '') + '" onclick="goToPage(' + i + ')"></div>';
+                }
+                html += '</div>';
+                html += '<button class="btn btn-primary" onclick="prevPage()" ' + (lessonPage === 0 ? 'disabled style="opacity: 0.5;"' : '') + '>→ הקודם</button>';
+                html += '</div>';
+                html += '</div>';
+            } else if (currentScreen === 'game1') {
+                if (game1State.completed) {
+                    html = '<div class="main-card" style="text-align: center;">';
+                    html += '<div class="success-modal">';
+                    html += '<div class="icon">🏆</div>';
+                    html += '<h2>כל הכבוד!</h2>';
+                    html += '<p style="font-size: 28px; margin-bottom: 20px;">סיימת את כל השלבים! 🎉</p>';
+                    html += '<div style="background: rgba(255,255,255,0.3); padding: 20px; border-radius: 15px; margin: 20px 0;">';
+                    html += '<p style="font-size: 32px; font-weight: bold;">ניקוד סופי: ' + game1State.score + ' 🌟</p>';
+                    html += '</div>';
+                    html += '<button class="btn btn-secondary" style="font-size: 22px; padding: 20px 40px;" onclick="startGame1()">🔄 שחק שוב</button> ';
+                    html += '<button class="btn" style="background: white; color: #667eea; font-size: 22px; padding: 20px 40px;" onclick="goHome()">🏠 חזרה לתפריט</button>';
+                    html += '</div>';
+                    html += '</div>';
+                } else {
+                    var isNum = game1State.currentPattern && /^\d+$/.test(game1State.currentPattern.pattern[0]);
+                    html = '<div class="game-card">';
+                    html += '<div class="game-header">';
+                    html += '<button class="btn btn-secondary" onclick="goHome()">🏠 תפריט</button>';
+                    html += '<div class="game-title">המשך את הדפוס 🎯</div>';
+                    html += '<button class="btn btn-primary" onclick="startGame1()">🔄 התחל מחדש</button>';
+                    html += '</div>';
+                    html += '<div style="display: flex; justify-content: space-between; margin-bottom: 30px;">';
+                    html += '<div class="score-badge" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">שלב: ' + game1State.level + '</div>';
+                    html += '<div class="score-badge">נקודות: ' + game1State.score + ' 🏆</div>';
+                    html += '</div>';
+                    html += '</div>';
+                    html += '<div class="game-card">';
+                    html += '<h2 style="text-align: center; font-size: 36px; color: #667eea; margin-bottom: 30px;">' + game1State.currentPattern.text + '</h2>';
+                    html += '<div class="pattern-display">';
+                    html += '<div class="pattern-items" style="' + (isNum ? 'flex-direction: row-reverse;' : '') + '">';
+                    for (var i = 0; i < game1State.currentPattern.pattern.length; i++) {
+                        html += '<div class="pattern-box">' + game1State.currentPattern.pattern[i] + '</div>';
+                    }
+                    html += '<div class="pattern-box question-box">?</div>';
+                    html += '</div>';
+                    html += '</div>';
+                    html += '<div class="options">';
+                    for (var i = 0; i < game1State.currentPattern.options.length; i++) {
+                        var opt = game1State.currentPattern.options[i];
+                        html += '<button class="option-btn" onclick="checkAnswer(\'' + opt + '\')">' + opt + '</button>';
+                    }
+                    html += '</div>';
+                    if (game1State.feedback) {
+                        html += '<div class="feedback feedback-' + game1State.feedback.type + '">' + game1State.feedback.msg + '</div>';
+                    }
+                    html += '</div>';
+                }
+            } else if (currentScreen === 'game2') {
+                var isNum = game2State.pattern.length > 0 && /^\d+$/.test(game2State.pattern[0]);
+                html = '<div class="game-card">';
+                html += '<div class="game-header">';
+                html += '<button class="btn btn-secondary" onclick="goHome()">🏠 תפריט</button>';
+                html += '<div class="game-title">בנה דפוס משלך 🎨</div>';
+                html += '<div style="display: flex; gap: 15px;">';
+                html += '<div class="score-badge" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">דפוסים: ' + game2State.completedCount + '</div>';
+                html += '<button class="btn btn-danger" onclick="clearPattern()">🗑️ נקה</button>';
+                html += '</div>';
+                html += '</div>';
+                html += '</div>';
+                html += '<div class="game-card">';
+                html += '<h3 style="margin-bottom: 20px; color: #667eea;">בחר קטגוריה:</h3>';
+                html += '<div class="category-grid">';
+                var cats = Object.keys(items);
+                for (var i = 0; i < cats.length; i++) {
+                    var cat = cats[i];
+                    html += '<button class="category-btn ' + (game2State.category === cat ? 'active' : '') + '" onclick="selectCategory(\'' + cat + '\')">' + items[cat].title + '</button>';
+                }
+                html += '</div>';
+                html += '</div>';
+                html += '<div class="game-card">';
+                html += '<h3 style="margin-bottom: 20px; color: #667eea;">בחר איברים לדפוס:</h3>';
+                html += '<div class="items-grid">';
+                for (var i = 0; i < items[game2State.category].items.length; i++) {
+                    var item = items[game2State.category].items[i];
+                    html += '<button class="item-btn" onclick="addItem(\'' + item + '\')">' + item + '</button>';
+                }
+                html += '</div>';
+                html += '</div>';
+                html += '<div class="game-card">';
+                html += '<h3 style="margin-bottom: 20px; color: #667eea;">הדפוס שלך:</h3>';
+                if (game2State.pattern.length === 0) {
+                    html += '<div class="empty-state">התחל לבנות את הדפוס שלך! 🎨<br>לחץ על האיברים למעלה</div>';
+                } else {
+                    html += '<div class="pattern-builder">';
+                    html += '<div class="built-pattern" style="' + (isNum ? 'flex-direction: row-reverse;' : '') + '">';
+                    for (var i = 0; i < game2State.pattern.length; i++) {
+                        html += '<div class="built-item">';
+                        html += '<div class="pattern-box">' + game2State.pattern[i] + '</div>';
+                        html += '<button class="remove-btn" onclick="removeItem(' + i + ')">×</button>';
+                        html += '</div>';
+                    }
+                    html += '</div>';
+                    html += '<div style="text-align: center;">';
+                    html += '<p style="font-size: 20px; margin-bottom: 20px; color: #666;">יש לך ' + game2State.pattern.length + ' איברים בדפוס</p>';
+                    html += '<button class="btn btn-success" style="font-size: 24px; padding: 20px 50px;" onclick="checkPattern()">✓ סיימתי את הדפוס!</button>';
+                    html += '</div>';
+                    html += '</div>';
+                }
+                html += '</div>';
+                if (game2State.success) {
+                    html += '<div class="success-modal">';
+                    html += '<div class="icon">✨</div>';
+                    html += '<h2>כל הכבוד! 🎉</h2>';
+                    html += '<p style="font-size: 28px; margin-bottom: 25px;">יצרת דפוס מעולה!</p>';
+                    html += '<button class="btn btn-secondary" style="font-size: 22px; padding: 20px 40px;" onclick="newPattern2()">🎨 צור דפוס חדש</button> ';
+                    html += '<button class="btn" style="background: white; color: #11998e; font-size: 22px; padding: 20px 40px;" onclick="goHome()">🏠 חזרה לתפריט</button>';
+                    html += '<div style="background: rgba(255,255,255,0.3); padding: 15px; border-radius: 12px; margin-top: 25px;">';
+                    html += '<p style="font-size: 22px;">סה״כ דפוסים שיצרת: ' + (game2State.completedCount + 1) + ' 🌟</p>';
+                    html += '</div>';
+                    html += '</div>';
+                }
+            }
+
+            app.innerHTML = html;
+        }
+
+        render();
+    </script>
+</body>
+</html>
