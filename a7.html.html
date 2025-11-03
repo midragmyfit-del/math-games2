@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>השוואת מספרים - כיתה א׳</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 30px;
+            color: white;
+            margin-bottom: 30px;
+        }
+        .hero h1 { font-size: 64px; margin-bottom: 20px; }
+        .hero-icon { font-size: 80px; margin-bottom: 20px; animation: swing 2s infinite; }
+        @keyframes swing { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-15deg); } 75% { transform: rotate(15deg); } }
+        .card {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .nav-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 40px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .nav-btn:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+        .nav-btn-icon { font-size: 64px; display: block; margin-bottom: 15px; }
+        .btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        .btn-primary { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+        .btn-secondary { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
+        .btn:hover { transform: scale(1.05); }
+        .lesson-page {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            min-height: 500px;
+        }
+        .lesson-page h2 { color: #f093fb; font-size: 42px; margin-bottom: 30px; text-align: center; }
+        .lesson-page p { font-size: 22px; line-height: 1.8; color: #333; margin-bottom: 20px; }
+        .info-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        .comparison-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        .comp-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 50px;
+            border-radius: 20px;
+            font-size: 56px;
+            font-weight: bold;
+            min-width: 120px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .comp-sign {
+            font-size: 80px;
+            font-weight: bold;
+            color: #f093fb;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .sign-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 40px;
+            border-radius: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .big-sign {
+            font-size: 120px;
+            color: #667eea;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .sign-name {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2d3436;
+            margin: 15px 0;
+        }
+        .sign-desc {
+            font-size: 24px;
+            color: #636e72;
+        }
+        .trick-box {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            padding: 40px;
+            border-radius: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .alligator {
+            font-size: 100px;
+            margin: 20px 0;
+            display: inline-block;
+            animation: chomp 1s infinite;
+        }
+        @keyframes chomp { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(0.9); } }
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+        }
+        .page-dots { display: flex; gap: 10px; }
+        .dot-nav {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .dot-nav.active { background: #f093fb; width: 40px; border-radius: 10px; }
+        .question-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 40px;
+            border-radius: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .question-text { font-size: 32px; font-weight: bold; color: #2d3436; margin-bottom: 30px; }
+        .question-comparison {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            margin: 40px 0;
+            font-size: 64px;
+            font-weight: bold;
+            flex-wrap: wrap;
+        }
+        .q-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 45px;
+            border-radius: 20px;
+            min-width: 110px;
+        }
+        .q-placeholder {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            color: #2d3436;
+            padding: 25px 45px;
+            border-radius: 20px;
+            min-width: 110px;
+        }
+        .options {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 35px 0;
+            flex-wrap: wrap;
+        }
+        .option-btn {
+            min-width: 120px;
+            padding: 25px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 20px;
+            font-size: 48px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            color: white;
+        }
+        .option-btn:hover:not(:disabled) { transform: scale(1.1); }
+        .option-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .feedback {
+            text-align: center;
+            padding: 25px;
+            border-radius: 15px;
+            font-size: 32px;
+            font-weight: bold;
+            margin-top: 25px;
+        }
+        .feedback-success { background: #d4edda; color: #155724; }
+        .feedback-error { background: #f8d7da; color: #721c24; }
+        .success-screen {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 50px;
+            border-radius: 25px;
+            text-align: center;
+        }
+        .success-screen h2 { font-size: 52px; margin-bottom: 20px; color: white; }
+        .success-icon { font-size: 100px; margin-bottom: 25px; }
+        .score-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="app"></div>
+    <script>
+        var state = { screen: 'home', page: 0, score: 0, q: 0, done: false, ans: null, askedQs: [], answered: false, pendingTimeout: null };
+        var audioContext = null;
+        
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        } catch(e) {
+            console.log('Audio not supported');
+        }
+        
+        var pages = [
+            '<div class="hero-icon">⚖️</div><h2>השוואת מספרים</h2><p style="font-size: 28px;">נלמד להשוות מספרים עם סימנים מיוחדים!</p>',
+            
+            '<h2>הכרת הסימנים 🎯</h2><p>יש לנו 3 סימנים מיוחדים להשוואה:</p>' +
+            '<div class="examples-grid">' +
+            '<div class="sign-card"><div class="big-sign">&gt;</div><div class="sign-name">גדול מ</div><div class="sign-desc">המספר משמאל גדול יותר</div></div>' +
+            '<div class="sign-card"><div class="big-sign">&lt;</div><div class="sign-name">קטן מ</div><div class="sign-desc">המספר משמאל קטן יותר</div></div>' +
+            '<div class="sign-card"><div class="big-sign">=</div><div class="sign-name">שווה ל</div><div class="sign-desc">שני המספרים זהים</div></div>' +
+            '</div><div class="info-box"><p style="font-size: 24px;">💡 <strong>כל סימן מספר לנו משהו אחר!</strong></p></div>',
+            
+            '<h2>טריק התנין 🐊</h2><p>איך נזכור איזה סימן זה?</p>' +
+            '<div class="trick-box">' +
+            '<div class="alligator">&gt;</div>' +
+            '<p style="font-size:32px;font-weight:bold;color:#2d3436;margin:20px 0;">התנין תמיד רוצה לאכול את המספר הכי גדול!</p>' +
+            '<p style="font-size:28px;color:#636e72;">הפה שלו פתוח למספר הגדול 🐊</p>' +
+            '</div>' +
+            '<div class="comparison-row">' +
+            '<div class="comp-number">8</div><div class="comp-sign">&gt;</div><div class="comp-number">3</div>' +
+            '</div>' +
+            '<p style="text-align:center;font-size:24px;">התנין אוכל את 8 כי זה גדול יותר!</p>' +
+            '<div class="info-box"><p style="font-size: 24px;">🎯 <strong>הצד הפתוח תמיד מסתכל על המספר הגדול!</strong></p></div>',
+            
+            '<h2>דוגמאות: גדול מ 📈</h2><p>בואו נראה דוגמאות עם "גדול מ"</p>' +
+            '<div class="comparison-row"><div class="comp-number">10</div><div class="comp-sign">&gt;</div><div class="comp-number">5</div></div>' +
+            '<p style="text-align:center;font-size:24px;margin:10px 0;">10 גדול מ-5</p>' +
+            '<div class="comparison-row"><div class="comp-number">15</div><div class="comp-sign">&gt;</div><div class="comp-number">12</div></div>' +
+            '<p style="text-align:center;font-size:24px;margin:10px 0;">15 גדול מ-12</p>' +
+            '<div class="comparison-row"><div class="comp-number">20</div><div class="comp-sign">&gt;</div><div class="comp-number">18</div></div>' +
+            '<p style="text-align:center;font-size:24px;margin:10px 0;">20 גדול מ-18</p>',
+            
+            '<h2>דוגמאות: קטן מ 📉</h2><p>בואו נראה דוגמאות עם "קטן מ"</p>' +
+            '<div class="comparison-row"><div class="comp-number">3</div><div class="comp-sign">&lt;</div><div class="comp-number">7</div></div>' +
+            '<p style="text-align:center;font-size:24px;margin:10px 0;">3 קטן מ-7</p>' +
+            '<div class="comparison-row"><div class="comp-number">9</div><div class="comp-sign">&lt;</div><div class="comp-number">14</div></div>' +
+            '<p style="text-align:center;font-size:24px;margin:10px 0;">9 קטן מ-14</p>' +
+            '<div class="comparison-row"><div class="comp-number">11</div><div class="comp-sign">&lt;</div><div class="comp-number">19</div></div>' +
+            '<p style="text-align:center;font-size:24px;margin:10px 0;">11 קטן מ-19</p>',
+            
+            '<h2>דוגמאות: שווה ל (=) ⚖️</h2><p>כשהמספרים זהים - משתמשים ב"שווה"</p>' +
+            '<div class="comparison-row"><div class="comp-number">5</div><div class="comp-sign">=</div><div class="comp-number">5</div></div>' +
+            '<p style="text-align:center;font-size:24px;margin:10px 0;">5 שווה ל-5</p>' +
+            '<div class="comparison-row"><div class="comp-number">12</div><div class="comp-sign">=</div><div class="comp-number">12</div></div>' +
+            '<p style="text-align:center;font-size:24px;margin:10px 0;">12 שווה ל-12</p>' +
+            '<div class="comparison-row"><div class="comp-number">20</div><div class="comp-sign">=</div><div class="comp-number">20</div></div>' +
+            '<p style="text-align:center;font-size:24px;margin:10px 0;">20 שווה ל-20</p>' +
+            '<div class="info-box"><p style="font-size: 24px;">✨ <strong>שני הקווים אומרים ששני המספרים בדיוק אותו דבר!</strong></p></div>',
+            
+            '<div class="hero-icon">🌟</div><h2>כל הכבוד!</h2><p style="font-size: 26px;">למדנו על סימני השוואה!</p><p style="font-size: 32px; color: #11998e; font-weight: bold; margin-top: 30px;">בואו נתרגל במשחק! 🎮</p>'
+        ];
+        
+        var qs = [
+            { t: 'איזה סימן צריך לשים?', n1: 8, n2: 3, o: ['&gt;','&lt;','='], c: 0 },
+            { t: 'איזה סימן צריך לשים?', n1: 5, n2: 12, o: ['&gt;','&lt;','='], c: 1 },
+            { t: 'איזה סימן צריך לשים?', n1: 7, n2: 7, o: ['&gt;','&lt;','='], c: 2 },
+            { t: 'איזה סימן צריך לשים?', n1: 15, n2: 10, o: ['&gt;','&lt;','='], c: 0 },
+            { t: 'איזה סימן צריך לשים?', n1: 4, n2: 9, o: ['&gt;','&lt;','='], c: 1 },
+            { t: 'איזה סימן צריך לשים?', n1: 20, n2: 14, o: ['&gt;','&lt;','='], c: 0 },
+            { t: 'איזה סימן צריך לשים?', n1: 6, n2: 18, o: ['&gt;','&lt;','='], c: 1 },
+            { t: 'איזה סימן צריך לשים?', n1: 11, n2: 11, o: ['&gt;','&lt;','='], c: 2 },
+            { t: 'איזה סימן צריך לשים?', n1: 17, n2: 13, o: ['&gt;','&lt;','='], c: 0 },
+            { t: 'איזה סימן צריך לשים?', n1: 2, n2: 8, o: ['&gt;','&lt;','='], c: 1 },
+            { t: 'איזה סימן צריך לשים?', n1: 19, n2: 15, o: ['&gt;','&lt;','='], c: 0 },
+            { t: 'איזה סימן צריך לשים?', n1: 10, n2: 16, o: ['&gt;','&lt;','='], c: 1 },
+            { t: 'איזה סימן צריך לשים?', n1: 14, n2: 14, o: ['&gt;','&lt;','='], c: 2 },
+            { t: 'איזה סימן צריך לשים?', n1: 18, n2: 9, o: ['&gt;','&lt;','='], c: 0 },
+            { t: 'איזה סימן צריך לשים?', n1: 3, n2: 13, o: ['&gt;','&lt;','='], c: 1 },
+            { t: 'איזה סימן צריך לשים?', n1: 16, n2: 12, o: ['&gt;','&lt;','='], c: 0 },
+            { t: 'איזה סימן צריך לשים?', n1: 7, n2: 19, o: ['&gt;','&lt;','='], c: 1 },
+            { t: 'איזה סימן צריך לשים?', n1: 9, n2: 9, o: ['&gt;','&lt;','='], c: 2 },
+            { t: 'איזה סימן צריך לשים?', n1: 20, n2: 17, o: ['&gt;','&lt;','='], c: 0 },
+            { t: 'איזה סימן צריך לשים?', n1: 5, n2: 15, o: ['&gt;','&lt;','='], c: 1 }
+        ];
+        
+        function playSound(freq, duration) {
+            if (!audioContext) return;
+            try {
+                var osc = audioContext.createOscillator();
+                var gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.frequency.value = freq;
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                osc.start();
+                osc.stop(audioContext.currentTime + duration);
+            } catch(e) {}
+        }
+        
+        function playCorrectSound() {
+            if (!audioContext) return;
+            try {
+                var melody = [523.25, 659.25, 783.99, 1046.50];
+                melody.forEach(function(freq, i) {
+                    setTimeout(function() {
+                        var osc = audioContext.createOscillator();
+                        var gain = audioContext.createGain();
+                        osc.connect(gain);
+                        gain.connect(audioContext.destination);
+                        osc.frequency.value = freq;
+                        osc.type = 'sine';
+                        gain.gain.setValueAtTime(0.25, audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                        osc.start();
+                        osc.stop(audioContext.currentTime + 0.3);
+                    }, i * 120);
+                });
+            } catch(e) {}
+        }
+        
+        function go(s) { 
+            try {
+                playSound(600, 0.1);
+                state.screen = s;
+                if(s == 'g') newQ();
+                render();
+                window.scrollTo(0, 0);
+            } catch(e) {}
+        }
+        
+        function next() {
+            try {
+                playSound(600, 0.1);
+                if(state.page < pages.length - 1) state.page++;
+                render();
+                window.scrollTo(0, 0);
+            } catch(e) {}
+        }
+        
+        function prev() {
+            try {
+                playSound(600, 0.1);
+                if(state.page > 0) state.page--;
+                render();
+                window.scrollTo(0, 0);
+            } catch(e) {}
+        }
+        
+        function gotoP(p) {
+            try {
+                playSound(600, 0.1);
+                state.page = p;
+                render();
+                window.scrollTo(0, 0);
+            } catch(e) {}
+        }
+        
+        function newQ() {
+            try {
+                var available = qs.filter(function(x) { 
+                    return !state.askedQs || state.askedQs.indexOf(x.n1 + '-' + x.n2) === -1;
+                });
+                if(available.length == 0) {
+                    available = qs;
+                    state.askedQs = [];
+                }
+                state.ans = available[Math.floor(Math.random() * available.length)];
+                if(!state.askedQs) state.askedQs = [];
+                state.askedQs.push(state.ans.n1 + '-' + state.ans.n2);
+                state.fb = null;
+                state.answered = false;
+                if(state.pendingTimeout) {
+                    clearTimeout(state.pendingTimeout);
+                    state.pendingTimeout = null;
+                }
+                render();
+            } catch(e) {}
+        }
+        
+        function check(i) {
+            if(state.answered) return;
+            try {
+                state.answered = true;
+                playSound(600, 0.1);
+                
+                if(i == state.ans.c) {
+                    playCorrectSound();
+                    state.score += 10;
+                    state.q++;
+                    state.fb = {m: '🎉 מעולה! תשובה נכונה!', t: 'success'};
+                    render();
+                    state.pendingTimeout = setTimeout(function() { 
+                        try {
+                            if(state.q >= 10) {
+                                state.done = true;
+                                render();
+                            } else {
+                                newQ();
+                            }
+                        } catch(e) {}
+                    }, 1500);
+                } else {
+                    playSound(300, 0.3);
+                    state.fb = {m: '💪 נסה שוב!', t: 'error'};
+                    render();
+                    state.pendingTimeout = setTimeout(function() {
+                        try {
+                            state.fb = null;
+                            state.answered = false;
+                            render();
+                        } catch(e) {}
+                    }, 1000);
+                }
+            } catch(e) {}
+        }
+        
+        function reset() {
+            try {
+                playSound(600, 0.1);
+                if(state.pendingTimeout) {
+                    clearTimeout(state.pendingTimeout);
+                }
+                state = {screen: 'g', page: 0, score: 0, q: 0, done: false, ans: null, askedQs: [], answered: false, pendingTimeout: null};
+                newQ();
+            } catch(e) {}
+        }
+        
+        function render() {
+            try {
+                var h = '';
+                if(state.screen == 'home') {
+                    h = '<div class="hero"><div class="hero-icon">⚖️</div><h1>השוואת מספרים</h1><p>לכיתה א׳ - סימני &gt;, &lt;, =</p></div>';
+                    h += '<div class="card"><div class="nav-grid">';
+                    h += '<button class="nav-btn" onclick="go(\'l\')"><span class="nav-btn-icon">📚</span>חוברת למידה</button>';
+                    h += '<button class="nav-btn" onclick="go(\'g\')"><span class="nav-btn-icon">🎮</span>משחק השוואה</button>';
+                    h += '</div></div>';
+                } else if(state.screen == 'l') {
+                    h = '<div class="card"><div style="text-align:center;margin-bottom:30px;">';
+                    h += '<button class="btn btn-secondary" onclick="go(\'home\')">🏠 חזרה לתפריט</button></div>';
+                    h += '<div class="lesson-page">' + pages[state.page] + '</div>';
+                    h += '<div class="pagination">';
+                    h += '<button class="btn btn-primary" onclick="next()" ' + (state.page == pages.length - 1 ? 'disabled style="opacity:0.5;"' : '') + '>הבא ←</button>';
+                    h += '<div class="page-dots">';
+                    for(var i = 0; i < pages.length; i++) {
+                        h += '<div class="dot-nav ' + (i == state.page ? 'active' : '') + '" onclick="gotoP(' + i + ')"></div>';
+                    }
+                    h += '</div><button class="btn btn-primary" onclick="prev()" ' + (state.page == 0 ? 'disabled style="opacity:0.5;"' : '') + '>→ הקודם</button></div></div>';
+                } else if(state.screen == 'g') {
+                    if(state.done) {
+                        h = '<div class="card" style="text-align:center;"><div class="success-screen">';
+                        h += '<div class="success-icon">🏆</div><h2>כל הכבוד!</h2><p style="font-size:28px;margin-bottom:20px;">סיימת את המשחק! 🎉</p>';
+                        h += '<div style="background:rgba(255,255,255,0.3);padding:20px;border-radius:15px;margin:20px 0;">';
+                        h += '<p style="font-size:32px;font-weight:bold;">ניקוד סופי: ' + state.score + ' 🌟</p></div>';
+                        h += '<button class="btn btn-secondary" style="font-size:22px;padding:20px 40px;" onclick="reset()">🔄 שחק שוב</button> ';
+                        h += '<button class="btn" style="background:white;color:#f093fb;font-size:22px;padding:20px 40px;" onclick="go(\'home\')">🏠 חזרה לתפריט</button>';
+                        h += '</div></div>';
+                    } else {
+                        h = '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;">';
+                        h += '<button class="btn btn-secondary" onclick="go(\'home\')">🏠 תפריט</button>';
+                        h += '<div style="font-size:36px;color:#f093fb;font-weight:bold;">משחק השוואה ⚖️</div>';
+                        h += '<div class="score-badge">נקודות: ' + state.score + ' | שאלה: ' + (state.q + 1) + '/10</div></div></div>';
+                        h += '<div class="card"><div class="question-card"><div class="question-text">' + state.ans.t + '</div>';
+                        h += '<div class="question-comparison">';
+                        h += '<div class="q-number">' + state.ans.n1 + '</div>';
+                        h += '<div class="q-placeholder">?</div>';
+                        h += '<div class="q-number">' + state.ans.n2 + '</div>';
+                        h += '</div></div>';
+                        h += '<div class="options">';
+                        state.ans.o.forEach(function(o, i) {
+                            h += '<button class="option-btn" onclick="check(' + i + ')" ' + (state.answered ? 'disabled' : '') + '>' + o + '</button>';
+                        });
+                        h += '</div>';
+                        if(state.fb) h += '<div class="feedback feedback-' + state.fb.t + '">' + state.fb.m + '</div>';
+                        h += '</div>';
+                    }
+                }
+                document.getElementById('app').innerHTML = h;
+            } catch(e) {
+                console.error('Render error:', e);
+            }
+        }
+        
+        render();
+    </script>
+</body>
+</html>
