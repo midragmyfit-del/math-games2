@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מספרים עד 100 ומדידה - כיתה א׳</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 30px;
+            color: white;
+            margin-bottom: 30px;
+        }
+        .hero h1 { font-size: 64px; margin-bottom: 20px; }
+        .hero-icon { font-size: 80px; margin-bottom: 20px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .card {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .nav-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 40px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .nav-btn:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+        .nav-btn-icon { font-size: 64px; display: block; margin-bottom: 15px; }
+        .btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        .btn-primary { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
+        .btn-secondary { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+        .btn:hover { transform: scale(1.05); }
+        .lesson-page {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            min-height: 500px;
+        }
+        .lesson-page h2 { color: #4facfe; font-size: 42px; margin-bottom: 30px; text-align: center; }
+        .lesson-page p { font-size: 22px; line-height: 1.8; color: #333; margin-bottom: 20px; }
+        .info-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        .numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .number-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #2d3436;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .number-card:hover { transform: scale(1.1); }
+        .number-card.tens { background: linear-gradient(135deg, #a8edea 0%, #8ec5fc 100%); font-size: 24px; }
+        .tens-visual {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .ten-block {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 35px;
+            border-radius: 15px;
+            font-size: 32px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .units-visual {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px 0;
+        }
+        .unit-dot {
+            width: 25px;
+            height: 25px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .comparison-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            font-size: 48px;
+            font-weight: bold;
+            flex-wrap: wrap;
+        }
+        .comp-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 40px;
+            border-radius: 20px;
+            min-width: 100px;
+            text-align: center;
+        }
+        .comp-sign { color: #f093fb; font-size: 64px; }
+        .measure-visual {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .scale-item {
+            text-align: center;
+        }
+        .scale-icon {
+            font-size: 80px;
+            margin-bottom: 15px;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .heavy { font-size: 100px; }
+        .light { font-size: 60px; }
+        .container-visual {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 40px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .container-item {
+            text-align: center;
+        }
+        .glass {
+            width: 120px;
+            height: 180px;
+            background: linear-gradient(135deg, rgba(74, 172, 254, 0.3) 0%, rgba(0, 242, 254, 0.3) 100%);
+            border: 5px solid #4facfe;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .water {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            transition: height 0.3s;
+        }
+        .water.full { height: 90%; }
+        .water.half { height: 50%; }
+        .water.empty { height: 0%; }
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+        }
+        .page-dots { display: flex; gap: 10px; }
+        .dot-nav {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .dot-nav.active { background: #4facfe; width: 40px; border-radius: 10px; }
+        .question-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 40px;
+            border-radius: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .question-text { font-size: 32px; font-weight: bold; color: #2d3436; margin-bottom: 30px; }
+        .visual-display {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 35px 0;
+            flex-wrap: wrap;
+        }
+        .option-btn {
+            min-width: 100px;
+            padding: 20px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 20px;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            color: white;
+        }
+        .option-btn:hover { transform: scale(1.1); }
+        .option-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .feedback {
+            text-align: center;
+            padding: 25px;
+            border-radius: 15px;
+            font-size: 32px;
+            font-weight: bold;
+            margin-top: 25px;
+        }
+        .feedback-success { background: #d4edda; color: #155724; }
+        .feedback-error { background: #f8d7da; color: #721c24; }
+        .success-screen {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 50px;
+            border-radius: 25px;
+            text-align: center;
+        }
+        .success-screen h2 { font-size: 52px; margin-bottom: 20px; color: white; }
+        .success-icon { font-size: 100px; margin-bottom: 25px; }
+        .score-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .example-box {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="app"></div>
+    <script>
+        var state = { screen: 'home', page: 0, score: 0, q: 0, done: false, ans: null, locked: false, gameType: 1, askedQs: [] };
+        
+        function createTensUnits(tens, units) {
+            var h = '<div class="tens-visual">';
+            for(var i=0; i<tens; i++) h += '<div class="ten-block">10</div>';
+            h += '</div><div class="units-visual">';
+            for(var i=0; i<units; i++) h += '<div class="unit-dot"></div>';
+            h += '</div>';
+            return h;
+        }
+        
+        function createGlass(level) {
+            return '<div class="glass"><div class="water '+level+'"></div></div>';
+        }
+        
+        var pages = [
+            '<div class="hero-icon">💯</div><h2>מספרים עד 100 ומדידה</h2><p style="font-size: 28px;">נלמד מספרים גדולים ומדידות!</p>',
+            
+            '<h2>עשרות ויחידות 📊</h2><p>כל מספר עד 100 מורכב מעשרות ויחידות!</p>' +
+            '<div class="example-box"><p style="font-size:28px;text-align:center;margin-bottom:20px;"><strong>23 = 2 עשרות + 3 יחידות</strong></p>' +
+            createTensUnits(2, 3) + '</div>' +
+            '<div class="info-box"><p style="font-size: 24px;">💡 <strong>עשרה</strong> = 10 יחידות ביחד!</p></div>',
+            
+            '<h2>מספרים עגולים 🔟</h2><p>מספרים שמסתיימים באפס נקראים "עשרות עגולות"</p>' +
+            '<div class="numbers-grid" style="direction:ltr;">' +
+            [10,20,30,40,50,60,70,80,90,100].map(function(n) { 
+                return '<div class="number-card tens">'+n+'</div>'; 
+            }).join('') + '</div>' +
+            '<div class="example-box"><p style="font-size:24px;text-align:center;"><strong>50</strong> = 5 עשרות = 50 יחידות</p>' +
+            createTensUnits(5, 0) + '</div>',
+            
+            '<h2>ספירה עד 100 📈</h2><p>בואו נראה את כל המספרים עד 100!</p>' +
+            '<div class="numbers-grid" style="direction:ltr;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));">' +
+            (function(){ var arr=[]; for(var i=1;i<=100;i++) arr.push('<div class="number-card" style="font-size:20px;">'+i+'</div>'); return arr.join(''); })() +
+            '</div>' +
+            '<div class="info-box"><p style="font-size: 24px;">🎯 <strong>המספר הכי גדול הוא 100!</strong></p></div>',
+            
+            '<h2>השוואת מספרים 📏</h2><p>איך משווים מספרים גדולים?</p>' +
+            '<div class="comparison-box"><div class="comp-number">45</div><div class="comp-sign">&lt;</div><div class="comp-number">67</div></div>' +
+            '<p style="text-align:center;font-size:24px;">45 קטן מ-67</p>' +
+            '<div class="comparison-box"><div class="comp-number">82</div><div class="comp-sign">&gt;</div><div class="comp-number">58</div></div>' +
+            '<p style="text-align:center;font-size:24px;">82 גדול מ-58</p>' +
+            '<div class="info-box"><p style="font-size: 24px;">💡 <strong>קודם משווים את העשרות, אחר כך את היחידות!</strong></p></div>',
+            
+            '<h2>כבד וקל ⚖️</h2><p>מדידת משקל - איזה חפץ כבד יותר?</p>' +
+            '<div class="measure-visual"><div class="scale-item"><div class="scale-icon heavy">🏋️</div><p style="font-size:28px;font-weight:bold;">כבד</p></div>' +
+            '<div class="scale-item"><div class="scale-icon light">🎈</div><p style="font-size:28px;font-weight:bold;">קל</p></div></div>' +
+            '<div class="example-box"><p style="font-size:24px;text-align:center;">🍉 אבטיח <strong>כבד</strong> יותר מ 🍓 תות</p></div>' +
+            '<div class="info-box"><p style="font-size: 24px;">⚖️ <strong>משקל = כמה כבד חפץ!</strong></p></div>',
+            
+            '<h2>מלא וריק 🥤</h2><p>מדידת נפח - כמה נוזל יש בכלי?</p>' +
+            '<div class="container-visual">' +
+            '<div class="container-item">'+createGlass('full')+'<p style="font-size:24px;margin-top:15px;font-weight:bold;">מלא</p></div>' +
+            '<div class="container-item">'+createGlass('half')+'<p style="font-size:24px;margin-top:15px;font-weight:bold;">חצי</p></div>' +
+            '<div class="container-item">'+createGlass('empty')+'<p style="font-size:24px;margin-top:15px;font-weight:bold;">ריק</p></div>' +
+            '</div>' +
+            '<div class="info-box"><p style="font-size: 24px;">💧 <strong>נפח = כמה מקום תופס נוזל!</strong></p></div>',
+            
+            '<h2>השוואת משקלים 🎯</h2><p>איזה חפץ כבד יותר?</p>' +
+            '<div class="example-box" style="text-align:center;font-size:28px;">' +
+            '<p style="margin:20px 0;">📚 ספר כבד יותר מ 📄 דף</p>' +
+            '<p style="margin:20px 0;">🚗 מכונית כבדה יותר מ 🚲 אופניים</p>' +
+            '<p style="margin:20px 0;">🐘 פיל כבד יותר מ 🐁 עכבר</p>' +
+            '</div>' +
+            '<div class="info-box"><p style="font-size: 24px;">💪 <strong>חפצים גדולים לרוב כבדים יותר!</strong></p></div>',
+            
+            '<div class="hero-icon">🌟</div><h2>כל הכבוד!</h2><p style="font-size: 26px;">למדנו על מספרים עד 100 ומדידות!</p><p style="font-size: 32px; color: #11998e; font-weight: bold; margin-top: 30px;">בואו נתרגל במשחק! 🎮</p>'
+        ];
+        
+        var qs = [
+            { t: 'כמה עשרות יש במספר 30?', o: ['2','3','4'], c: 1 },
+            { t: 'כמה עשרות יש במספר 50?', o: ['4','5','6'], c: 1 },
+            { t: 'איזה מספר בא אחרי 59?', o: ['58','60','61'], c: 1 },
+            { t: 'איזה מספר בא לפני 80?', o: ['79','81','78'], c: 0 },
+            { t: 'איזה מספר גדול יותר?', o: ['34','56','שווה'], c: 1 },
+            { t: 'איזה מספר קטן יותר?', o: ['72','45','שווה'], c: 1 },
+            { t: '23 = כמה עשרות וכמה יחידות?', o: ['2 עשרות 3 יחידות','3 עשרות 2 יחידות','2 עשרות 2 יחידות'], c: 0 },
+            { t: '67 = כמה עשרות וכמה יחידות?', o: ['6 עשרות 7 יחידות','7 עשרות 6 יחידות','6 עשרות 6 יחידות'], c: 0 },
+            { t: 'מה כבד יותר?', o: ['🎈 בלון','🏋️ משקולת','שווה'], c: 1 },
+            { t: 'מה כבד יותר?', o: ['🍓 תות','🍉 אבטיח','שווה'], c: 1 },
+            { t: 'מה קל יותר?', o: ['📚 ספר','🪶 נוצה','שווה'], c: 1 },
+            { t: 'איזה כוס מלאה יותר?', img: 'glasses', o: ['הכוס הימנית','הכוס השמאלית','שווה'], c: 0 },
+            { t: 'איזה מספר גדול יותר?', o: ['89','67','שווה'], c: 0 },
+            { t: 'איזה מספר בא אחרי 99?', o: ['98','100','101'], c: 1 },
+            { t: 'כמה עשרות יש במספר 70?', o: ['6','7','8'], c: 1 },
+            { t: '45 = כמה עשרות וכמה יחידות?', o: ['4 עשרות 5 יחידות','5 עשרות 4 יחידות','4 עשרות 4 יחידות'], c: 0 },
+            { t: 'מה כבד יותר?', o: ['🚗 מכונית','🚲 אופניים','שווה'], c: 0 },
+            { t: 'איזה מספר קטן יותר?', o: ['91','78','שווה'], c: 1 },
+            { t: 'איזה מספר בא לפני 50?', o: ['49','51','48'], c: 0 },
+            { t: 'כמה עשרות יש במספר 100?', o: ['9','10','11'], c: 1 },
+            { t: '81 = כמה עשרות וכמה יחידות?', o: ['8 עשרות 1 יחידות','1 עשרות 8 יחידות','8 עשרות 8 יחידות'], c: 0 },
+            { t: 'איזה מספר בא אחרי 89?', o: ['88','90','91'], c: 1 },
+            { t: 'מה קל יותר?', o: ['🐘 פיל','🐁 עכבר','שווה'], c: 1 },
+            { t: 'איזה מספר גדול יותר?', o: ['43','38','שווה'], c: 0 },
+            { t: 'כמה יחידות יש במספר 95?', o: ['9','5','4'], c: 1 }
+        ];
+        
+        var qs2 = [
+            { t: 'איזה מספר בין 20 ל-30?', o: ['15','25','35'], c: 1 },
+            { t: 'איזה מספר בין 40 ל-50?', o: ['38','45','52'], c: 1 },
+            { t: 'כמה יחידות יש במספר 37?', o: ['3','7','10'], c: 1 },
+            { t: 'כמה יחידות יש במספר 62?', o: ['6','2','8'], c: 1 },
+            { t: '10 + 10 = ?', o: ['10','20','30'], c: 1 },
+            { t: '30 + 10 = ?', o: ['20','40','50'], c: 1 },
+            { t: 'איזה מספר הכי גדול?', o: ['56','74','49'], c: 1 },
+            { t: 'איזה מספר הכי קטן?', o: ['83','67','91'], c: 1 },
+            { t: 'מה מלא יותר?', img: 'compare', o: ['כוס מלאה','כוס חצי','שווה'], c: 0 },
+            { t: 'כמה עשרות יש במספר 60?', o: ['5','6','7'], c: 1 },
+            { t: '52 = כמה עשרות וכמה יחידות?', o: ['5 עשרות 2 יחידות','2 עשרות 5 יחידות','5 עשרות 5 יחידות'], c: 0 },
+            { t: 'איזה מספר בא לפני 70?', o: ['69','71','68'], c: 0 },
+            { t: 'איזה מספר בא אחרי 78?', o: ['77','79','80'], c: 1 },
+            { t: 'מה כבד יותר?', o: ['💼 תיק מלא','🎒 תיק ריק','שווה'], c: 0 },
+            { t: 'איזה מספר גדול יותר?', o: ['54','51','שווה'], c: 0 },
+            { t: 'כמה עשרות יש במספר 90?', o: ['8','9','10'], c: 1 },
+            { t: '76 = כמה עשרות וכמה יחידות?', o: ['7 עשרות 6 יחידות','6 עשרות 7 יחידות','7 עשרות 7 יחידות'], c: 0 },
+            { t: 'איזה מספר בין 60 ל-70?', o: ['58','65','72'], c: 1 },
+            { t: '20 + 20 = ?', o: ['30','40','50'], c: 1 },
+            { t: 'כמה יחידות יש במספר 89?', o: ['8','9','17'], c: 1 },
+            { t: 'איזה מספר קטן יותר?', o: ['66','69','שווה'], c: 0 },
+            { t: 'מה קל יותר?', o: ['🏀 כדורסל','🎾 כדור טניס','שווה'], c: 1 },
+            { t: 'איזה מספר בא אחרי 94?', o: ['93','95','96'], c: 1 },
+            { t: 'איזה מספר הכי גדול?', o: ['88','92','79'], c: 1 },
+            { t: 'כמה עשרות יש במספר 40?', o: ['3','4','5'], c: 1 }
+        ];
+        
+        function sound(t) {
+            try {
+                var c = new (window.AudioContext||window.webkitAudioContext)();
+                var o = c.createOscillator();
+                var g = c.createGain();
+                o.connect(g); g.connect(c.destination);
+                o.type = 'sine';
+                if(t=='c') { o.frequency.value=523; g.gain.setValueAtTime(0.15,c.currentTime); g.gain.exponentialRampToValueAtTime(0.01,c.currentTime+0.15); o.start(); o.stop(c.currentTime+0.15); }
+                else if(t=='s') { [523,659,784].forEach(function(f,i){ var x=c.createOscillator(); var y=c.createGain(); x.connect(y); y.connect(c.destination); x.type='sine'; x.frequency.value=f; var z=c.currentTime+(i*0.1); y.gain.setValueAtTime(0.12,z); y.gain.exponentialRampToValueAtTime(0.01,z+0.4); x.start(z); x.stop(z+0.4); }); }
+                else { o.frequency.value=415; g.gain.setValueAtTime(0.1,c.currentTime); o.frequency.exponentialRampToValueAtTime(349,c.currentTime+0.2); g.gain.exponentialRampToValueAtTime(0.01,c.currentTime+0.25); o.start(); o.stop(c.currentTime+0.25); }
+            } catch(e) {}
+        }
+        
+        function go(s, game) { 
+            sound('c'); 
+            state.screen=s; 
+            if(s=='g') {
+                state.gameType = game || 1;
+                newQ();
+            }
+            render(); 
+            scrollToTop(); 
+        }
+        function next() { sound('c'); if(state.page<pages.length-1) state.page++; render(); scrollToTop(); }
+        function prev() { sound('c'); if(state.page>0) state.page--; render(); scrollToTop(); }
+        function gotoP(p) { sound('c'); state.page=p; render(); scrollToTop(); }
+        
+        function scrollToTop() {
+            setTimeout(function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                var lessonPage = document.querySelector('.lesson-page');
+                if(lessonPage) {
+                    lessonPage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 50);
+        }
+        
+        function newQ() {
+            var qBank = state.gameType === 2 ? qs2 : qs;
+            var available = qBank;
+            if(state.askedQs && state.askedQs.length > 0) {
+                var filtered = qBank.filter(function(x){ 
+                    return !state.askedQs.includes(x.t);
+                });
+                if(filtered.length > 0) available = filtered;
+            }
+            state.ans = available[Math.floor(Math.random()*available.length)];
+            if(!state.askedQs) state.askedQs = [];
+            state.askedQs.push(state.ans.t);
+            state.fb = null;
+            state.locked = false;
+            render();
+        }
+        
+        function check(i) {
+            if(state.locked) return;
+            state.locked = true;
+            
+            sound('c');
+            if(i === state.ans.c) {
+                sound('s');
+                state.score += 10;
+                state.q++;
+                state.fb = {m:'🎉 מעולה! תשובה נכונה!',t:'success'};
+                render();
+                setTimeout(function(){ 
+                    var feedback = document.querySelector('.feedback');
+                    if(feedback) feedback.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+                setTimeout(function(){ 
+                    if(state.q >= 10) { 
+                        state.done = true; 
+                        render(); 
+                    } else {
+                        newQ();
+                    }
+                }, 1500);
+            } else {
+                sound('w');
+                state.fb = {m:'💪 נסה שוב!',t:'error'};
+                render();
+                setTimeout(function(){ 
+                    var feedback = document.querySelector('.feedback');
+                    if(feedback) feedback.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+                setTimeout(function(){ 
+                    state.fb = null; 
+                    state.locked = false; 
+                    render(); 
+                }, 1000);
+            }
+        }
+        
+        function reset() { 
+            sound('c'); 
+            var gameType = state.gameType || 1;
+            state={screen:'g',page:0,score:0,q:0,done:false,ans:null,askedQs:[],locked:false,gameType:gameType}; 
+            newQ(); 
+        }
+        
+        function render() {
+            var h = '';
+            if(state.screen=='home') {
+                h = '<div class="hero"><div class="hero-icon">💯</div><h1>מספרים עד 100</h1><p>לכיתה א׳ - מספרים גדולים ומדידות</p></div>';
+                h += '<div class="card"><div class="nav-grid">';
+                h += '<button class="nav-btn" onclick="go(\'l\')"><span class="nav-btn-icon">📚</span>חוברת למידה</button>';
+                h += '<button class="nav-btn" onclick="go(\'g\',1)"><span class="nav-btn-icon">🎮</span>משחק 1: מספרים ומדידה</button>';
+                h += '<button class="nav-btn" onclick="go(\'g\',2)"><span class="nav-btn-icon">🎯</span>משחק 2: תרגול מתקדם</button>';
+                h += '</div></div>';
+            } else if(state.screen=='l') {
+                h = '<div class="card"><div style="text-align:center;margin-bottom:30px;">';
+                h += '<button class="btn btn-secondary" onclick="go(\'home\')">🏠 חזרה לתפריט</button></div>';
+                h += '<div class="lesson-page">'+pages[state.page]+'</div>';
+                h += '<div class="pagination">';
+                h += '<button class="btn btn-primary" onclick="next()" '+(state.page==pages.length-1?'disabled style="opacity:0.5;"':'')+'>הבא ←</button>';
+                h += '<div class="page-dots">';
+                for(var i=0;i<pages.length;i++) h += '<div class="dot-nav '+(i==state.page?'active':'')+'" onclick="gotoP('+i+')"></div>';
+                h += '</div><button class="btn btn-primary" onclick="prev()" '+(state.page==0?'disabled style="opacity:0.5;"':'')+'>→ הקודם</button></div></div>';
+            } else if(state.screen=='g') {
+                if(state.done) {
+                    h = '<div class="card" style="text-align:center;"><div class="success-screen">';
+                    h += '<div class="success-icon">🏆</div><h2>כל הכבוד!</h2><p style="font-size:28px;margin-bottom:20px;">סיימת את המשחק! 🎉</p>';
+                    h += '<div style="background:rgba(255,255,255,0.3);padding:20px;border-radius:15px;margin:20px 0;">';
+                    h += '<p style="font-size:32px;font-weight:bold;">ניקוד סופי: '+state.score+' 🌟</p></div>';
+                    h += '<button class="btn btn-secondary" style="font-size:22px;padding:20px 40px;" onclick="reset()">🔄 שחק שוב</button> ';
+                    h += '<button class="btn" style="background:white;color:#4facfe;font-size:22px;padding:20px 40px;" onclick="go(\'home\')">🏠 חזרה לתפריט</button>';
+                    h += '</div></div>';
+                } else {
+                    var gameTitle = state.gameType === 2 ? 'משחק 2: תרגול מתקדם 🎯' : 'משחק 1: מספרים ומדידה 💯';
+                    h = '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;">';
+                    h += '<button class="btn btn-secondary" onclick="go(\'home\')">🏠 תפריט</button>';
+                    h += '<div style="font-size:36px;color:#4facfe;font-weight:bold;">'+gameTitle+'</div>';
+                    h += '<div class="score-badge">נקודות: '+state.score+' | שאלה: '+(state.q+1)+'/10</div></div></div>';
+                    h += '<div class="card"><div class="question-card"><div class="question-text">'+state.ans.t+'</div>';
+                    
+                    if(state.ans.img === 'glasses') {
+                        h += '<div class="container-visual">';
+                        h += '<div class="container-item">'+createGlass('full')+'<p style="font-size:20px;margin-top:10px;">ימין</p></div>';
+                        h += '<div class="container-item">'+createGlass('half')+'<p style="font-size:20px;margin-top:10px;">שמאל</p></div>';
+                        h += '</div>';
+                    }
+                    
+                    if(state.ans.img === 'compare') {
+                        h += '<div class="container-visual">';
+                        h += '<div class="container-item">'+createGlass('full')+'<p style="font-size:20px;margin-top:10px;">מלא</p></div>';
+                        h += '<div class="container-item">'+createGlass('half')+'<p style="font-size:20px;margin-top:10px;">חצי</p></div>';
+                        h += '</div>';
+                    }
+                    
+                    h += '</div>';
+                    h += '<div class="options">';
+                    state.ans.o.forEach(function(o,i){ 
+                        h += '<button class="option-btn" onclick="check('+i+')" '+(state.locked?'disabled':'')+'>'+o+'</button>'; 
+                    });
+                    h += '</div>';
+                    if(state.fb) h += '<div class="feedback feedback-'+state.fb.t+'">'+state.fb.m+'</div>';
+                    h += '</div>';
+                }
+            }
+            document.getElementById('app').innerHTML = h;
+        }
+        
+        render();
+    </script>
+</body>
+</html>
