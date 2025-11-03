@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מיקום במרחב - כיתה א'</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .lesson-title {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .positions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .position-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 3px solid #667eea;
+        }
+        
+        .visual-demo {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .table {
+            width: 120px;
+            height: 80px;
+            background: #8B4513;
+            border-radius: 5px;
+            position: relative;
+        }
+        
+        .ball {
+            width: 40px;
+            height: 40px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            position: absolute;
+        }
+        
+        .position-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-top: 10px;
+        }
+        
+        .game-section {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .game-title {
+            color: white;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .question {
+            background: white;
+            color: #333;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.5em;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .scene {
+            background: #e3f2fd;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 20px 0;
+            min-height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border: 3px solid white;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .option-btn {
+            padding: 20px;
+            font-size: 1.3em;
+            border: 3px solid white;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .option-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .option-btn.correct {
+            background: #51cf66;
+            border-color: #51cf66;
+            color: white;
+        }
+        
+        .option-btn.wrong {
+            background: #ff6b6b;
+            border-color: #ff6b6b;
+            color: white;
+        }
+        
+        .score {
+            text-align: center;
+            font-size: 1.8em;
+            margin-top: 20px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .next-btn, .back-btn {
+            background: white;
+            color: #f5576c;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+            transition: all 0.3s;
+        }
+        
+        .next-btn:hover, .back-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .feedback {
+            text-align: center;
+            font-size: 1.5em;
+            margin: 15px 0;
+            font-weight: bold;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📍 מיקום במרחב 📍</h1>
+        
+        <!-- חלק השיעור -->
+        <div class="section">
+            <h2 class="lesson-title">בואו נלמד על מיקום במרחב!</h2>
+            
+            <div class="positions-grid">
+                <div class="position-card">
+                    <div class="visual-demo">
+                        <div class="table"></div>
+                        <div class="ball" style="top: 20px; left: 50%; transform: translateX(-50%);"></div>
+                    </div>
+                    <div class="position-name">מעל השולחן</div>
+                </div>
+                
+                <div class="position-card">
+                    <div class="visual-demo">
+                        <div class="table"></div>
+                        <div class="ball" style="bottom: 20px; left: 50%; transform: translateX(-50%);"></div>
+                    </div>
+                    <div class="position-name">מתחת לשולחן</div>
+                </div>
+                
+                <div class="position-card">
+                    <div class="visual-demo">
+                        <div class="table"></div>
+                        <div class="ball" style="top: 50%; right: -15px; transform: translateY(-50%);"></div>
+                    </div>
+                    <div class="position-name">ליד השולחן</div>
+                </div>
+                
+                <div class="position-card">
+                    <div class="visual-demo">
+                        <div class="table" style="display: flex; align-items: center; justify-content: center;">
+                            <div class="ball" style="position: relative;"></div>
+                        </div>
+                    </div>
+                    <div class="position-name">על השולחן</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק -->
+        <div class="section game-section">
+            <h2 class="game-title">איפה הכדור?</h2>
+            <div class="question" id="question">איפה הכדור ביחס לשולחן?</div>
+            <div class="scene" id="scene"></div>
+            <div class="options" id="options"></div>
+            <div class="feedback" id="feedback"></div>
+            <button class="next-btn" id="nextBtn" style="display:none;">שאלה הבאה</button>
+            <div class="score">נקודות: <span id="score">0</span> | שאלה: <span id="questionNum">1</span>/10</div>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let currentQuestion = 1;
+        let answered = false;
+        let currentAnswer = '';
+        
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playTone(frequency, duration) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            oscillator.frequency.value = frequency;
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+        
+        function playCorrectSound() {
+            playTone(523.25, 0.1);
+            setTimeout(() => playTone(659.25, 0.1), 100);
+            setTimeout(() => playTone(783.99, 0.2), 200);
+        }
+        
+        function playWrongSound() {
+            playTone(200, 0.3);
+        }
+        
+        const positions = [
+            { name: 'מעל', text: 'מעל השולחן' },
+            { name: 'מתחת', text: 'מתחת לשולחן' },
+            { name: 'ליד', text: 'ליד השולחן' },
+            { name: 'על', text: 'על השולחן' }
+        ];
+        
+        function loadQuestion() {
+            answered = false;
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            const position = positions[Math.floor(Math.random() * positions.length)];
+            currentAnswer = position.name;
+            
+            document.getElementById('question').textContent = 'איפה הכדור ביחס לשולחן?';
+            
+            const scene = document.getElementById('scene');
+            scene.innerHTML = '';
+            
+            // מיכל מרכזי
+            const centerContainer = document.createElement('div');
+            centerContainer.style.cssText = 'position: relative; display: inline-block;';
+            
+            // יצירת שולחן
+            const table = document.createElement('div');
+            table.style.cssText = 'width: 150px; height: 100px; background: #8B4513; border-radius: 5px; position: relative;';
+            
+            // יצירת כדור
+            const ball = document.createElement('div');
+            ball.style.cssText = 'width: 50px; height: 50px; background: #ff6b6b; border-radius: 50%; position: absolute;';
+            
+            // מיקום הכדור לפי התשובה
+            if (position.name === 'מעל') {
+                ball.style.bottom = '120px';
+                ball.style.left = '50px';
+                table.appendChild(ball);
+            } else if (position.name === 'מתחת') {
+                ball.style.top = '120px';
+                ball.style.left = '50px';
+                table.appendChild(ball);
+            } else if (position.name === 'ליד') {
+                ball.style.top = '25px';
+                ball.style.right = '-70px';  // מימין לשולחן
+                table.appendChild(ball);
+            } else if (position.name === 'על') {
+                ball.style.top = '20px';
+                ball.style.left = '50px';
+                table.appendChild(ball);
+            }
+            
+            table.appendChild(ball);
+            scene.appendChild(table);
+            
+            // יצירת אפשרויות
+            const options = [...positions].sort(() => Math.random() - 0.5);
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt.text;
+                btn.onclick = () => checkAnswer(opt.name, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+        
+        function checkAnswer(selected, btn) {
+            if (answered) return;
+            answered = true;
+            
+            const feedback = document.getElementById('feedback');
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.style.pointerEvents = 'none');
+            
+            if (selected === currentAnswer) {
+                btn.classList.add('correct');
+                feedback.textContent = 'כל הכבוד! תשובה נכונה!';
+                score += 10;
+                document.getElementById('score').textContent = score;
+                playCorrectSound();
+            } else {
+                btn.classList.add('wrong');
+                const correctPos = positions.find(p => p.name === currentAnswer);
+                feedback.textContent = `לא נכון. הכדור ${correctPos.text}`;
+                playWrongSound();
+            }
+            
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+        
+        document.getElementById('nextBtn').onclick = () => {
+            currentQuestion++;
+            if (currentQuestion > 10) {
+                document.getElementById('question').textContent = `סיימת! הציון שלך: ${score}/100`;
+                document.getElementById('scene').innerHTML = '';
+                document.getElementById('options').innerHTML = '';
+                document.getElementById('feedback').textContent = score >= 70 ? 'מעולה! אתה מכיר מיקומים!' : 'כל הכבוד! המשך לתרגל!';
+                document.getElementById('nextBtn').textContent = 'סיבוב נוסף';
+                if (score >= 70) playCorrectSound();
+                document.getElementById('nextBtn').onclick = () => {
+                    score = 0;
+                    currentQuestion = 1;
+                    document.getElementById('score').textContent = '0';
+                    document.getElementById('questionNum').textContent = '1';
+                    document.getElementById('nextBtn').textContent = 'שאלה הבאה';
+                    loadQuestion();
+                };
+            } else {
+                document.getElementById('questionNum').textContent = currentQuestion;
+                loadQuestion();
+            }
+        };
+        
+        loadQuestion();
+    </script>
+</body>
+</html>
