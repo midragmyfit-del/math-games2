@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>גיאומטריה לכיתה א'</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .lesson-title {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .shapes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .shape-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+            cursor: pointer;
+            border: 3px solid #667eea;
+        }
+        
+        .shape-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .shape {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 15px;
+        }
+        
+        .circle {
+            border-radius: 50%;
+            background: #ff6b6b;
+        }
+        
+        .square {
+            background: #51cf66;
+        }
+        
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 60px solid transparent;
+            border-right: 60px solid transparent;
+            border-bottom: 104px solid #ffd93d;
+            background: transparent;
+        }
+        
+        .rectangle {
+            width: 150px;
+            height: 90px;
+            background: #4dabf7;
+        }
+        
+        .shape-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .shape-info {
+            color: #666;
+            font-size: 1em;
+        }
+        
+        .game-section {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .game-title {
+            color: white;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .question {
+            background: white;
+            color: #333;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.5em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .option-btn {
+            background: white;
+            border: 3px solid white;
+            padding: 40px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .option-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .option-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .option-btn.correct {
+            background: #51cf66;
+            border-color: #51cf66;
+            animation: bounce 0.5s;
+        }
+        
+        .option-btn.wrong {
+            background: #ff6b6b;
+            border-color: #ff6b6b;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .mini-shape {
+            width: 80px;
+            height: 80px;
+        }
+        
+        .score {
+            text-align: center;
+            font-size: 1.8em;
+            margin-top: 20px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .next-btn {
+            background: white;
+            color: #f5576c;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto 0;
+            transition: all 0.3s;
+        }
+        
+        .next-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .feedback {
+            text-align: center;
+            font-size: 1.5em;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔷 גיאומטריה לכיתה א' 🔶</h1>
+        
+        <div class="section">
+            <h2 class="lesson-title">בואו נכיר צורות גיאומטריות!</h2>
+            
+            <div class="shapes-grid">
+                <div class="shape-card" onclick="playShapeSound('circle')">
+                    <div class="shape circle"></div>
+                    <div class="shape-name">עיגול ⭕</div>
+                    <div class="shape-info">עיגול עגול, אין לו פינות!</div>
+                </div>
+                
+                <div class="shape-card" onclick="playShapeSound('square')">
+                    <div class="shape square"></div>
+                    <div class="shape-name">ריבוע 🟩</div>
+                    <div class="shape-info">4 צלעות שוות, 4 פינות</div>
+                </div>
+                
+                <div class="shape-card" onclick="playShapeSound('triangle')">
+                    <div class="shape triangle"></div>
+                    <div class="shape-name">משולש 🔺</div>
+                    <div class="shape-info">3 צלעות, 3 פינות</div>
+                </div>
+                
+                <div class="shape-card" onclick="playShapeSound('rectangle')">
+                    <div class="shape rectangle"></div>
+                    <div class="shape-name">מלבן 🟦</div>
+                    <div class="shape-info">4 צלעות, 2 ארוכות ו-2 קצרות</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section" id="gameMenu">
+            <h2 class="lesson-title">בחר משחק!</h2>
+            <div class="shapes-grid">
+                <div class="shape-card" onclick="startGame('quiz')">
+                    <div style="font-size: 3em;">🎯</div>
+                    <div class="shape-name">זיהוי צורות</div>
+                    <div class="shape-info">מצא את הצורה הנכונה</div>
+                </div>
+                <div class="shape-card" onclick="startGame('memory')">
+                    <div style="font-size: 3em;">🃏</div>
+                    <div class="shape-name">משחק זיכרון</div>
+                    <div class="shape-info">מצא זוגות תואמים</div>
+                </div>
+                <div class="shape-card" onclick="startGame('draw')">
+                    <div style="font-size: 3em;">🎨</div>
+                    <div class="shape-name">צייר צורות</div>
+                    <div class="shape-info">צייר את הצורה בעכבר</div>
+                </div>
+                <div class="shape-card" onclick="startGame('catch')">
+                    <div style="font-size: 3em;">⚡</div>
+                    <div class="shape-name">תפוס צורות</div>
+                    <div class="shape-info">תפוס את הצורות הנופלות</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section game-section" id="quizGame" style="display:none;">
+            <button class="next-btn" onclick="backToMenu()">חזרה לתפריט</button>
+            <h2 class="game-title">🎮 זיהוי צורות 🎮</h2>
+            <div class="question" id="question">לחץ על הצורה הנכונה!</div>
+            <div class="options" id="options"></div>
+            <div class="feedback" id="feedback"></div>
+            <button class="next-btn" id="nextBtn" style="display:none;">שאלה הבאה</button>
+            <div class="score">
+                נקודות: <span id="score">0</span> | 
+                שאלה: <span id="questionNum">1</span>/10
+            </div>
+        </div>
+
+        <div class="section game-section" id="memoryGame" style="display:none;">
+            <button class="next-btn" onclick="backToMenu()">חזרה לתפריט</button>
+            <h2 class="game-title">🃏 משחק זיכרון 🃏</h2>
+            <div class="score">זוגות שנמצאו: <span id="memoryScore">0</span>/4</div>
+            <div id="memoryGrid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 30px auto; max-width: 500px;"></div>
+        </div>
+
+        <div class="section game-section" id="drawGame" style="display:none;">
+            <button class="next-btn" onclick="backToMenu()">חזרה לתפריט</button>
+            <h2 class="game-title">🎨 צייר צורות 🎨</h2>
+            <div class="question" id="drawQuestion">צייר עיגול!</div>
+            <canvas id="drawCanvas" width="400" height="400" style="background: white; border-radius: 15px; cursor: crosshair; display: block; margin: 20px auto; border: 3px solid white;"></canvas>
+            <button class="next-btn" onclick="checkDrawing()">בדוק ציור</button>
+            <button class="next-btn" onclick="clearCanvas()">נקה</button>
+            <div class="feedback" id="drawFeedback"></div>
+        </div>
+
+        <div class="section game-section" id="catchGame" style="display:none;">
+            <button class="next-btn" onclick="backToMenu()">חזרה לתפריט</button>
+            <h2 class="game-title">⚡ תפוס צורות ⚡</h2>
+            <div class="question" id="catchQuestion">תפוס את כל העיגולים!</div>
+            <div class="score">נקודות: <span id="catchScore">0</span> | זמן: <span id="catchTimer">30</span></div>
+            <div id="catchArea" style="position: relative; width: 400px; height: 500px; background: white; border-radius: 15px; margin: 20px auto; border: 3px solid white; overflow: hidden;"></div>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let currentQuestion = 1;
+        let answered = false;
+        let currentGame = '';
+        let memoryCards = [];
+        let flippedCards = [];
+        let memoryScore = 0;
+        let memoryLocked = false;
+        let catchScore = 0;
+        let catchTimer = 30;
+        let catchInterval = null;
+        let targetShape = '';
+        let isDrawing = false;
+        let drawPoints = [];
+        
+        let audioContext = null;
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        } catch(e) {
+            console.log('Audio not supported');
+        }
+        
+        const shapes = [
+            { name: 'עיגול', class: 'circle', color: '#ff6b6b' },
+            { name: 'ריבוע', class: 'square', color: '#51cf66' },
+            { name: 'משולש', class: 'triangle', color: '#ffd93d' },
+            { name: 'מלבן', class: 'rectangle', color: '#4dabf7' }
+        ];
+        
+        function playTone(frequency, duration, type = 'sine') {
+            if (!audioContext) return;
+            try {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.frequency.value = frequency;
+                oscillator.type = type;
+                gainNode.gain.setValueAtTime(0.25, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + duration);
+            } catch(e) {}
+        }
+        
+        function playCorrectSound() {
+            if (!audioContext) return;
+            try {
+                const melody = [523.25, 659.25, 783.99, 1046.50];
+                melody.forEach((freq, i) => {
+                    setTimeout(() => playTone(freq, 0.3), i * 120);
+                });
+            } catch(e) {}
+        }
+        
+        function playWrongSound() {
+            try {
+                playTone(300, 0.3, 'square');
+            } catch(e) {}
+        }
+        
+        function playShapeSound(shapeType) {
+            try {
+                const frequencies = { 'circle': 440, 'square': 523.25, 'triangle': 659.25, 'rectangle': 587.33 };
+                playTone(frequencies[shapeType], 0.2);
+            } catch(e) {}
+        }
+
+        function startGame(game) {
+            try {
+                currentGame = game;
+                document.getElementById('gameMenu').style.display = 'none';
+                document.getElementById(game + 'Game').style.display = 'block';
+                
+                if (game === 'quiz') {
+                    score = 0;
+                    currentQuestion = 1;
+                    document.getElementById('score').textContent = '0';
+                    document.getElementById('questionNum').textContent = '1';
+                    loadQuestion();
+                } else if (game === 'memory') {
+                    initMemoryGame();
+                } else if (game === 'draw') {
+                    initDrawGame();
+                } else if (game === 'catch') {
+                    initCatchGame();
+                }
+            } catch(e) {}
+        }
+
+        function backToMenu() {
+            try {
+                document.getElementById('gameMenu').style.display = 'block';
+                document.getElementById('quizGame').style.display = 'none';
+                document.getElementById('memoryGame').style.display = 'none';
+                document.getElementById('drawGame').style.display = 'none';
+                document.getElementById('catchGame').style.display = 'none';
+                
+                if (catchInterval) {
+                    clearInterval(catchInterval);
+                    catchInterval = null;
+                }
+                
+                const area = document.getElementById('catchArea');
+                if (area) area.innerHTML = '';
+            } catch(e) {}
+        }
+
+        function createShape(shapeClass) {
+            try {
+                const div = document.createElement('div');
+                div.className = `mini-shape ${shapeClass}`;
+                if (shapeClass === 'triangle') {
+                    div.style.width = '0';
+                    div.style.height = '0';
+                    div.style.borderLeft = '40px solid transparent';
+                    div.style.borderRight = '40px solid transparent';
+                    div.style.borderBottom = '69px solid #ffd93d';
+                    div.style.background = 'transparent';
+                } else if (shapeClass === 'rectangle') {
+                    div.style.width = '100px';
+                    div.style.height = '60px';
+                }
+                return div;
+            } catch(e) {
+                return document.createElement('div');
+            }
+        }
+        
+        function loadQuestion() {
+            try {
+                answered = false;
+                document.getElementById('feedback').textContent = '';
+                document.getElementById('nextBtn').style.display = 'none';
+                
+                const correctShape = shapes[Math.floor(Math.random() * shapes.length)];
+                document.getElementById('question').textContent = `איפה ה${correctShape.name}?`;
+                
+                let options = [...shapes];
+                options.sort(() => Math.random() - 0.5);
+                
+                const optionsContainer = document.getElementById('options');
+                optionsContainer.innerHTML = '';
+                
+                options.forEach(shape => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.appendChild(createShape(shape.class));
+                    
+                    const label = document.createElement('div');
+                    label.style.fontSize = '1.2em';
+                    label.style.fontWeight = 'bold';
+                    label.style.color = '#333';
+                    label.textContent = shape.name;
+                    btn.appendChild(label);
+                    
+                    btn.onclick = () => checkAnswer(shape.name === correctShape.name, btn);
+                    optionsContainer.appendChild(btn);
+                });
+            } catch(e) {}
+        }
+        
+        function checkAnswer(isCorrect, btn) {
+            if (answered) return;
+            try {
+                answered = true;
+                
+                const feedback = document.getElementById('feedback');
+                const allBtns = document.querySelectorAll('.option-btn');
+                allBtns.forEach(b => b.disabled = true);
+                
+                if (isCorrect) {
+                    btn.classList.add('correct');
+                    feedback.textContent = '🎉 כל הכבוד!';
+                    feedback.style.color = 'white';
+                    score += 10;
+                    document.getElementById('score').textContent = score;
+                    playCorrectSound();
+                } else {
+                    btn.classList.add('wrong');
+                    feedback.textContent = '❌ נסה שוב';
+                    feedback.style.color = 'white';
+                    playWrongSound();
+                }
+                
+                document.getElementById('nextBtn').style.display = 'block';
+            } catch(e) {}
+        }
+        
+        document.getElementById('nextBtn').onclick = () => {
+            try {
+                currentQuestion++;
+                if (currentQuestion > 10) {
+                    document.getElementById('question').textContent = `סיימת! ${score}/100`;
+                    document.getElementById('options').innerHTML = '';
+                    document.getElementById('feedback').textContent = score >= 70 ? '🌟 מעולה!' : '💪 המשך!';
+                    document.getElementById('nextBtn').textContent = 'התחל מחדש';
+                    if (score >= 70) playCorrectSound();
+                    document.getElementById('nextBtn').onclick = () => {
+                        score = 0;
+                        currentQuestion = 1;
+                        document.getElementById('score').textContent = '0';
+                        document.getElementById('questionNum').textContent = '1';
+                        document.getElementById('nextBtn').textContent = 'שאלה הבאה';
+                        loadQuestion();
+                    };
+                } else {
+                    document.getElementById('questionNum').textContent = currentQuestion;
+                    loadQuestion();
+                }
+            } catch(e) {}
+        };
+
+        function initMemoryGame() {
+            try {
+                memoryScore = 0;
+                memoryLocked = false;
+                flippedCards = [];
+                document.getElementById('memoryScore').textContent = '0';
+                
+                memoryCards = [];
+                shapes.forEach(shape => {
+                    memoryCards.push({ type: shape.class, name: shape.name, color: shape.color });
+                    memoryCards.push({ type: shape.class, name: shape.name, color: shape.color });
+                });
+                memoryCards.sort(() => Math.random() - 0.5);
+                
+                const grid = document.getElementById('memoryGrid');
+                grid.innerHTML = '';
+                
+                memoryCards.forEach((card, index) => {
+                    const btn = document.createElement('button');
+                    btn.style.cssText = 'padding: 20px; background: white; border: 3px solid white; border-radius: 10px; cursor: pointer; font-size: 1.2em; display: flex; flex-direction: column; align-items: center; gap: 5px; min-height: 120px;';
+                    btn.innerHTML = '<div style="font-size: 2em;">?</div>';
+                    btn.dataset.index = index;
+                    btn.onclick = () => flipMemoryCard(btn, index);
+                    grid.appendChild(btn);
+                });
+            } catch(e) {}
+        }
+
+        function flipMemoryCard(btn, index) {
+            if (memoryLocked || flippedCards.length === 2 || btn.classList.contains('matched')) return;
+            
+            try {
+                const card = memoryCards[index];
+                
+                let shapeHTML = '';
+                if (card.type === 'circle') {
+                    shapeHTML = `<div style="width: 50px; height: 50px; border-radius: 50%; background: ${card.color};"></div>`;
+                } else if (card.type === 'square') {
+                    shapeHTML = `<div style="width: 50px; height: 50px; background: ${card.color};"></div>`;
+                } else if (card.type === 'triangle') {
+                    shapeHTML = `<div style="width: 0; height: 0; border-left: 25px solid transparent; border-right: 25px solid transparent; border-bottom: 43px solid ${card.color};"></div>`;
+                } else if (card.type === 'rectangle') {
+                    shapeHTML = `<div style="width: 60px; height: 35px; background: ${card.color};"></div>`;
+                }
+                
+                btn.innerHTML = shapeHTML + `<div style="font-weight: bold; color: #333;">${card.name}</div>`;
+                btn.style.background = '#e8b4f0';
+                flippedCards.push({ btn, index });
+                
+                if (flippedCards.length === 2) {
+                    memoryLocked = true;
+                    setTimeout(() => {
+                        try {
+                            if (memoryCards[flippedCards[0].index].type === memoryCards[flippedCards[1].index].type) {
+                                flippedCards[0].btn.classList.add('matched');
+                                flippedCards[1].btn.classList.add('matched');
+                                flippedCards[0].btn.style.background = 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)';
+                                flippedCards[1].btn.style.background = 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)';
+                                flippedCards[0].btn.style.border = '3px solid #667eea';
+                                flippedCards[1].btn.style.border = '3px solid #667eea';
+                                flippedCards[0].btn.disabled = true;
+                                flippedCards[1].btn.disabled = true;
+                                memoryScore++;
+                                document.getElementById('memoryScore').textContent = memoryScore;
+                                playCorrectSound();
+                                
+                                if (memoryScore === 4) {
+                                    setTimeout(() => {
+                                        try {
+                                            const grid = document.getElementById('memoryGrid');
+                                            grid.innerHTML = `
+                                                <div style="grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 40px; text-align: center;">
+                                                    <div style="font-size: 2em; color: white; font-weight: bold;">🎉 כל הכבוד! 🎉</div>
+                                                    <div style="font-size: 1.5em; color: white; font-weight: bold;">מצאת את כל הזוגות!</div>
+                                                    <button onclick="initMemoryGame()" style="padding: 15px 40px; font-size: 1.3em; background: white; color: #f093fb; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">סיבוב נוסף</button>
+                                                </div>
+                                            `;
+                                            playCorrectSound();
+                                        } catch(e) {}
+                                    }, 500);
+                                }
+                            } else {
+                                flippedCards[0].btn.innerHTML = '<div style="font-size: 2em;">?</div>';
+                                flippedCards[1].btn.innerHTML = '<div style="font-size: 2em;">?</div>';
+                                flippedCards[0].btn.style.background = 'white';
+                                flippedCards[1].btn.style.background = 'white';
+                                playWrongSound();
+                            }
+                            flippedCards = [];
+                            memoryLocked = false;
+                        } catch(e) {
+                            memoryLocked = false;
+                        }
+                    }, 1000);
+                }
+            } catch(e) {}
+        }
+
+        function initDrawGame() {
+            try {
+                const canvas = document.getElementById('drawCanvas');
+                if (!canvas) return;
+                
+                const ctx = canvas.getContext('2d');
+                targetShape = shapes[Math.floor(Math.random() * shapes.length)];
+                document.getElementById('drawQuestion').textContent = `צייר ${targetShape.name}!`;
+                document.getElementById('drawFeedback').textContent = '';
+                drawPoints = [];
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                canvas.onmousedown = (e) => { isDrawing = true; drawPoints = []; };
+                canvas.onmousemove = (e) => {
+                    if (!isDrawing) return;
+                    try {
+                        const rect = canvas.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        drawPoints.push({ x, y });
+                        
+                        ctx.beginPath();
+                        if (drawPoints.length > 1) {
+                            ctx.moveTo(drawPoints[drawPoints.length - 2].x, drawPoints[drawPoints.length - 2].y);
+                            ctx.lineTo(x, y);
+                        }
+                        ctx.strokeStyle = '#667eea';
+                        ctx.lineWidth = 3;
+                        ctx.stroke();
+                    } catch(e) {}
+                };
+                canvas.onmouseup = () => { isDrawing = false; };
+            } catch(e) {}
+        }
+
+        function clearCanvas() {
+            try {
+                const canvas = document.getElementById('drawCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawPoints = [];
+                document.getElementById('drawFeedback').textContent = '';
+            } catch(e) {}
+        }
+
+        function checkDrawing() {
+            try {
+                if (drawPoints.length < 20) {
+                    document.getElementById('drawFeedback').textContent = '❌ צייר קצת יותר!';
+                    document.getElementById('drawFeedback').style.color = 'white';
+                    playWrongSound();
+                    return;
+                }
+                
+                const xs = drawPoints.map(p => p.x);
+                const ys = drawPoints.map(p => p.y);
+                const minX = Math.min(...xs);
+                const maxX = Math.max(...xs);
+                const minY = Math.min(...ys);
+                const maxY = Math.max(...ys);
+                const width = maxX - minX;
+                const height = maxY - minY;
+                
+                if (width < 50 || height < 50) {
+                    document.getElementById('drawFeedback').textContent = '❌ צייר צורה גדולה יותר!';
+                    document.getElementById('drawFeedback').style.color = 'white';
+                    playWrongSound();
+                    return;
+                }
+                
+                let isCorrect = false;
+                let feedback = '';
+                
+                if (targetShape.class === 'circle') {
+                    const ratio = Math.max(width, height) / Math.min(width, height);
+                    isCorrect = ratio < 1.5 && drawPoints.length > 50;
+                    feedback = isCorrect ? '🎉 עיגול מעולה!' : '❌ נסה לצייר עיגול עגול';
+                }
+                else if (targetShape.class === 'square') {
+                    const ratio = Math.max(width, height) / Math.min(width, height);
+                    isCorrect = ratio < 1.5 && drawPoints.length < 150;
+                    feedback = isCorrect ? '🎉 ריבוע יפה!' : '❌ נסה לצייר ריבוע עם צלעות שוות';
+                }
+                else if (targetShape.class === 'triangle') {
+                    isCorrect = drawPoints.length < 100 && width > 60 && height > 60;
+                    feedback = isCorrect ? '🎉 משולש מושלם!' : '❌ נסה לצייר 3 קווים';
+                }
+                else if (targetShape.class === 'rectangle') {
+                    const ratio = Math.max(width, height) / Math.min(width, height);
+                    isCorrect = ratio > 1.5 && drawPoints.length < 150;
+                    feedback = isCorrect ? '🎉 מלבן נהדר!' : '❌ נסה מלבן - ארוך וצר';
+                }
+                
+                document.getElementById('drawFeedback').textContent = feedback;
+                document.getElementById('drawFeedback').style.color = 'white';
+                
+                if (isCorrect) {
+                    playCorrectSound();
+                    setTimeout(() => {
+                        clearCanvas();
+                        targetShape = shapes[Math.floor(Math.random() * shapes.length)];
+                        document.getElementById('drawQuestion').textContent = `צייר ${targetShape.name}!`;
+                        document.getElementById('drawFeedback').textContent = '';
+                    }, 2500);
+                } else {
+                    playWrongSound();
+                }
+            } catch(e) {}
+        }
+
+        function initCatchGame() {
+            try {
+                catchScore = 0;
+                catchTimer = 30;
+                document.getElementById('catchScore').textContent = '0';
+                document.getElementById('catchTimer').textContent = '30';
+                
+                targetShape = shapes[Math.floor(Math.random() * shapes.length)];
+                
+                let shapePlural = targetShape.name;
+                if (targetShape.name === 'עיגול') shapePlural = 'עיגולים';
+                else if (targetShape.name === 'ריבוע') shapePlural = 'ריבועים';
+                else if (targetShape.name === 'משולש') shapePlural = 'משולשים';
+                else if (targetShape.name === 'מלבן') shapePlural = 'מלבנים';
+                
+                document.getElementById('catchQuestion').textContent = `תפוס את כל ה${shapePlural}!`;
+                
+                const area = document.getElementById('catchArea');
+                area.innerHTML = '';
+                
+                if (catchInterval) clearInterval(catchInterval);
+                
+                catchInterval = setInterval(() => {
+                    try {
+                        catchTimer--;
+                        document.getElementById('catchTimer').textContent = catchTimer;
+                        
+                        if (Math.random() < 0.7) {
+                            createFallingShape();
+                        }
+                        
+                        if (catchTimer <= 0) {
+                            clearInterval(catchInterval);
+                            catchInterval = null;
+                            area.innerHTML = `
+                                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 20px;">
+                                    <div style="font-size: 2em; color: #667eea; font-weight: bold;">סיימת!</div>
+                                    <div style="font-size: 1.5em; color: #667eea;">ניקוד: ${catchScore}</div>
+                                    <button onclick="initCatchGame()" style="padding: 15px 40px; font-size: 1.3em; background: #667eea; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">סיבוב נוסף</button>
+                                </div>
+                            `;
+                            if (catchScore > 30) playCorrectSound();
+                        }
+                    } catch(e) {}
+                }, 1000);
+            } catch(e) {}
+        }
+
+        function createFallingShape() {
+            try {
+                const area = document.getElementById('catchArea');
+                if (!area) return;
+                
+                const currentShapes = area.querySelectorAll('[data-type]');
+                if (currentShapes.length > 15) return;
+                
+                const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+                
+                const shapeDiv = document.createElement('div');
+                shapeDiv.style.position = 'absolute';
+                shapeDiv.style.left = Math.random() * 350 + 'px';
+                shapeDiv.style.top = '0px';
+                shapeDiv.style.width = '50px';
+                shapeDiv.style.height = '50px';
+                shapeDiv.style.transition = 'top 3s linear';
+                shapeDiv.style.cursor = 'pointer';
+                shapeDiv.dataset.type = randomShape.class;
+                
+                if (randomShape.class === 'circle') {
+                    shapeDiv.style.borderRadius = '50%';
+                    shapeDiv.style.background = randomShape.color;
+                } else if (randomShape.class === 'square') {
+                    shapeDiv.style.background = randomShape.color;
+                } else if (randomShape.class === 'triangle') {
+                    shapeDiv.style.width = '0';
+                    shapeDiv.style.height = '0';
+                    shapeDiv.style.borderLeft = '25px solid transparent';
+                    shapeDiv.style.borderRight = '25px solid transparent';
+                    shapeDiv.style.borderBottom = '43px solid ' + randomShape.color;
+                    shapeDiv.style.background = 'transparent';
+                } else if (randomShape.class === 'rectangle') {
+                    shapeDiv.style.width = '60px';
+                    shapeDiv.style.height = '35px';
+                    shapeDiv.style.background = randomShape.color;
+                }
+                
+                shapeDiv.onclick = () => {
+                    try {
+                        if (shapeDiv.dataset.type === targetShape.class) {
+                            catchScore += 10;
+                            document.getElementById('catchScore').textContent = catchScore;
+                            playCorrectSound();
+                        } else {
+                            catchScore = Math.max(0, catchScore - 5);
+                            document.getElementById('catchScore').textContent = catchScore;
+                            playWrongSound();
+                        }
+                        shapeDiv.remove();
+                    } catch(e) {}
+                };
+                
+                area.appendChild(shapeDiv);
+                
+                setTimeout(() => {
+                    try {
+                        shapeDiv.style.top = '470px';
+                    } catch(e) {}
+                }, 50);
+                
+                setTimeout(() => {
+                    try {
+                        if (shapeDiv.parentElement) {
+                            shapeDiv.remove();
+                        }
+                    } catch(e) {}
+                }, 3100);
+            } catch(e) {}
+        }
+        
+        try {
+            loadQuestion();
+        } catch(e) {}
+    </script>
+</body>
+</html>
