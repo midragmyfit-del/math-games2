@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פרוט נינג'ה - כיתה א'</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .menu-container {
+            background: white;
+            border-radius: 25px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 25px 60px;
+            font-size: 1.5em;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        .game-container {
+            display: none;
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .back-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .game-title-header {
+            font-size: 2.5em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .difficulty-selector {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .difficulty-selector h3 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        .difficulty-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .difficulty-btn {
+            padding: 15px 35px;
+            font-size: 1.2em;
+            border: 3px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .difficulty-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .difficulty-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .fishing-setup {
+            text-align: center;
+        }
+
+        .round-info {
+            text-align: center;
+            font-size: 1.3em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .turn-display {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .turn-display div {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 1.8em;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .fishing-scoreboard {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .fishing-player-card {
+            flex: 1;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .fishing-player1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .fishing-player2 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .fishing-player-card.active {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .score-display {
+            font-size: 3em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .caught-fish {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .caught-fish-icon {
+            font-size: 1.5em;
+        }
+
+        .question-section {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            padding: 35px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 3em;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: bold;
+            direction: ltr;
+            text-align: center;
+        }
+
+        .answers {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .answer-btn {
+            padding: 25px;
+            font-size: 2em;
+            background: white;
+            border: 4px solid #667eea;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .answer-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .answer-btn.correct {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+            animation: pulse 0.5s;
+        }
+
+        .answer-btn.wrong {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+            animation: shake 0.5s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Fruit Ninja Dojo */
+        .aquarium-container {
+            background: linear-gradient(135deg, #2c1810 0%, #1a0f08 100%);
+            border-radius: 20px;
+            height: 500px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+            cursor: none;
+        }
+
+        .bamboo-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                rgba(101, 67, 33, 0.1) 50px,
+                transparent 100px
+            );
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .sword-trail {
+            position: absolute;
+            width: 3px;
+            height: 40px;
+            background: linear-gradient(180deg, transparent, rgba(255,255,255,0.8), transparent);
+            pointer-events: none;
+            z-index: 100;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255,255,255,0.6);
+        }
+
+        .fruit {
+            position: absolute;
+            font-size: 4em;
+            cursor: pointer;
+            filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.6));
+            transition: none;
+            z-index: 10;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .fruit.flying {
+            animation: flyUp 2s ease-out forwards;
+        }
+
+        @keyframes flyUp {
+            0% {
+                bottom: -10%;
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(180deg);
+            }
+            100% {
+                bottom: 110%;
+                transform: rotate(360deg);
+            }
+        }
+
+        .fruit.sliced {
+            animation: none !important;
+        }
+
+        .fruit-half {
+            position: absolute;
+            font-size: 3em;
+            filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.6));
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        .fruit-half.left {
+            animation: sliceLeft 1s ease-out forwards;
+        }
+
+        .fruit-half.right {
+            animation: sliceRight 1s ease-out forwards;
+        }
+
+        @keyframes sliceLeft {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-100px, 150px) rotate(-180deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes sliceRight {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(100px, 150px) rotate(180deg);
+                opacity: 0;
+            }
+        }
+
+        .slash-effect {
+            position: absolute;
+            width: 150px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #fff, transparent);
+            box-shadow: 0 0 10px #fff;
+            pointer-events: none;
+            z-index: 50;
+            animation: slashFade 0.3s ease-out forwards;
+        }
+
+        @keyframes slashFade {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+        }
+
+        .combo-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5em;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            pointer-events: none;
+            z-index: 60;
+            animation: comboAnim 0.8s ease-out forwards;
+        }
+
+        @keyframes comboAnim {
+            0% {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -80%) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .score-popup {
+            position: absolute;
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #4CAF50;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            animation: scorePopup 1s ease-out forwards;
+            pointer-events: none;
+            z-index: 40;
+        }
+
+        @keyframes scorePopup {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-80px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .timer-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            padding: 15px 40px;
+            border-radius: 20px;
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #FFD700;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            z-index: 20;
+            border: 3px solid #FFD700;
+        }
+
+        .timer-display.warning {
+            color: #ff4444;
+            border-color: #ff4444;
+            animation: timerPulse 0.5s infinite;
+        }
+
+        @keyframes timerPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .score-display-game {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            padding: 15px 40px;
+            border-radius: 20px;
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #4CAF50;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            z-index: 20;
+            border: 3px solid #4CAF50;
+        }
+
+        .ninja-instruction {
+            text-align: center;
+            font-size: 1.5em;
+            color: #FFD700;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            border: 2px solid #FFD700;
+        }
+
+        .fish-legend {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .fish-legend h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .legend-item {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .winner-screen {
+            display: none;
+            text-align: center;
+            padding: 50px;
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            border-radius: 25px;
+            color: white;
+        }
+
+        .winner-screen h2 {
+            font-size: 4em;
+            margin-bottom: 30px;
+            animation: winBounce 1s infinite;
+        }
+
+        @keyframes winBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .play-again-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 20px 50px;
+            font-size: 1.5em;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .play-again-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .feedback-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px 60px;
+            border-radius: 20px;
+            font-size: 2em;
+            font-weight: bold;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .feedback-message.success {
+            color: #4CAF50;
+        }
+
+        .feedback-message.miss {
+            color: #ff9800;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Menu -->
+    <div class="menu-container" id="mainMenu">
+        <h1>🥷 פרוט נינג'ה</h1>
+        <p class="subtitle">משחק חיתוך פרוטים מהיר ומלהיב!</p>
+        <button class="start-btn" onclick="showGame()">התחל משחק</button>
+    </div>
+
+    <!-- Game -->
+    <div class="game-container" id="fishingGame">
+        <div class="game-header">
+            <button class="back-button" onclick="showMenu()">← חזרה לתפריט</button>
+            <div class="game-title-header">🥷 פרוט נינג'ה</div>
+            <div style="width: 150px;"></div>
+        </div>
+
+        <div class="difficulty-selector" id="fishingDifficulty">
+            <h3>בחרו מצב משחק:</h3>
+            <div class="difficulty-buttons" style="margin-bottom: 30px;">
+                <button class="difficulty-btn" onclick="selectMode('teams')" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    👥<br>שני שחקנים
+                </button>
+                <button class="difficulty-btn" onclick="selectMode('single')" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                    🎯<br>שחקן יחיד
+                </button>
+            </div>
+            
+            <div id="difficultyLevelSelection" style="display: none;">
+                <h3>בחרו רמת קושי:</h3>
+                <div class="difficulty-buttons">
+                    <button class="difficulty-btn" onclick="startFishing('easy')">
+                        קל<br><small>(עד 10)</small>
+                    </button>
+                    <button class="difficulty-btn" onclick="startFishing('medium')">
+                        בינוני<br><small>(עד 20)</small>
+                    </button>
+                    <button class="difficulty-btn" onclick="startFishing('hard')">
+                        קשה<br><small>(עד 100)</small>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="fishing-setup" id="fishingArena" style="display: none;">
+            <div class="round-info" id="fishingRoundInfo">סיבוב 1 מתוך 10</div>
+            
+            <div class="turn-display">
+                <div id="currentPlayerTurn">תור שחקן 1 🥷</div>
+            </div>
+
+            <div class="fishing-scoreboard">
+                <div class="fishing-player-card fishing-player1" id="fishingPlayer1Card">
+                    <div style="font-size: 2em; margin-bottom: 10px;">🥷</div>
+                    <div style="font-size: 1.5em; font-weight: bold;">שחקן 1</div>
+                    <div class="score-display" id="fishingScore1">0</div>
+                    <div style="margin-top: 5px;">נקודות</div>
+                    <div class="caught-fish" id="fishingCaught1"></div>
+                </div>
+
+                <div class="fishing-player-card fishing-player2" id="fishingPlayer2Card">
+                    <div style="font-size: 2em; margin-bottom: 10px;">🥷</div>
+                    <div style="font-size: 1.5em; font-weight: bold;">שחקן 2</div>
+                    <div class="score-display" id="fishingScore2">0</div>
+                    <div style="margin-top: 5px;">נקודות</div>
+                    <div class="caught-fish" id="fishingCaught2"></div>
+                </div>
+            </div>
+
+            <div class="question-section" id="fishingQuestionSection">
+                <div class="question" id="fishingQuestion">5 + 3 = ?</div>
+                <div class="answers" id="fishingAnswers"></div>
+            </div>
+
+            <div id="fishingPhase" style="display: none;">
+                <div class="ninja-instruction">
+                    עברו על הפרוטים עם העכבר לחתוך! היזהרו מפצצות! 🥷⚔️
+                </div>
+                
+                <div id="readySection" style="text-align: center; padding: 60px 0;">
+                    <div style="font-size: 3em; margin-bottom: 30px; color: #FFD700;">
+                        מוכן/ה לחתוך פרוטים? 🥷
+                    </div>
+                    <button id="readyButton" onclick="startNinjaAction()" style="
+                        background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+                        color: #1a0f08;
+                        border: none;
+                        padding: 30px 80px;
+                        font-size: 2.5em;
+                        border-radius: 25px;
+                        cursor: pointer;
+                        font-weight: bold;
+                        box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+                        transition: all 0.3s ease;
+                    " onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        🥷 התחל! ⚔️
+                    </button>
+                </div>
+                
+                <div class="aquarium-container" id="aquarium" style="display: none;">
+                    <div class="bamboo-effect"></div>
+                    <div class="score-display-game" id="gameScore">0</div>
+                    <div class="timer-display" id="fishingTimer">20</div>
+                </div>
+            </div>
+
+            <div class="fish-legend">
+                <h4>🥷 מדריך הפרוטים:</h4>
+                <div class="legend-grid">
+                    <div class="legend-item">
+                        <div style="font-size: 2em;">🍎🍊🍌</div>
+                        <div>פרוטים רגילים</div>
+                        <div><strong>5 נקודות</strong></div>
+                        <div style="font-size: 0.8em; color: #666;">חתכו במהירות!</div>
+                    </div>
+                    <div class="legend-item">
+                        <div style="font-size: 2em;">🍉</div>
+                        <div>אבטיח</div>
+                        <div><strong>10 נקודות</strong></div>
+                        <div style="font-size: 0.8em; color: #666;">גדול ושווה!</div>
+                    </div>
+                    <div class="legend-item">
+                        <div style="font-size: 2em;">🍓</div>
+                        <div>תות</div>
+                        <div><strong>3 נקודות</strong></div>
+                        <div style="font-size: 0.8em; color: #666;">קטן ומהיר</div>
+                    </div>
+                    <div class="legend-item">
+                        <div style="font-size: 2em;">🥝</div>
+                        <div>קיווי</div>
+                        <div><strong>7 נקודות</strong></div>
+                        <div style="font-size: 0.8em; color: #666;">נדיר!</div>
+                    </div>
+                    <div class="legend-item" style="background: rgba(255,0,0,0.1);">
+                        <div style="font-size: 2em;">💣</div>
+                        <div>פצצה!</div>
+                        <div><strong>-15 נקודות</strong></div>
+                        <div style="font-size: 0.8em; color: #ff4444;"><strong>אל תגעו!</strong></div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: rgba(255,215,0,0.2); border-radius: 10px;">
+                    <strong>💡 טיפ:</strong> עברו על הפרי עם העכבר במהירות! 3+ פרוטים ברצף = COMBO! 🔥
+                </div>
+            </div>
+        </div>
+
+        <div class="winner-screen" id="fishingWinner">
+            <h2>🎉 המשחק הסתיים! 🎉</h2>
+            <div style="font-size: 8em; margin: 30px 0;">🏆</div>
+            <h3 id="fishingWinnerText"></h3>
+            <button class="play-again-btn" onclick="showMenu()">חזרה לתפריט</button>
+            <button class="play-again-btn" onclick="location.reload()">משחק נוסף</button>
+        </div>
+    </div>
+
+    <div class="feedback-message" id="feedbackMessage"></div>
+
+    <script>
+        // Game variables
+        let fishingDifficulty = 'easy';
+        let fishingCurrentPlayer = 1;
+        let fishingScore1 = 0;
+        let fishingScore2 = 0;
+        let fishingCaught1 = [];
+        let fishingCaught2 = [];
+        let fishingRound = 1;
+        let fishingMaxRounds = 10;
+        let fishArray = [];
+        let fishingTimer = 20;
+        let fishingTimerInterval = null;
+        let fruitSpawnInterval = null;
+        let fishingCorrectAnswer = 0;
+        let usedQuestions = []; // מעקב אחרי שאלות שכבר יצאו
+        let gameMode = 'teams'; // 'teams' or 'single'
+        let singlePlayerScore = 0;
+        let currentGameScore = 0;
+        let mouseX = 0;
+        let mouseY = 0;
+        let lastMouseX = 0;
+        let lastMouseY = 0;
+        let comboCount = 0;
+        let comboTimer = null;
+
+        function showMenu() {
+            document.getElementById('mainMenu').style.display = 'flex';
+            document.getElementById('fishingGame').style.display = 'none';
+            resetGame();
+        }
+
+        function showGame() {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('fishingGame').style.display = 'block';
+        }
+
+        function resetGame() {
+            if (fishingTimerInterval) {
+                clearInterval(fishingTimerInterval);
+            }
+            if (fruitSpawnInterval) {
+                clearInterval(fruitSpawnInterval);
+            }
+            fishingCurrentPlayer = 1;
+            fishingScore1 = 0;
+            fishingScore2 = 0;
+            fishingCaught1 = [];
+            fishingCaught2 = [];
+            fishingRound = 1;
+            fishingTimer = 20;
+            currentGameScore = 0;
+            comboCount = 0;
+            usedQuestions = []; // איפוס רשימת השאלות
+            singlePlayerScore = 0;
+            gameMode = 'teams'; // איפוס מצב המשחק
+            document.getElementById('difficultyLevelSelection').style.display = 'none';
+            document.getElementById('fishingDifficulty').style.display = 'block';
+            document.getElementById('fishingArena').style.display = 'none';
+            document.getElementById('fishingWinner').style.display = 'none';
+        }
+
+        function selectMode(mode) {
+            gameMode = mode;
+            document.getElementById('difficultyLevelSelection').style.display = 'block';
+            window.scrollTo({ top: document.getElementById('difficultyLevelSelection').offsetTop - 100, behavior: 'smooth' });
+        }
+
+        function startFishing(difficulty) {
+            fishingDifficulty = difficulty;
+            document.getElementById('fishingDifficulty').style.display = 'none';
+            document.getElementById('fishingArena').style.display = 'block';
+            
+            // הסתרת/הצגת אלמנטים לפי מצב המשחק
+            if (gameMode === 'single') {
+                document.getElementById('fishingPlayer2Card').style.display = 'none';
+                document.getElementById('currentPlayerTurn').style.display = 'none';
+                document.getElementById('fishingPlayer1Card').querySelector('div:nth-child(2)').textContent = 'השחקן שלי';
+            } else {
+                document.getElementById('fishingPlayer2Card').style.display = 'block';
+                document.getElementById('currentPlayerTurn').style.display = 'block';
+                document.getElementById('fishingPlayer1Card').querySelector('div:nth-child(2)').textContent = 'שחקן 1';
+            }
+            
+            updateFishingScoreboard();
+            generateFishingQuestion();
+        }
+
+        function generateFishingQuestion() {
+            let num1, num2, operation, question, questionKey;
+            const maxNum = fishingDifficulty === 'easy' ? 10 : fishingDifficulty === 'medium' ? 20 : 100;
+            let attempts = 0;
+            const maxAttempts = 50; // מספר ניסיונות מקסימלי למצוא שאלה חדשה
+
+            do {
+                if (Math.random() < 0.5) {
+                    num1 = Math.floor(Math.random() * maxNum) + 1;
+                    num2 = Math.floor(Math.random() * maxNum) + 1;
+                    fishingCorrectAnswer = num1 + num2;
+                    question = `${num1} + ${num2} = ?`;
+                    questionKey = `${num1}+${num2}`;
+                } else {
+                    num1 = Math.floor(Math.random() * maxNum) + 1;
+                    num2 = Math.floor(Math.random() * num1) + 1;
+                    fishingCorrectAnswer = num1 - num2;
+                    question = `${num1} - ${num2} = ?`;
+                    questionKey = `${num1}-${num2}`;
+                }
+                attempts++;
+                
+                // אם ניסינו יותר מדי פעמים, נאפס את רשימת השאלות שכבר יצאו
+                if (attempts >= maxAttempts) {
+                    usedQuestions = [];
+                    break;
+                }
+            } while (usedQuestions.includes(questionKey));
+
+            // נוסיף את השאלה לרשימת השאלות שכבר יצאו
+            usedQuestions.push(questionKey);
+
+            document.getElementById('fishingQuestion').textContent = question;
+            generateFishingAnswers();
+            updateFishingActivePlayer();
+            updateFishingRoundInfo();
+            
+            document.getElementById('fishingQuestionSection').style.display = 'block';
+            document.getElementById('fishingPhase').style.display = 'none';
+        }
+
+        function generateFishingAnswers() {
+            const answers = [fishingCorrectAnswer];
+            while (answers.length < 4) {
+                const wrongAnswer = fishingCorrectAnswer + Math.floor(Math.random() * 10) - 5;
+                if (wrongAnswer > 0 && !answers.includes(wrongAnswer)) {
+                    answers.push(wrongAnswer);
+                }
+            }
+            
+            answers.sort(() => Math.random() - 0.5);
+            
+            const answersDiv = document.getElementById('fishingAnswers');
+            answersDiv.innerHTML = '';
+            
+            answers.forEach(answer => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = answer;
+                btn.onclick = () => checkFishingAnswer(answer, btn);
+                answersDiv.appendChild(btn);
+            });
+        }
+
+        function checkFishingAnswer(answer, button) {
+            const buttons = document.querySelectorAll('#fishingAnswers .answer-btn');
+            buttons.forEach(btn => btn.disabled = true);
+
+            if (answer === fishingCorrectAnswer) {
+                button.classList.add('correct');
+                playSound('correct');
+                
+                setTimeout(() => {
+                    document.getElementById('fishingQuestionSection').style.display = 'none';
+                    document.getElementById('fishingPhase').style.display = 'block';
+                    document.getElementById('readySection').style.display = 'block';
+                    document.getElementById('aquarium').style.display = 'none';
+                }, 1000);
+            } else {
+                button.classList.add('wrong');
+                playSound('wrong');
+                
+                setTimeout(() => {
+                    nextFishingTurn();
+                }, 1500);
+            }
+        }
+
+        function startNinjaAction() {
+            document.getElementById('readySection').style.display = 'none';
+            document.getElementById('aquarium').style.display = 'block';
+            
+            // Scroll to aquarium smoothly
+            setTimeout(() => {
+                document.getElementById('aquarium').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }, 100);
+            
+            startFishingPhase();
+        }
+
+        function startFishingPhase() {
+            currentGameScore = 0;
+            document.getElementById('gameScore').textContent = currentGameScore;
+            comboCount = 0;
+            
+            const aquarium = document.getElementById('aquarium');
+            
+            fishArray = [];
+            const oldFruits = aquarium.querySelectorAll('.fruit, .fruit-half, .slash-effect, .score-popup, .combo-display');
+            oldFruits.forEach(f => f.remove());
+            
+            aquarium.onmousemove = function(e) {
+                lastMouseX = mouseX;
+                lastMouseY = mouseY;
+                mouseX = e.clientX - aquarium.getBoundingClientRect().left;
+                mouseY = e.clientY - aquarium.getBoundingClientRect().top;
+                
+                if (Math.abs(mouseX - lastMouseX) > 5 || Math.abs(mouseY - lastMouseY) > 5) {
+                    const trail = document.createElement('div');
+                    trail.className = 'sword-trail';
+                    trail.style.left = mouseX + 'px';
+                    trail.style.top = mouseY + 'px';
+                    const angle = Math.atan2(mouseY - lastMouseY, mouseX - lastMouseX) * 180 / Math.PI;
+                    trail.style.transform = `rotate(${angle + 90}deg)`;
+                    aquarium.appendChild(trail);
+                    
+                    setTimeout(() => {
+                        if (trail.parentElement) trail.remove();
+                    }, 200);
+                }
+                
+                checkFruitCollision();
+            };
+
+            spawnFruit();
+            fruitSpawnInterval = setInterval(() => {
+                spawnFruit();
+            }, 800);
+
+            fishingTimer = 20;
+            document.getElementById('fishingTimer').textContent = fishingTimer;
+            document.getElementById('fishingTimer').classList.remove('warning');
+            
+            if (fishingTimerInterval) {
+                clearInterval(fishingTimerInterval);
+            }
+            
+            fishingTimerInterval = setInterval(() => {
+                fishingTimer--;
+                document.getElementById('fishingTimer').textContent = fishingTimer;
+                
+                if (fishingTimer <= 5) {
+                    document.getElementById('fishingTimer').classList.add('warning');
+                }
+                
+                if (fishingTimer <= 0) {
+                    clearInterval(fishingTimerInterval);
+                    clearInterval(fruitSpawnInterval);
+                    timeUp();
+                }
+            }, 1000);
+        }
+
+        function spawnFruit() {
+            const aquarium = document.getElementById('aquarium');
+            const fruitTypes = [
+                { emoji: '🍎', points: 5, isBomb: false },
+                { emoji: '🍊', points: 5, isBomb: false },
+                { emoji: '🍌', points: 5, isBomb: false },
+                { emoji: '🍉', points: 10, isBomb: false },
+                { emoji: '🍓', points: 3, isBomb: false },
+                { emoji: '🍇', points: 5, isBomb: false },
+                { emoji: '🥝', points: 7, isBomb: false },
+                { emoji: '💣', points: -15, isBomb: true }
+            ];
+            
+            const numFruits = Math.random() < 0.3 ? 2 : 1;
+            
+            for (let i = 0; i < numFruits; i++) {
+                let fruitType;
+                if (Math.random() < 0.15) {
+                    fruitType = fruitTypes[fruitTypes.length - 1];
+                } else {
+                    fruitType = fruitTypes[Math.floor(Math.random() * (fruitTypes.length - 1))];
+                }
+                
+                const fruit = document.createElement('div');
+                fruit.className = 'fruit flying';
+                fruit.textContent = fruitType.emoji;
+                fruit.dataset.points = fruitType.points;
+                fruit.dataset.emoji = fruitType.emoji;
+                fruit.dataset.isBomb = fruitType.isBomb;
+                fruit.dataset.sliced = 'false';
+                
+                const leftPos = 10 + Math.random() * 80;
+                fruit.style.left = leftPos + '%';
+                fruit.style.bottom = '-10%';
+                
+                fruit.style.animationDuration = (1.5 + Math.random() * 0.8) + 's';
+                
+                aquarium.appendChild(fruit);
+                fishArray.push(fruit);
+                
+                setTimeout(() => {
+                    if (fruit.parentElement && fruit.dataset.sliced === 'false') {
+                        fruit.remove();
+                        const index = fishArray.indexOf(fruit);
+                        if (index > -1) fishArray.splice(index, 1);
+                    }
+                }, 2500);
+            }
+        }
+
+        function checkFruitCollision() {
+            const aquarium = document.getElementById('aquarium');
+            const aquariumRect = aquarium.getBoundingClientRect();
+            
+            for (let fruit of fishArray) {
+                if (!fruit.parentElement || fruit.dataset.sliced === 'true') continue;
+                
+                const fruitRect = fruit.getBoundingClientRect();
+                
+                const fruitCenterX = fruitRect.left + fruitRect.width / 2 - aquariumRect.left;
+                const fruitCenterY = fruitRect.top + fruitRect.height / 2 - aquariumRect.top;
+                
+                const distance = Math.sqrt(
+                    Math.pow(mouseX - fruitCenterX, 2) + 
+                    Math.pow(mouseY - fruitCenterY, 2)
+                );
+                
+                if (distance < 60) {
+                    sliceFruit(fruit, fruitCenterX, fruitCenterY);
+                }
+            }
+        }
+
+        function sliceFruit(fruit, x, y) {
+            if (fruit.dataset.sliced === 'true') return;
+            
+            fruit.dataset.sliced = 'true';
+            const points = parseInt(fruit.dataset.points);
+            const emoji = fruit.dataset.emoji;
+            const isBomb = fruit.dataset.isBomb === 'true';
+            const aquarium = document.getElementById('aquarium');
+            
+            const slash = document.createElement('div');
+            slash.className = 'slash-effect';
+            slash.style.left = x + 'px';
+            slash.style.top = y + 'px';
+            const angle = Math.atan2(mouseY - lastMouseY, mouseX - lastMouseX) * 180 / Math.PI;
+            slash.style.transform = `rotate(${angle}deg)`;
+            aquarium.appendChild(slash);
+            setTimeout(() => {
+                if (slash.parentElement) slash.remove();
+            }, 300);
+            
+            if (isBomb) {
+                currentGameScore = Math.max(0, currentGameScore + points);
+                document.getElementById('gameScore').textContent = currentGameScore;
+                
+                showFeedback('💥 פצצה! ' + points + ' נקודות!', 'miss');
+                playSound('wrong');
+                
+                fruit.style.animation = 'none';
+                fruit.style.opacity = '0';
+                setTimeout(() => {
+                    if (fruit.parentElement) fruit.remove();
+                }, 100);
+                
+                comboCount = 0;
+            } else {
+                currentGameScore += points;
+                document.getElementById('gameScore').textContent = currentGameScore;
+                
+                comboCount++;
+                
+                if (comboCount >= 3) {
+                    const combo = document.createElement('div');
+                    combo.className = 'combo-display';
+                    combo.textContent = 'COMBO x' + comboCount + '!';
+                    combo.style.left = '50%';
+                    combo.style.top = '50%';
+                    aquarium.appendChild(combo);
+                    setTimeout(() => {
+                        if (combo.parentElement) combo.remove();
+                    }, 800);
+                }
+                
+                if (comboTimer) clearTimeout(comboTimer);
+                comboTimer = setTimeout(() => {
+                    comboCount = 0;
+                }, 1000);
+                
+                const popup = document.createElement('div');
+                popup.className = 'score-popup';
+                popup.textContent = '+' + points;
+                popup.style.left = x + 'px';
+                popup.style.top = y + 'px';
+                aquarium.appendChild(popup);
+                setTimeout(() => {
+                    if (popup.parentElement) popup.remove();
+                }, 1000);
+                
+                playSound('catch');
+                
+                const half1 = document.createElement('div');
+                half1.className = 'fruit-half left';
+                half1.textContent = emoji;
+                half1.style.left = x + 'px';
+                half1.style.top = y + 'px';
+                aquarium.appendChild(half1);
+                
+                const half2 = document.createElement('div');
+                half2.className = 'fruit-half right';
+                half2.textContent = emoji;
+                half2.style.left = x + 'px';
+                half2.style.top = y + 'px';
+                aquarium.appendChild(half2);
+                
+                setTimeout(() => {
+                    if (half1.parentElement) half1.remove();
+                    if (half2.parentElement) half2.remove();
+                }, 1000);
+                
+                fruit.style.opacity = '0';
+                setTimeout(() => {
+                    if (fruit.parentElement) fruit.remove();
+                }, 100);
+            }
+            
+            if (fishingCurrentPlayer === 1) {
+                fishingCaught1.push(emoji);
+            } else {
+                fishingCaught2.push(emoji);
+            }
+            updateFishingScoreboard();
+        }
+
+        function timeUp() {
+            if (fruitSpawnInterval) {
+                clearInterval(fruitSpawnInterval);
+            }
+            
+            if (fishingCurrentPlayer === 1) {
+                fishingScore1 += currentGameScore;
+            } else {
+                fishingScore2 += currentGameScore;
+            }
+            updateFishingScoreboard();
+            
+            const aquarium = document.getElementById('aquarium');
+            aquarium.onmousemove = null;
+            const allFruits = aquarium.querySelectorAll('.fruit, .fruit-half, .slash-effect, .score-popup, .combo-display, .sword-trail');
+            allFruits.forEach(f => {
+                if (f.parentElement) {
+                    f.remove();
+                }
+            });
+            
+            fishArray = [];
+            
+            setTimeout(() => {
+                nextFishingTurn();
+            }, 1500);
+        }
+
+        function nextFishingTurn() {
+            if (fishingTimerInterval) {
+                clearInterval(fishingTimerInterval);
+            }
+            
+            // במצב שחקן יחיד - לא מחליפים שחקן
+            if (gameMode === 'teams') {
+                fishingCurrentPlayer = fishingCurrentPlayer === 1 ? 2 : 1;
+            }
+            
+            if (fishingCurrentPlayer === 1 || gameMode === 'single') {
+                fishingRound++;
+            }
+            
+            if (fishingRound > fishingMaxRounds) {
+                showFishingWinner();
+            } else {
+                generateFishingQuestion();
+            }
+        }
+
+        function updateFishingScoreboard() {
+            document.getElementById('fishingScore1').textContent = fishingScore1;
+            document.getElementById('fishingScore2').textContent = fishingScore2;
+            
+            const caught1Div = document.getElementById('fishingCaught1');
+            const caught2Div = document.getElementById('fishingCaught2');
+            
+            caught1Div.innerHTML = fishingCaught1.slice(-5).map(fish => 
+                `<span class="caught-fish-icon">${fish}</span>`
+            ).join('');
+            
+            caught2Div.innerHTML = fishingCaught2.slice(-5).map(fish => 
+                `<span class="caught-fish-icon">${fish}</span>`
+            ).join('');
+        }
+
+        function updateFishingActivePlayer() {
+            const player1Card = document.getElementById('fishingPlayer1Card');
+            const player2Card = document.getElementById('fishingPlayer2Card');
+            const turnDisplay = document.getElementById('currentPlayerTurn');
+            
+            if (fishingCurrentPlayer === 1) {
+                player1Card.classList.add('active');
+                player2Card.classList.remove('active');
+                if (turnDisplay) turnDisplay.textContent = 'תור שחקן 1 🥷';
+            } else {
+                player1Card.classList.remove('active');
+                player2Card.classList.add('active');
+                if (turnDisplay) turnDisplay.textContent = 'תור שחקן 2 🥷';
+            }
+        }
+
+        function updateFishingRoundInfo() {
+            document.getElementById('fishingRoundInfo').textContent = 
+                `סיבוב ${fishingRound} מתוך ${fishingMaxRounds}`;
+        }
+
+        function showFishingWinner() {
+            document.getElementById('fishingArena').style.display = 'none';
+            document.getElementById('fishingWinner').style.display = 'block';
+            
+            playSound('win');
+            
+            let winnerText = '';
+            
+            if (gameMode === 'single') {
+                // מצב שחקן יחיד
+                const percentage = (fishingScore1 / (fishingMaxRounds * 10)) * 100;
+                let emoji = '';
+                let message = '';
+                
+                if (percentage === 100) {
+                    emoji = '🏆🌟';
+                    message = 'מושלם! כל התשובות נכונות!';
+                } else if (percentage >= 80) {
+                    emoji = '🎉';
+                    message = 'מצוין!';
+                } else if (percentage >= 60) {
+                    emoji = '👍';
+                    message = 'יפה מאוד!';
+                } else if (percentage >= 40) {
+                    emoji = '💪';
+                    message = 'לא רע! המשך להתאמן!';
+                } else {
+                    emoji = '📚';
+                    message = 'המשך להתאמן!';
+                }
+                
+                winnerText = `<div style="font-size: 3em; margin-bottom: 20px;">${emoji}</div>
+                             <div style="font-size: 2em; margin-bottom: 20px;">${message}</div>
+                             <div style="font-size: 1.5em;">הניקוד שלך: ${fishingScore1}</div>`;
+            } else {
+                // מצב שני שחקנים
+                if (fishingScore1 > fishingScore2) {
+                    winnerText = `🏆 שחקן 1 ניצח!<br>${fishingScore1} נקודות נגד ${fishingScore2} נקודות`;
+                } else if (fishingScore2 > fishingScore1) {
+                    winnerText = `🏆 שחקן 2 ניצח!<br>${fishingScore2} נקודות נגד ${fishingScore1} נקודות`;
+                } else {
+                    winnerText = `🤝 תיקו!<br>שני השחקנים צברו ${fishingScore1} נקודות`;
+                }
+            }
+            
+            document.getElementById('fishingWinnerText').innerHTML = winnerText;
+        }
+
+        function showFeedback(message, type) {
+            const feedback = document.getElementById('feedbackMessage');
+            feedback.textContent = message;
+            feedback.className = 'feedback-message ' + type;
+            feedback.style.display = 'block';
+            
+            setTimeout(() => {
+                feedback.style.display = 'none';
+            }, 2000);
+        }
+
+        function playSound(type) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            if (type === 'correct') {
+                oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1);
+                oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.4);
+            } else if (type === 'wrong') {
+                oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(300, audioContext.currentTime + 0.1);
+                oscillator.frequency.setValueAtTime(200, audioContext.currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } else if (type === 'catch') {
+                oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.05);
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.15);
+            } else if (type === 'win') {
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, i) => {
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    osc.frequency.setValueAtTime(freq, audioContext.currentTime + i * 0.15);
+                    gain.gain.setValueAtTime(0.3, audioContext.currentTime + i * 0.15);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.15 + 0.3);
+                    osc.start(audioContext.currentTime + i * 0.15);
+                    osc.stop(audioContext.currentTime + i * 0.15 + 0.3);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
