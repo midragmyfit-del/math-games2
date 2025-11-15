@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>נתונים וגרפים - כיתה ב׳</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .screen {
+            display: none;
+        }
+        
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .menu-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            border: 4px solid transparent;
+        }
+        
+        .menu-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            border-color: #ffd700;
+        }
+        
+        .menu-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+        
+        .menu-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .menu-desc {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+        
+        .lesson-section {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 3px solid #667eea;
+            font-size: 1.3em;
+            line-height: 1.8;
+        }
+        
+        .example-table {
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto;
+            border-collapse: collapse;
+            font-size: 1.4em;
+        }
+        
+        .example-table th, .example-table td {
+            border: 3px solid #667eea;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .example-table th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .pictogram {
+            font-size: 2.5em;
+            line-height: 2;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .game-container {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 25px 0;
+        }
+        
+        .game-title {
+            color: #2d3436;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .game-instruction {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        
+        .fruit-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto 20px;
+        }
+        
+        .fruit-btn {
+            background: white;
+            border: 4px solid #fdcb6e;
+            padding: 25px;
+            font-size: 2em;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .fruit-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            background: #fff9e6;
+        }
+        
+        .fruit-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .chart-display {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .bar-chart {
+            position: relative;
+            padding: 30px 30px 60px 80px;
+            background: #f8f9ff;
+            border-radius: 10px;
+        }
+        
+        .chart-grid {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 300px;
+            position: relative;
+            border-bottom: 5px solid #333;
+            border-left: 5px solid #333;
+            background-image: repeating-linear-gradient(
+                to top,
+                transparent,
+                transparent 59px,
+                #ddd 59px,
+                #ddd 60px
+            );
+        }
+        
+        .y-axis-labels {
+            position: absolute;
+            right: calc(100% + 15px);
+            top: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding-bottom: 5px;
+        }
+        
+        .y-label {
+            font-weight: bold;
+            font-size: 1.4em;
+            color: #333;
+            height: 60px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .bar-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            max-width: 150px;
+        }
+        
+        .bar {
+            width: 100px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px 10px 0 0;
+            transition: all 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 10px;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .bar-value {
+            color: white;
+            font-weight: bold;
+            font-size: 1.8em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .bar-label {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 2em;
+        }
+        
+        .x-axis-label {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #666;
+        }
+        
+        .pictogram-chart {
+            padding: 20px;
+        }
+        
+        .pictogram-row {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            font-size: 1.3em;
+        }
+        
+        .pictogram-label {
+            width: 120px;
+            font-weight: bold;
+            font-size: 1.3em;
+            min-width: 120px;
+        }
+        
+        .pictogram-icons {
+            display: flex;
+            gap: 5px;
+            font-size: 2.5em;
+        }
+        
+        .quiz-container {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            padding: 30px;
+            border-radius: 15px;
+        }
+        
+        .question {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            color: #2d3436;
+        }
+        
+        .visual-container {
+            max-height: 180px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .answer-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .answer-btn {
+            background: white;
+            border: 4px solid #6c5ce7;
+            padding: 20px 40px;
+            font-size: 1.3em;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .answer-btn:hover {
+            background: #e8e5ff;
+            transform: scale(1.05);
+        }
+        
+        .answer-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .answer-btn.correct {
+            background: #00b894 !important;
+            color: white !important;
+            border-color: #00b894 !important;
+        }
+        
+        .answer-btn.wrong {
+            background: #ff7675 !important;
+            color: white !important;
+            border-color: #ff7675 !important;
+        }
+        
+        .feedback {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 1.4em;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .btn {
+            background: #fd79a8;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3em;
+            border-radius: 12px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .btn:hover {
+            background: #e84393;
+            transform: scale(1.05);
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        .btn-secondary {
+            background: #74b9ff;
+        }
+        
+        .btn-secondary:hover {
+            background: #0984e3;
+        }
+        
+        .button-group {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .data-collection {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            padding: 30px;
+            border-radius: 15px;
+        }
+        
+        .animal-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 500px;
+            margin: 20px auto;
+        }
+        
+        .animal-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 4px solid transparent;
+        }
+        
+        .animal-card:hover {
+            transform: scale(1.1);
+            border-color: #0984e3;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .animal-card:active {
+            transform: scale(0.95);
+        }
+        
+        .animal-icon {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+        
+        .animal-name {
+            font-weight: bold;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        
+        .animal-count {
+            color: #0984e3;
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        .success-message {
+            text-align: center;
+            padding: 30px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        
+        .success-message h3 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- מסך ראשי -->
+        <div id="mainMenu" class="screen active">
+            <h1>📊 נתונים וגרפים 📈</h1>
+            <p class="subtitle">כיתה ב׳</p>
+            
+            <div class="menu-grid">
+                <div class="menu-card" onclick="playSound('click'); showScreen('lessonScreen')">
+                    <div class="menu-icon">📚</div>
+                    <div class="menu-title">הסבר</div>
+                    <div class="menu-desc">בואו נלמד מה זה נתונים וגרפים!</div>
+                </div>
+                
+                <div class="menu-card" onclick="playSound('click'); showScreen('game1Screen')">
+                    <div class="menu-icon">🍎</div>
+                    <div class="menu-title">משחק 1</div>
+                    <div class="menu-desc">בניית גרף פירות</div>
+                </div>
+                
+                <div class="menu-card" onclick="playSound('click'); showScreen('game2Screen')">
+                    <div class="menu-icon">❓</div>
+                    <div class="menu-title">משחק 2</div>
+                    <div class="menu-desc">חידון קריאת גרפים</div>
+                </div>
+                
+                <div class="menu-card" onclick="playSound('click'); showScreen('game3Screen')">
+                    <div class="menu-icon">🐶</div>
+                    <div class="menu-title">משחק 3</div>
+                    <div class="menu-desc">איסוף מידע על חיות</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- מסך הסבר -->
+        <div id="lessonScreen" class="screen">
+            <h1>📚 בואו נלמד!</h1>
+            
+            <div class="lesson-section">
+                <h2 style="color: #667eea; margin-bottom: 15px;">מה זה נתונים?</h2>
+                <p>
+                    <strong>נתונים</strong> זה מידע שאנחנו אוספים! 🎯<br>
+                    למשל: כמה ילדים אוהבים תפוחים? 🍎
+                </p>
+            </div>
+            
+            <div class="lesson-section">
+                <h2 style="color: #667eea; margin-bottom: 15px;">📋 טבלה</h2>
+                <p style="margin-bottom: 15px;">טבלה עוזרת לנו לראות מידע בצורה מסודרת:</p>
+                
+                <table class="example-table">
+                    <tr>
+                        <th>פרי</th>
+                        <th>כמות</th>
+                    </tr>
+                    <tr>
+                        <td>🍎</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>🍌</td>
+                        <td>2</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="lesson-section">
+                <h2 style="color: #667eea; margin-bottom: 15px;">📊 גרף עמודות</h2>
+                <p style="margin-bottom: 20px;">גרף עוזר לנו לראות את המידע בצורה ברורה!</p>
+                
+                <div style="background: white; padding: 20px; border-radius: 10px;">
+                    <div class="bar-chart">
+                        <div class="y-axis-labels">
+                            <div class="y-label">5</div>
+                            <div class="y-label">4</div>
+                            <div class="y-label">3</div>
+                            <div class="y-label">2</div>
+                            <div class="y-label">1</div>
+                            <div class="y-label">0</div>
+                        </div>
+                        <div class="chart-grid">
+                            <div class="bar-wrapper">
+                                <div class="bar" style="height: 180px; background: linear-gradient(180deg, #ff6b6b 0%, #c92a2a 100%);">
+                                    <div class="bar-value">3</div>
+                                </div>
+                                <div class="bar-label">🍎</div>
+                                <div class="x-axis-label">תפוח</div>
+                            </div>
+                            <div class="bar-wrapper">
+                                <div class="bar" style="height: 120px; background: linear-gradient(180deg, #ffd93d 0%, #f5a623 100%);">
+                                    <div class="bar-value">2</div>
+                                </div>
+                                <div class="bar-label">🍌</div>
+                                <div class="x-axis-label">בננה</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p style="text-align: center; color: #666; margin-top: 15px; font-size: 1.1em;">
+                    ככה נראה גרף עמודות! ⬆️
+                </p>
+            </div>
+            
+            <div class="lesson-section">
+                <h2 style="color: #667eea; margin-bottom: 15px;">🖼️ גרף תמונות</h2>
+                <p style="margin-bottom: 15px;">אפשר גם להראות מידע עם תמונות בשורה!</p>
+                
+                <div style="background: white; padding: 20px; border-radius: 10px;">
+                    <div class="pictogram-row">
+                        <div class="pictogram-label">🍎 תפוח:</div>
+                        <div class="pictogram-icons">
+                            <span>🍎</span><span>🍎</span><span>🍎</span>
+                        </div>
+                    </div>
+                    <div class="pictogram-row">
+                        <div class="pictogram-label">🍌 בננה:</div>
+                        <div class="pictogram-icons">
+                            <span>🍌</span><span>🍌</span>
+                        </div>
+                    </div>
+                </div>
+                <p style="text-align: center; color: #666; margin-top: 15px; font-size: 1.1em;">
+                    כל תמונה = ילד אחד 👦
+                </p>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="playSound('click'); showScreen('mainMenu')">🏠 חזרה לתפריט</button>
+            </div>
+        </div>
+        
+        <!-- משחק 1: בניית גרף -->
+        <div id="game1Screen" class="screen">
+            <div class="game-container">
+                <h2 class="game-title">🎮 משחק 1: בואו נבנה גרף!</h2>
+                <div class="game-instruction">
+                    לחצו על הפירות ותראו את הגרף נבנה! 🎉
+                </div>
+                
+                <div class="fruit-buttons">
+                    <button class="fruit-btn" onclick="playSound('pop'); addFruit('apple', '🍎')">🍎 תפוח</button>
+                    <button class="fruit-btn" onclick="playSound('pop'); addFruit('banana', '🍌')">🍌 בננה</button>
+                </div>
+                
+                <div class="chart-display">
+                    <h3 style="text-align: center; margin-bottom: 20px; font-size: 1.4em;">📊 גרף עמודות:</h3>
+                    <div class="bar-chart">
+                        <div class="y-axis-labels">
+                            <div class="y-label">5</div>
+                            <div class="y-label">4</div>
+                            <div class="y-label">3</div>
+                            <div class="y-label">2</div>
+                            <div class="y-label">1</div>
+                            <div class="y-label">0</div>
+                        </div>
+                        <div class="chart-grid">
+                            <div class="bar-wrapper">
+                                <div class="bar" id="apple-bar" style="height: 0px;">
+                                    <div class="bar-value" id="apple-value"></div>
+                                </div>
+                                <div class="bar-label">🍎</div>
+                                <div class="x-axis-label">תפוח</div>
+                            </div>
+                            <div class="bar-wrapper">
+                                <div class="bar" id="banana-bar" style="height: 0px;">
+                                    <div class="bar-value" id="banana-value"></div>
+                                </div>
+                                <div class="bar-label">🍌</div>
+                                <div class="x-axis-label">בננה</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-display" style="margin-top: 20px;">
+                    <h3 style="text-align: center; margin-bottom: 20px; font-size: 1.4em;">🖼️ גרף תמונות:</h3>
+                    <div class="pictogram-chart">
+                        <div class="pictogram-row">
+                            <div class="pictogram-label">🍎 תפוח:</div>
+                            <div class="pictogram-icons" id="apple-pictogram"></div>
+                        </div>
+                        <div class="pictogram-row">
+                            <div class="pictogram-label">🍌 בננה:</div>
+                            <div class="pictogram-icons" id="banana-pictogram"></div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; color: #666; font-size: 1.1em; margin-top: 15px;">
+                        כל תמונה = 1 👦
+                    </p>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn" onclick="playSound('click'); resetChart()">🔄 התחל מחדש</button>
+                    <button class="btn btn-secondary" onclick="playSound('click'); showScreen('mainMenu')">🏠 חזרה לתפריט</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 2: חידון -->
+        <div id="game2Screen" class="screen">
+            <div class="quiz-container">
+                <h2 class="game-title" style="color: white;">❓ משחק 2: חידון</h2>
+                
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="background: white; display: inline-block; padding: 15px 30px; border-radius: 10px; font-size: 1.5em; font-weight: bold;">
+                        שאלה <span id="currentQuestion">1</span> מתוך 10
+                    </div>
+                    <div style="background: white; display: inline-block; padding: 15px 30px; border-radius: 10px; font-size: 1.5em; font-weight: bold; margin-right: 20px;">
+                        ניקוד: <span id="score" style="color: #00b894;">0</span>
+                    </div>
+                </div>
+                
+                <div id="questionContainer">
+                    <!-- השאלות יוצגו כאן דינמית -->
+                </div>
+                
+                <div id="resultsScreen" style="display: none;">
+                    <div class="question" style="text-align: center; padding: 40px;">
+                        <h3 style="font-size: 2em; margin-bottom: 20px;">🎉 סיימת! 🎉</h3>
+                        <p style="font-size: 1.8em; margin-bottom: 30px;">
+                            ענית נכון על <span id="finalScore" style="color: #00b894; font-weight: bold;">0</span> מתוך 10!
+                        </p>
+                        <div id="scoreMessage" style="font-size: 1.5em; margin-bottom: 30px;"></div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn" onclick="playSound('click'); restartQuiz()">🔄 עוד סיבוב!</button>
+                        <button class="btn btn-secondary" onclick="playSound('click'); showScreen('mainMenu')">🏠 חזרה לתפריט</button>
+                    </div>
+                </div>
+                
+                <div id="quizButtons" class="button-group">
+                    <button class="btn btn-secondary" onclick="playSound('click'); showScreen('mainMenu')">🏠 חזרה לתפריט</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 3: איסוף מידע -->
+        <div id="game3Screen" class="screen">
+            <div class="data-collection">
+                <h2 class="game-title" style="color: white;">🎯 משחק 3: איסוף מידע</h2>
+                <div class="game-instruction">
+                    לחצו על החיות כדי לספור אותן! 🐾
+                </div>
+                
+                <div class="animal-grid">
+                    <div class="animal-card" onclick="playSound('pop'); countAnimal('dog', '🐶')">
+                        <div class="animal-icon">🐶</div>
+                        <div class="animal-name">כלב</div>
+                        <div class="animal-count" id="dog-count">0</div>
+                    </div>
+                    <div class="animal-card" onclick="playSound('pop'); countAnimal('cat', '🐱')">
+                        <div class="animal-icon">🐱</div>
+                        <div class="animal-name">חתול</div>
+                        <div class="animal-count" id="cat-count">0</div>
+                    </div>
+                </div>
+                
+                <div class="chart-display">
+                    <h3 style="text-align: center; margin-bottom: 20px; font-size: 1.4em;">📊 גרף עמודות:</h3>
+                    <div class="bar-chart">
+                        <div class="y-axis-labels">
+                            <div class="y-label">5</div>
+                            <div class="y-label">4</div>
+                            <div class="y-label">3</div>
+                            <div class="y-label">2</div>
+                            <div class="y-label">1</div>
+                            <div class="y-label">0</div>
+                        </div>
+                        <div class="chart-grid">
+                            <div class="bar-wrapper">
+                                <div class="bar" id="dog-bar" style="height: 0px;">
+                                    <div class="bar-value" id="dog-value"></div>
+                                </div>
+                                <div class="bar-label">🐶</div>
+                                <div class="x-axis-label">כלב</div>
+                            </div>
+                            <div class="bar-wrapper">
+                                <div class="bar" id="cat-bar" style="height: 0px;">
+                                    <div class="bar-value" id="cat-value"></div>
+                                </div>
+                                <div class="bar-label">🐱</div>
+                                <div class="x-axis-label">חתול</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-display" style="margin-top: 20px;">
+                    <h3 style="text-align: center; margin-bottom: 20px; font-size: 1.4em;">🖼️ גרף תמונות:</h3>
+                    <div class="pictogram-chart">
+                        <div class="pictogram-row">
+                            <div class="pictogram-label">🐶 כלב:</div>
+                            <div class="pictogram-icons" id="dog-pictogram"></div>
+                        </div>
+                        <div class="pictogram-row">
+                            <div class="pictogram-label">🐱 חתול:</div>
+                            <div class="pictogram-icons" id="cat-pictogram"></div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; color: #666; font-size: 1.1em; margin-top: 15px;">
+                        כל תמונה = 1 👦
+                    </p>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn" onclick="playSound('click'); resetAnimals()">🔄 התחל מחדש</button>
+                    <button class="btn btn-secondary" onclick="playSound('click'); showScreen('mainMenu')">🏠 חזרה לתפריט</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // יצירת צלילים משופרים
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(type) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            if (type === 'click') {
+                // צליל נעים וחלק יותר
+                oscillator.type = 'sine';
+                oscillator.frequency.value = 600;
+                gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.15);
+            } else if (type === 'pop') {
+                // צליל פופ נעים
+                oscillator.type = 'sine';
+                oscillator.frequency.value = 800;
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.12);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.12);
+            } else if (type === 'success') {
+                // צליל הצלחה מוזיקלי
+                oscillator.type = 'sine';
+                const times = [0, 0.1, 0.2];
+                const freqs = [523, 659, 784]; // C, E, G
+                
+                times.forEach((time, i) => {
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    osc.type = 'sine';
+                    osc.frequency.value = freqs[i];
+                    gain.gain.setValueAtTime(0.15, audioContext.currentTime + time);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + time + 0.3);
+                    osc.start(audioContext.currentTime + time);
+                    osc.stop(audioContext.currentTime + time + 0.3);
+                });
+                return;
+            } else if (type === 'wrong') {
+                // צליל טעות עדין יותר
+                oscillator.type = 'sine';
+                oscillator.frequency.value = 200;
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.25);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.25);
+            }
+        }
+        
+        // ניווט בין מסכים
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+            
+            // אם עוברים למשחק החידון, נטען את השאלה הראשונה
+            if (screenId === 'game2Screen') {
+                if (currentQuestionIndex === 0 && quizScore === 0) {
+                    usedQuestions = getRandomQuestions();
+                }
+                loadQuestion();
+            }
+        }
+        
+        // משחק 1: בניית גרף
+        const fruitData = { apple: 0, banana: 0 };
+        const fruitEmojis = { apple: '🍎', banana: '🍌' };
+        
+        function addFruit(fruit) {
+            if (fruitData[fruit] < 5) {
+                fruitData[fruit]++;
+                updateChart();
+            }
+        }
+        
+        function updateChart() {
+            for (let fruit in fruitData) {
+                const count = fruitData[fruit];
+                const emoji = fruitEmojis[fruit];
+                const heightPx = count * 60;
+                
+                // עדכון עמודת גרף
+                const bar = document.getElementById(fruit + '-bar');
+                const value = document.getElementById(fruit + '-value');
+                bar.style.height = heightPx + 'px';
+                value.textContent = count > 0 ? count : '';
+                
+                // עדכון פיקטוגרמה
+                const pictogram = document.getElementById(fruit + '-pictogram');
+                pictogram.innerHTML = '';
+                for (let i = 0; i < count; i++) {
+                    const icon = document.createElement('span');
+                    icon.textContent = emoji;
+                    pictogram.appendChild(icon);
+                }
+            }
+        }
+        
+        function resetChart() {
+            fruitData.apple = 0;
+            fruitData.banana = 0;
+            updateChart();
+        }
+        
+        // משחק 2: חידון עם 10 שאלות
+        let currentQuestionIndex = 0;
+        let quizScore = 0;
+        let usedQuestions = [];
+        
+        const questionBank = [
+            // שאלות עם גרף תמונות
+            {
+                type: 'pictogram',
+                text: 'כמה כלבים יש?',
+                visual: '<div class="pictogram" style="font-size: 2em;"><div>🐶🐶🐶</div></div>',
+                answers: [2, 3, 4],
+                correct: 3
+            },
+            {
+                type: 'pictogram',
+                text: 'מה יש יותר?',
+                visual: '<div class="pictogram" style="font-size: 2em;"><div>🍎🍎🍎🍎</div><div>🍌🍌</div></div>',
+                answers: ['🍎 תפוח', '🍌 בננה'],
+                correct: '🍎 תפוח'
+            },
+            {
+                type: 'pictogram',
+                text: 'כמה בסך הכל?',
+                visual: '<div class="pictogram" style="font-size: 2em;"><div>🐱🐱</div><div>🐶🐶</div></div>',
+                answers: [2, 4, 6],
+                correct: 4
+            },
+            {
+                type: 'pictogram',
+                text: 'כמה חתולים יש?',
+                visual: '<div class="pictogram" style="font-size: 2em;"><div>🐱🐱🐱🐱🐱</div></div>',
+                answers: [3, 4, 5],
+                correct: 5
+            },
+            // שאלות עם גרף עמודות
+            {
+                type: 'bar',
+                text: 'לפי הגרף, כמה ילדים אוהבים תפוחים?',
+                visual: `
+                    <div style="background: white; padding: 8px; border-radius: 8px; max-width: 320px; margin: 5px auto;">
+                        <div style="display: flex; align-items: flex-end; justify-content: space-around; height: 120px; border-bottom: 3px solid #333; border-left: 3px solid #333; padding: 5px; background-image: repeating-linear-gradient(to top, transparent, transparent 23px, #ddd 23px, #ddd 24px);">
+                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                <div style="width: 50px; height: 96px; background: linear-gradient(180deg, #ff6b6b 0%, #c92a2a 100%); border-radius: 4px 4px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: 6px; color: white; font-weight: bold; font-size: 1.2em;">4</div>
+                                <div style="font-size: 1.5em; margin-top: 5px;">🍎</div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                <div style="width: 50px; height: 48px; background: linear-gradient(180deg, #ffd93d 0%, #f5a623 100%); border-radius: 4px 4px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: 6px; color: white; font-weight: bold; font-size: 1.2em;">2</div>
+                                <div style="font-size: 1.5em; margin-top: 5px;">🍌</div>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                answers: [2, 3, 4],
+                correct: 4
+            },
+            {
+                type: 'bar',
+                text: 'לפי הגרף, איזה חיה פחות פופולרית?',
+                visual: `
+                    <div style="background: white; padding: 8px; border-radius: 8px; max-width: 320px; margin: 5px auto;">
+                        <div style="display: flex; align-items: flex-end; justify-content: space-around; height: 120px; border-bottom: 3px solid #333; border-left: 3px solid #333; padding: 5px; background-image: repeating-linear-gradient(to top, transparent, transparent 23px, #ddd 23px, #ddd 24px);">
+                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                <div style="width: 50px; height: 96px; background: linear-gradient(180deg, #667eea 0%, #764ba2 100%); border-radius: 4px 4px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: 6px; color: white; font-weight: bold; font-size: 1.2em;">4</div>
+                                <div style="font-size: 1.5em; margin-top: 5px;">🐶</div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                <div style="width: 50px; height: 48px; background: linear-gradient(180deg, #667eea 0%, #764ba2 100%); border-radius: 4px 4px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: 6px; color: white; font-weight: bold; font-size: 1.2em;">2</div>
+                                <div style="font-size: 1.5em; margin-top: 5px;">🐱</div>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                answers: ['🐶 כלב', '🐱 חתול'],
+                correct: '🐱 חתול'
+            },
+            {
+                type: 'bar',
+                text: 'לפי הגרף, כמה כוכבים יש בסך הכל?',
+                visual: `
+                    <div style="background: white; padding: 8px; border-radius: 8px; max-width: 320px; margin: 5px auto;">
+                        <div style="display: flex; align-items: flex-end; justify-content: space-around; height: 120px; border-bottom: 3px solid #333; border-left: 3px solid #333; padding: 5px; background-image: repeating-linear-gradient(to top, transparent, transparent 23px, #ddd 23px, #ddd 24px);">
+                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                <div style="width: 50px; height: 48px; background: linear-gradient(180deg, #ffd93d 0%, #f5a623 100%); border-radius: 4px 4px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: 6px; color: white; font-weight: bold; font-size: 1.2em;">2</div>
+                                <div style="font-size: 1.5em; margin-top: 5px;">⭐</div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                <div style="width: 50px; height: 72px; background: linear-gradient(180deg, #ffd93d 0%, #f5a623 100%); border-radius: 4px 4px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: 6px; color: white; font-weight: bold; font-size: 1.2em;">3</div>
+                                <div style="font-size: 1.5em; margin-top: 5px;">⭐</div>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                answers: [3, 5, 6],
+                correct: 5
+            },
+            // שאלות עם טבלה
+            {
+                type: 'table',
+                text: 'לפי הטבלה, כמה ילדים אוהבים גלידה?',
+                visual: `
+                    <table style="margin: 10px auto; border-collapse: collapse; font-size: 1em; max-width: 300px;">
+                        <tr style="background: #667eea; color: white;">
+                            <th style="border: 2px solid #667eea; padding: 8px;">מה אוהבים</th>
+                            <th style="border: 2px solid #667eea; padding: 8px;">כמות</th>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="border: 2px solid #667eea; padding: 8px;">🍦 גלידה</td>
+                            <td style="border: 2px solid #667eea; padding: 8px; text-align: center; font-weight: bold;">4</td>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="border: 2px solid #667eea; padding: 8px;">🍰 עוגה</td>
+                            <td style="border: 2px solid #667eea; padding: 8px; text-align: center; font-weight: bold;">2</td>
+                        </tr>
+                    </table>
+                `,
+                answers: [2, 3, 4],
+                correct: 4
+            },
+            {
+                type: 'table',
+                text: 'לפי הטבלה, מה יש פחות?',
+                visual: `
+                    <table style="margin: 10px auto; border-collapse: collapse; font-size: 1em; max-width: 300px;">
+                        <tr style="background: #667eea; color: white;">
+                            <th style="border: 2px solid #667eea; padding: 8px;">ספורט</th>
+                            <th style="border: 2px solid #667eea; padding: 8px;">כמות</th>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="border: 2px solid #667eea; padding: 8px;">⚽ כדורגל</td>
+                            <td style="border: 2px solid #667eea; padding: 8px; text-align: center; font-weight: bold;">5</td>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="border: 2px solid #667eea; padding: 8px;">🏀 כדורסל</td>
+                            <td style="border: 2px solid #667eea; padding: 8px; text-align: center; font-weight: bold;">3</td>
+                        </tr>
+                    </table>
+                `,
+                answers: ['⚽ כדורגל', '🏀 כדורסל'],
+                correct: '🏀 כדורסל'
+            },
+            {
+                type: 'table',
+                text: 'לפי הטבלה, כמה חיות בסך הכל?',
+                visual: `
+                    <table style="margin: 10px auto; border-collapse: collapse; font-size: 1em; max-width: 300px;">
+                        <tr style="background: #667eea; color: white;">
+                            <th style="border: 2px solid #667eea; padding: 8px;">חיה</th>
+                            <th style="border: 2px solid #667eea; padding: 8px;">כמות</th>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="border: 2px solid #667eea; padding: 8px;">🐰 ארנב</td>
+                            <td style="border: 2px solid #667eea; padding: 8px; text-align: center; font-weight: bold;">2</td>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="border: 2px solid #667eea; padding: 8px;">🐦 ציפור</td>
+                            <td style="border: 2px solid #667eea; padding: 8px; text-align: center; font-weight: bold;">3</td>
+                        </tr>
+                    </table>
+                `,
+                answers: [3, 4, 5],
+                correct: 5
+            },
+            // עוד שאלות גרף תמונות
+            {
+                type: 'pictogram',
+                text: 'כמה פרחים יש?',
+                visual: '<div class="pictogram" style="font-size: 3em;"><div>🌸🌸🌸🌸</div></div>',
+                answers: [2, 3, 4],
+                correct: 4
+            },
+            {
+                type: 'pictogram',
+                text: 'מה יש פחות?',
+                visual: '<div class="pictogram" style="font-size: 3em;"><div>🚗🚗🚗</div><div>🚕🚕🚕🚕</div></div>',
+                answers: ['🚗 מכונית', '🚕 מונית'],
+                correct: '🚗 מכונית'
+            }
+        ];
+        
+        function getRandomQuestions() {
+            const shuffled = [...questionBank].sort(() => Math.random() - 0.5);
+            return shuffled.slice(0, 10);
+        }
+        
+        function loadQuestion() {
+            if (currentQuestionIndex >= usedQuestions.length) {
+                showResults();
+                return;
+            }
+            
+            const q = usedQuestions[currentQuestionIndex];
+            const container = document.getElementById('questionContainer');
+            
+            let answersHTML = '';
+            q.answers.forEach((answer) => {
+                answersHTML += `<button class="answer-btn" onclick="playSound('pop'); checkQuizAnswer(${JSON.stringify(answer).replace(/"/g, '&quot;')}, this)">${answer}</button>`;
+            });
+            
+            container.innerHTML = `
+                <div class="question">
+                    <p class="question-text">${q.text}</p>
+                    ${q.visual}
+                    <div class="answer-buttons">
+                        ${answersHTML}
+                    </div>
+                    <div id="questionFeedback" class="feedback" style="display: none;"></div>
+                </div>
+            `;
+            
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+        }
+        
+        function checkQuizAnswer(answer, button) {
+            const q = usedQuestions[currentQuestionIndex];
+            const feedback = document.getElementById('questionFeedback');
+            const buttons = button.parentElement.querySelectorAll('.answer-btn');
+            
+            buttons.forEach(btn => btn.disabled = true);
+            
+            feedback.style.display = 'block';
+            
+            if (answer === q.correct) {
+                button.classList.add('correct');
+                feedback.textContent = '✅ נכון מאוד! 🎉';
+                feedback.style.background = '#00b894';
+                feedback.style.color = 'white';
+                playSound('success');
+                quizScore++;
+                document.getElementById('score').textContent = quizScore;
+                
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    loadQuestion();
+                }, 1500);
+            } else {
+                button.classList.add('wrong');
+                feedback.textContent = '❌ לא נכון, נסה שוב!';
+                feedback.style.background = '#ff7675';
+                feedback.style.color = 'white';
+                playSound('wrong');
+                
+                setTimeout(() => {
+                    buttons.forEach(btn => {
+                        btn.disabled = false;
+                        btn.classList.remove('wrong');
+                    });
+                    feedback.style.display = 'none';
+                }, 1500);
+            }
+        }
+        
+        function showResults() {
+            document.getElementById('questionContainer').style.display = 'none';
+            document.getElementById('quizButtons').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'block';
+            document.getElementById('finalScore').textContent = quizScore;
+            
+            const messageEl = document.getElementById('scoreMessage');
+            if (quizScore === 10) {
+                messageEl.textContent = '🌟 מושלם! אלוף אלופים! 🌟';
+                messageEl.style.color = '#ffd700';
+            } else if (quizScore >= 7) {
+                messageEl.textContent = '🎉 מעולה! עבודה נהדרת! 🎉';
+                messageEl.style.color = '#00b894';
+            } else if (quizScore >= 5) {
+                messageEl.textContent = '😊 יפה! אפשר עוד קצת תרגול 😊';
+                messageEl.style.color = '#0984e3';
+            } else {
+                messageEl.textContent = '💪 כל הכבוד שניסית! בואו ננסה שוב! 💪';
+                messageEl.style.color = '#fd79a8';
+            }
+        }
+        
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            quizScore = 0;
+            usedQuestions = getRandomQuestions();
+            document.getElementById('score').textContent = '0';
+            document.getElementById('questionContainer').style.display = 'block';
+            document.getElementById('quizButtons').style.display = 'block';
+            document.getElementById('resultsScreen').style.display = 'none';
+            loadQuestion();
+        }
+        
+        function resetQuiz() {
+            restartQuiz();
+        }
+        
+        // משחק 3: איסוף מידע
+        const animalData = { dog: 0, cat: 0 };
+        const animalEmojis = { dog: '🐶', cat: '🐱' };
+        
+        function countAnimal(animal) {
+            if (animalData[animal] < 5) {
+                animalData[animal]++;
+                document.getElementById(animal + '-count').textContent = animalData[animal];
+                updateAnimalChart();
+            }
+        }
+        
+        function updateAnimalChart() {
+            for (let animal in animalData) {
+                const count = animalData[animal];
+                const emoji = animalEmojis[animal];
+                const heightPx = count * 60;
+                
+                // עדכון עמודת גרף
+                const bar = document.getElementById(animal + '-bar');
+                const value = document.getElementById(animal + '-value');
+                bar.style.height = heightPx + 'px';
+                value.textContent = count > 0 ? count : '';
+                
+                // עדכון פיקטוגרמה
+                const pictogram = document.getElementById(animal + '-pictogram');
+                pictogram.innerHTML = '';
+                for (let i = 0; i < count; i++) {
+                    const icon = document.createElement('span');
+                    icon.textContent = emoji;
+                    pictogram.appendChild(icon);
+                }
+            }
+        }
+        
+        function resetAnimals() {
+            animalData.dog = 0;
+            animalData.cat = 0;
+            document.getElementById('dog-count').textContent = '0';
+            document.getElementById('cat-count').textContent = '0';
+            updateAnimalChart();
+        }
+        
+        // אתחול
+        updateChart();
+        updateAnimalChart();
+    </script>
+</body>
+</html>
