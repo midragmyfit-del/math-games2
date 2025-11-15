@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>שברים מתקדם - כיתה ד'</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; border-radius: 25px; padding: 40px; box-shadow: 0 25px 70px rgba(0,0,0,0.4); }
+        h1 { color: #667eea; text-align: center; margin-bottom: 15px; font-size: 3em; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .subtitle { text-align: center; color: #666; margin-bottom: 35px; font-size: 1.3em; }
+        .tabs { display: flex; gap: 12px; margin-bottom: 35px; flex-wrap: wrap; justify-content: center; }
+        .tab { padding: 16px 28px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px; cursor: pointer; font-size: 1.15em; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: white; }
+        .tab:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); background: linear-gradient(135deg, #7c8ef5 0%, #8a5eb8 100%); }
+        .tab.active { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); transform: scale(1.05); }
+        .content { display: none; }
+        .content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .lesson { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .lesson h2 { color: #ff6b6b; margin-bottom: 20px; font-size: 1.8em; }
+        .lesson p { font-size: 1.2em; line-height: 1.8; margin-bottom: 15px; color: #333; }
+        .example { background: white; padding: 20px; border-right: 5px solid #667eea; margin: 20px 0; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
+        .example h3 { color: #f093fb; margin-bottom: 12px; font-size: 1.3em; }
+        
+        .fraction { 
+            display: inline-flex; 
+            flex-direction: column; 
+            align-items: center; 
+            vertical-align: middle;
+            margin: 0 10px;
+            direction: ltr;
+        }
+        .fraction .numerator { 
+            padding: 5px 15px;
+            border-bottom: 3px solid #333;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        .fraction .denominator { 
+            padding: 5px 15px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        
+        .calculation { 
+            font-family: 'Courier New', monospace; 
+            background: #f8f9fa; 
+            padding: 30px; 
+            border-radius: 10px; 
+            margin: 15px 0; 
+            text-align: center; 
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            direction: ltr;
+        }
+        
+        .game { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .game h2 { margin-bottom: 20px; font-size: 2em; }
+        .question-counter { text-align: center; font-size: 1.3em; margin: 15px 0; color: #fff; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px; }
+        .score { text-align: center; font-size: 1.8em; margin: 25px 0; color: #fff; font-weight: bold; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; }
+        .problem-display { 
+            font-size: 1.5em; 
+            text-align: center; 
+            margin: 30px 0; 
+            padding: 25px; 
+            background: rgba(255,255,255,0.3); 
+            border-radius: 15px; 
+            font-weight: bold; 
+            min-height: 150px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .problem-fraction { 
+            display: inline-flex; 
+            flex-direction: column; 
+            align-items: center; 
+            vertical-align: middle;
+            margin: 0 15px;
+            direction: ltr;
+        }
+        .problem-fraction .pf-num { 
+            padding: 10px 25px; 
+            font-size: 1.8em; 
+            font-weight: bold;
+            border-bottom: 4px solid white;
+        }
+        .problem-fraction .pf-den { 
+            padding: 10px 25px; 
+            font-size: 1.8em; 
+            font-weight: bold;
+        }
+        
+        input[type="number"] { width: 120px; padding: 15px; font-size: 1.8em; border: 4px solid white; border-radius: 10px; text-align: center; margin: 10px; font-weight: bold; }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        button { background: white; color: #667eea; border: none; padding: 14px 35px; font-size: 1.2em; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-weight: bold; box-shadow: 0 6px 12px rgba(0,0,0,0.2); margin: 5px; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+        .feedback { padding: 80px 120px !important; border-radius: 25px; margin-top: 30px; font-size: 2.2em; text-align: center; font-weight: bold; min-height: 160px !important; min-width: 500px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: popIn 0.3s ease-out; display: flex; align-items: center; justify-content: center; }
+        .correct { background: linear-gradient(135deg, #51cf66 0%, #40c057 100%) !important; color: white !important; }
+        .incorrect { background: linear-gradient(135deg, #ff6b6b 0%, #fa5252 100%) !important; color: white !important; }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .controls { text-align: center; margin: 25px 0; }
+        .steps { background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin: 20px 0; text-align: right; }
+        .steps p { margin: 10px 0; font-size: 1.1em; }
+        .answer-fractions { display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .fraction-input-group { display: inline-flex; flex-direction: column; align-items: center; margin: 20px; }
+        .fraction-input-group label { display: block; font-size: 1.2em; margin-bottom: 10px; color: white; }
+        .fraction-input-container { display: flex; flex-direction: column; align-items: center; }
+        .fraction-input-container input { width: 120px; margin: 5px 0; }
+        .fraction-divider { width: 140px; height: 4px; background: white; margin: 5px 0; border-radius: 2px; }
+        
+        .operator {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>שברים מתקדם</h1>
+        <div class="subtitle">כיתה ד' - בואו ללמוד שברים!</div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('lesson1')">📚 שיעור: שברים שווי ערך</button>
+            <button class="tab" onclick="switchTab('game1')">🎮 משחק: שווי ערך</button>
+            <button class="tab" onclick="switchTab('lesson2')">📚 שיעור: השוואת שברים</button>
+            <button class="tab" onclick="switchTab('game2')">🎯 משחק: השוואה</button>
+            <button class="tab" onclick="switchTab('lesson3')">📚 שיעור: חיבור וחיסור</button>
+            <button class="tab" onclick="switchTab('game3')">🏆 משחק: חיבור וחיסור</button>
+            <button class="tab" onclick="switchTab('lesson4')">📚 שיעור: כפל שבר במספר</button>
+            <button class="tab" onclick="switchTab('game4')">⭐ משחק: כפל</button>
+            <button class="tab" onclick="switchTab('lesson5')">📚 שיעור: מספרים מעורבים</button>
+            <button class="tab" onclick="switchTab('game5')">🎲 משחק: מספרים מעורבים</button>
+        </div>
+        
+        <div id="lesson1" class="content active">
+            <div class="lesson">
+                <h2>שברים שווי ערך - הרחבה וצמצום</h2>
+                <p>שברים שווי ערך הם שברים שמייצגים את אותו הערך, אפילו שהם נראים שונה!</p>
+                
+                <div class="example">
+                    <h3>מהי הרחבת שבר?</h3>
+                    <p>כשמרחיבים שבר, כופלים את המונה ואת המכנה באותו מספר:</p>
+                    <div class="calculation">
+                        <div class="fraction">
+                            <div class="numerator">1</div>
+                            <div class="denominator">2</div>
+                        </div>
+                        <span class="operator">=</span>
+                        <div class="fraction">
+                            <div class="numerator">2</div>
+                            <div class="denominator">4</div>
+                        </div>
+                        <span class="operator">=</span>
+                        <div class="fraction">
+                            <div class="numerator">3</div>
+                            <div class="denominator">6</div>
+                        </div>
+                        <span class="operator">=</span>
+                        <div class="fraction">
+                            <div class="numerator">4</div>
+                            <div class="denominator">8</div>
+                        </div>
+                    </div>
+                    <div class="steps">
+                        <p>כופלים ב-2: <span style="direction: ltr; display: inline-block;">(1×2)/(2×2) = 2/4</span></p>
+                        <p>כופלים ב-3: <span style="direction: ltr; display: inline-block;">(1×3)/(2×3) = 3/6</span></p>
+                        <p>כופלים ב-4: <span style="direction: ltr; display: inline-block;">(1×4)/(2×4) = 4/8</span></p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>מהו צמצום שבר?</h3>
+                    <p>כשמצמצמים שבר, מחלקים את המונה ואת המכנה באותו מספר:</p>
+                    <div class="calculation">
+                        <div class="fraction">
+                            <div class="numerator">12</div>
+                            <div class="denominator">18</div>
+                        </div>
+                        <span class="operator">=</span>
+                        <div class="fraction">
+                            <div class="numerator">6</div>
+                            <div class="denominator">9</div>
+                        </div>
+                        <span class="operator">=</span>
+                        <div class="fraction">
+                            <div class="numerator">2</div>
+                            <div class="denominator">3</div>
+                        </div>
+                    </div>
+                    <div class="steps">
+                        <p><strong>שלב 1:</strong> מחלקים ב-2: <span style="direction: ltr; display: inline-block;">(12÷2)/(18÷2) = 6/9</span></p>
+                        <p><strong>שלב 2:</strong> מחלקים ב-3: <span style="direction: ltr; display: inline-block;">(6÷3)/(9÷3) = 2/3</span></p>
+                        <p><strong>2/3 הוא השבר הכי מצומצם!</strong></p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>טיפ חשוב!</h3>
+                    <p>כדי למצוא שברים שווי ערך במהירות, חפשו את <strong>המחלק המשותף הגדול ביותר</strong> של המונה והמכנה.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game1" class="content">
+            <div class="game">
+                <h2>משחק שברים שווי ערך</h2>
+                <div class="question-counter">שאלה <span id="qc1">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="sc1">0</span></div>
+                <div class="problem-display" id="prob1"></div>
+                <div class="controls">
+                    <div class="answer-fractions">
+                        <div class="fraction-input-group">
+                            <label>תשובה:</label>
+                            <div class="fraction-input-container">
+                                <input type="number" id="n1" placeholder="מונה">
+                                <div class="fraction-divider"></div>
+                                <input type="number" id="d1" placeholder="מכנה">
+                            </div>
+                        </div>
+                    </div>
+                    <br><br>
+                    <button onclick="checkAnswer(1)">בדוק</button>
+                </div>
+                <div id="fb1" class="feedback"></div>
+            </div>
+        </div>
+        
+        <div id="lesson2" class="content">
+            <div class="lesson">
+                <h2>השוואת שברים עם מכנים שונים</h2>
+                <p>כדי להשוות שברים עם מכנים שונים, צריך להפוך אותם לשברים עם אותו מכנה!</p>
+                
+                <div class="example">
+                    <h3>דוגמה 1: השוואת 1/2 ו-2/3</h3>
+                    <div class="steps">
+                        <p><strong>שלב 1:</strong> מוצאים מכנה משותף (6 הוא מכפלה של 2 ו-3)</p>
+                        <p><strong>שלב 2:</strong> מרחיבים כל שבר:</p>
+                        <p><span style="direction: ltr; display: inline-block;">1/2 = (1×3)/(2×3) = 3/6</span></p>
+                        <p><span style="direction: ltr; display: inline-block;">2/3 = (2×2)/(3×2) = 4/6</span></p>
+                        <p><strong>שלב 3:</strong> משווים: <span style="direction: ltr; display: inline-block;">3/6 < 4/6</span></p>
+                        <p><strong>מסקנה:</strong> <span style="direction: ltr; display: inline-block;">1/2 < 2/3</span></p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: השוואת 3/4 ו-5/6</h3>
+                    <div class="steps">
+                        <p><strong>מכנה משותף:</strong> 12</p>
+                        <p><span style="direction: ltr; display: inline-block;">3/4 = (3×3)/(4×3) = 9/12</span></p>
+                        <p><span style="direction: ltr; display: inline-block;">5/6 = (5×2)/(6×2) = 10/12</span></p>
+                        <p><strong>מסקנה:</strong> <span style="direction: ltr; display: inline-block;">9/12 < 10/12</span>, לכן <span style="direction: ltr; display: inline-block;">3/4 < 5/6</span></p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>טריק מהיר!</h3>
+                    <p>אם שני שברים יש להם אותו מונה - השבר עם המכנה הקטן יותר הוא הגדול יותר!</p>
+                    <p>דוגמה: 1/3 > 1/4 (שליש גדול מרבע)</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game2" class="content">
+            <div class="game">
+                <h2>משחק השוואת שברים</h2>
+                <div class="question-counter">שאלה <span id="qc2">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="sc2">0</span></div>
+                <div class="problem-display" id="prob2"></div>
+                <div class="controls">
+                    <button onclick="checkComp('<')"><</button>
+                    <button onclick="checkComp('=')">=</button>
+                    <button onclick="checkComp('>')">></button>
+                </div>
+                <div id="fb2" class="feedback"></div>
+            </div>
+        </div>
+        
+        <div id="lesson3" class="content">
+            <div class="lesson">
+                <h2>חיבור וחיסור שברים</h2>
+                <p>כשמחברים או מחסרים שברים, הם חייבים להיות עם אותו מכנה!</p>
+                
+                <div class="example">
+                    <h3>חיבור שברים עם אותו מכנה</h3>
+                    <p><strong>הכלל הפשוט:</strong> כשהמכנה זהה - מחברים רק את המונים, והמכנה נשאר!</p>
+                    <div class="calculation">
+                        <div class="fraction">
+                            <div class="numerator">2</div>
+                            <div class="denominator">5</div>
+                        </div>
+                        <span class="operator">+</span>
+                        <div class="fraction">
+                            <div class="numerator">1</div>
+                            <div class="denominator">5</div>
+                        </div>
+                        <span class="operator">=</span>
+                        <div class="fraction">
+                            <div class="numerator">3</div>
+                            <div class="denominator">5</div>
+                        </div>
+                    </div>
+                    <div class="steps">
+                        <p><strong>שלב 1:</strong> בודקים - המכנה זהה? כן! שניהם 5</p>
+                        <p><strong>שלב 2:</strong> מחברים את המונים: <span style="direction: ltr; display: inline-block;">2 + 1 = 3</span></p>
+                        <p><strong>שלב 3:</strong> המכנה נשאר: 5</p>
+                        <p><strong>תשובה:</strong> <div class="fraction" style="display: inline-flex;"><div class="numerator">3</div><div class="denominator">5</div></div></p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>חיבור שברים עם מכנים שונים</h3>
+                    <p><strong>חשוב לזכור:</strong> אי אפשר לחבר שברים עם מכנים שונים ישירות! קודם צריך להפוך אותם לאותו מכנה.</p>
+                    <div class="calculation">
+                        <div class="fraction">
+                            <div class="numerator">1</div>
+                            <div class="denominator">2</div>
+                        </div>
+                        <span class="operator">+</span>
+                        <div class="fraction">
+                            <div class="numerator">1</div>
+                            <div class="denominator">4</div>
+                        </div>
+                        <span class="operator">=</span>
+                        <span style="margin: 0 5px;">?</span>
+                    </div>
+                    <div class="steps">
+                        <p><strong>שלב 1:</strong> מוצאים מכנה משותף - מה מתאים לשניהם? 4!</p>
+                        <p><strong>שלב 2:</strong> מרחיבים את <div class="fraction" style="display: inline-flex;"><div class="numerator">1</div><div class="denominator">2</div></div>:</p>
+                        <p style="margin-right: 30px;">כופלים מונה ומכנה ב-2: <span style="direction: ltr; display: inline-block;">(1×2)/(2×2) = </span><div class="fraction" style="display: inline-flex;"><div class="numerator">2</div><div class="denominator">4</div></div></p>
+                        <p><strong>שלב 3:</strong> השבר השני כבר עם מכנה 4, אז נשאר <div class="fraction" style="display: inline-flex;"><div class="numerator">1</div><div class="denominator">4</div></div></p>
+                        <p><strong>שלב 4:</strong> עכשיו מחברים: <span style="direction: rtl; display: inline-block;"><div class="fraction" style="display: inline-flex;"><div class="numerator">3</div><div class="denominator">4</div></div> = <div class="fraction" style="display: inline-flex;"><div class="numerator">1</div><div class="denominator">4</div></div> + <div class="fraction" style="display: inline-flex;"><div class="numerator">2</div><div class="denominator">4</div></div></span></p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>חיסור שברים עם אותו מכנה</h3>
+                    <p><strong>הכלל:</strong> בדיוק כמו חיבור - כשהמכנה זהה, מחסרים רק את המונים!</p>
+                    <div class="calculation">
+                        <div class="fraction">
+                            <div class="numerator">4</div>
+                            <div class="denominator">5</div>
+                        </div>
+                        <span class="operator">-</span>
+                        <div class="fraction">
+                            <div class="numerator">2</div>
+                            <div class="denominator">5</div>
+                        </div>
+                        <span class="operator">=</span>
+                        <div class="fraction">
+                            <div class="numerator">2</div>
+                            <div class="denominator">5</div>
+                        </div>
+                    </div>
+                    <div class="steps">
+                        <p><strong>שלב 1:</strong> המכנה זהה? כן! שניהם 5</p>
+                        <p><strong>שלב 2:</strong> מחסרים את המונים: <span style="direction: ltr; display: inline-block;">4 - 2 = 2</span></p>
+                        <p><strong>שלב 3:</strong> המכנה נשאר: 5</p>
+                        <p><strong>תשובה:</strong> <div class="fraction" style="display: inline-flex;"><div class="numerator">2</div><div class="denominator">5</div></div></p>
+                        <p style="color: #e74c3c; font-weight: bold;">⚠️ שימו לב: מחסרים רק את המונים, לא את המכנים!</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>חיסור שברים עם מכנים שונים - מפורט!</h3>
+                    <p><strong>דוגמה מפורטת:</strong> נחסיר <span style="direction: ltr; display: inline-block;">3/4 - 1/2</span></p>
+                    <div class="calculation">
+                        <div class="fraction">
+                            <div class="numerator">3</div>
+                            <div class="denominator">4</div>
+                        </div>
+                        <span class="operator">-</span>
+                        <div class="fraction">
+                            <div class="numerator">1</div>
+                            <div class="denominator">2</div>
+                        </div>
+                        <span class="operator">=</span>
+                        <span style="margin: 0 5px;">?</span>
+                    </div>
+                    <div class="steps">
+                        <p><strong>🔍 בדיקה ראשונה:</strong> האם המכנים זהים?</p>
+                        <p style="margin-right: 30px;">4 ו-2? לא! אז צריך להפוך אותם לאותו מכנה</p>
+                        
+                        <p><strong>🎯 שלב 1: מוצאים מכנה משותף</strong></p>
+                        <p style="margin-right: 30px;">המכנה המשותף הקטן ביותר של 4 ו-2 הוא 4</p>
+                        <p style="margin-right: 30px;">(כי 4 מתחלק גם ב-4 וגם ב-2)</p>
+                        
+                        <p><strong>🔄 שלב 2: מרחיבים שברים שצריך</strong></p>
+                        <p style="margin-right: 30px;">השבר הראשון <div class="fraction" style="display: inline-flex;"><div class="numerator">3</div><div class="denominator">4</div></div> - כבר עם מכנה 4, מעולה! נשאר <div class="fraction" style="display: inline-flex;"><div class="numerator">3</div><div class="denominator">4</div></div></p>
+                        <p style="margin-right: 30px;">השבר השני <div class="fraction" style="display: inline-flex;"><div class="numerator">1</div><div class="denominator">2</div></div> - צריך להפוך ל-4</p>
+                        <p style="margin-right: 30px;">כדי להפוך 2 ל-4, כופלים ב-2</p>
+                        <p style="margin-right: 30px;">אז כופלים גם מונה וגם מכנה ב-2:</p>
+                        <p style="margin-right: 60px; direction: ltr; display: inline-block;">1×2 = 2 (המונה החדש)</p>
+                        <p style="margin-right: 60px; direction: ltr; display: inline-block;">2×2 = 4 (המכנה החדש)</p>
+                        <p style="margin-right: 30px;">תוצאה: <div class="fraction" style="display: inline-flex;"><div class="numerator">1</div><div class="denominator">2</div></div> = <div class="fraction" style="display: inline-flex;"><div class="numerator">2</div><div class="denominator">4</div></div></p>
+                        
+                        <p><strong>✏️ שלב 3: כותבים מחדש עם אותו מכנה</strong></p>
+                        <p style="margin-right: 30px; direction: rtl; display: inline-block;">? = <div class="fraction" style="display: inline-flex;"><div class="numerator">2</div><div class="denominator">4</div></div> - <div class="fraction" style="display: inline-flex;"><div class="numerator">3</div><div class="denominator">4</div></div></p>
+                        
+                        <p><strong>➖ שלב 4: מחסרים את המונים</strong></p>
+                        <p style="margin-right: 30px;">המכנה זהה (4), אז מחסרים רק מונים:</p>
+                        <p style="margin-right: 30px; direction: ltr; display: inline-block;">3 - 2 = 1</p>
+                        <p style="margin-right: 30px;">המכנה נשאר: 4</p>
+                        
+                        <p><strong>✅ תשובה סופית:</strong> <div class="fraction" style="display: inline-flex;"><div class="numerator">1</div><div class="denominator">4</div></div></p>
+                        
+                        <p style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                            <strong>💡 טיפ חשוב לחיסור:</strong><br>
+                            תמיד ודאו שהשבר הראשון (שממנו מחסרים) גדול מהשני!<br>
+                            אם לא - התשובה תהיה שלילית, וזה יותר מתקדם.
+                        </p>
+                    </div>
+                </div>
+                
+
+            </div>
+        </div>
+        
+        <div id="game3" class="content">
+            <div class="game">
+                <h2>משחק חיבור וחיסור</h2>
+                <div class="question-counter">שאלה <span id="qc3">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="sc3">0</span></div>
+                <div class="problem-display" id="prob3"></div>
+                <div class="controls">
+                    <div class="answer-fractions">
+                        <div class="fraction-input-group">
+                            <label>תשובה:</label>
+                            <div class="fraction-input-container">
+                                <input type="number" id="n3" placeholder="מונה">
+                                <div class="fraction-divider"></div>
+                                <input type="number" id="d3" placeholder="מכנה">
+                            </div>
+                        </div>
+                    </div>
+                    <br><br>
+                    <button onclick="checkAnswer(3)">בדוק</button>
+                </div>
+                <div id="fb3" class="feedback"></div>
+            </div>
+        </div>
+        
+        <div id="lesson4" class="content">
+            <div class="lesson">
+                <h2>כפל שבר במספר שלם</h2>
+                <p>כשכופלים שבר במספר שלם, כופלים את המונה במספר והמכנה נשאר!</p>
+                
+                <div class="example">
+                    <h3>דוגמה 1: 2/3 × 4</h3>
+                    <div class="calculation">
+                        <div class="fraction">
+                            <div class="numerator">2</div>
+                            <div class="denominator">3</div>
+                        </div>
+                        <span class="operator">× 4 =</span>
+                        <div class="fraction">
+                            <div class="numerator">8</div>
+                            <div class="denominator">3</div>
+                        </div>
+                        <span class="operator">=</span>
+                        <strong style="font-size: 1.5em;">2</strong>
+                        <div class="fraction">
+                            <div class="numerator">2</div>
+                            <div class="denominator">3</div>
+                        </div>
+                    </div>
+                    <div class="steps">
+                        <p><strong>שלב 1:</strong> כופלים את המונה: <span style="direction: ltr; display: inline-block;">2 × 4 = 8</span></p>
+                        <p><strong>שלב 2:</strong> המכנה נשאר 3: <span style="direction: ltr; display: inline-block;">8/3</span></p>
+                        <p><strong>שלב 3:</strong> הופכים למספר מעורב:</p>
+                        <div style="direction: rtl; display: flex; align-items: center; gap: 10px; margin-right: 30px; margin-top: 10px;">
+                            <div class="fraction" style="display: inline-flex;">
+                                <div class="numerator">2</div>
+                                <div class="denominator">3</div>
+                            </div>
+                            <strong style="font-size: 2em;">2</strong>
+                            <span style="font-size: 1.5em;">=</span>
+                            <div class="fraction" style="display: inline-flex;">
+                                <div class="numerator">8</div>
+                                <div class="denominator">3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: 3/5 × 2</h3>
+                    <div class="calculation">
+                        <div class="fraction">
+                            <div class="numerator">3</div>
+                            <div class="denominator">5</div>
+                        </div>
+                        <span class="operator">× 2 =</span>
+                        <div class="fraction">
+                            <div class="numerator">6</div>
+                            <div class="denominator">5</div>
+                        </div>
+                        <span class="operator">=</span>
+                        <strong style="font-size: 1.5em;">1</strong>
+                        <div class="fraction">
+                            <div class="numerator">1</div>
+                            <div class="denominator">5</div>
+                        </div>
+                    </div>
+                    <div class="steps">
+                        <p><span style="direction: ltr; display: inline-block;">3 × 2 = 6</span>, אז התשובה: <span style="direction: ltr; display: inline-block;">6/5</span></p>
+                        <p>כמספר מעורב: 1 ו-<span style="direction: ltr; display: inline-block;">1/5</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game4" class="content">
+            <div class="game">
+                <h2>משחק כפל שבר</h2>
+                <div class="question-counter">שאלה <span id="qc4">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="sc4">0</span></div>
+                <div class="problem-display" id="prob4"></div>
+                <div class="controls">
+                    <div class="answer-fractions">
+                        <div class="fraction-input-group">
+                            <label>תשובה:</label>
+                            <div class="fraction-input-container">
+                                <input type="number" id="n4" placeholder="מונה">
+                                <div class="fraction-divider"></div>
+                                <input type="number" id="d4" placeholder="מכנה">
+                            </div>
+                        </div>
+                    </div>
+                    <br><br>
+                    <button onclick="checkAnswer(4)">בדוק</button>
+                </div>
+                <div id="fb4" class="feedback"></div>
+            </div>
+        </div>
+        
+        <div id="lesson5" class="content">
+            <div class="lesson">
+                <h2>מספרים מעורבים ושברים עשרוניים</h2>
+                <p>מספר מעורב הוא מספר שיש בו חלק שלם וחלק שברי!</p>
+                
+                <div class="example">
+                    <h3>מהו מספר מעורב?</h3>
+                    <p>מספר מעורב מורכב משני חלקים:</p>
+                    <div class="calculation">
+                        <strong style="font-size: 1.5em;">2</strong>
+                        <div class="fraction">
+                            <div class="numerator">3</div>
+                            <div class="denominator">4</div>
+                        </div>
+                    </div>
+                    <div class="steps">
+                        <p>2 = החלק השלם</p>
+                        <p><span style="direction: ltr; display: inline-block;">3/4</span> = החלק השברי</p>
+                        <p>ביטוי: שניים ושלושה רבעים</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>המרה משבר לא צרוף למספר מעורב</h3>
+                    <div class="calculation">
+                        <div class="fraction">
+                            <div class="numerator">11</div>
+                            <div class="denominator">4</div>
+                        </div>
+                        <span class="operator">=</span>
+                        <strong style="font-size: 1.5em;">2</strong>
+                        <div class="fraction">
+                            <div class="numerator">3</div>
+                            <div class="denominator">4</div>
+                        </div>
+                    </div>
+                    <div class="steps">
+                        <p><strong>שלב 1:</strong> מחלקים את המונה במכנה: <span style="direction: ltr; display: inline-block;">11 ÷ 4 = 2</span> (שלמים)</p>
+                        <p><strong>שלב 2:</strong> השארית היא המונה החדש: <span style="direction: ltr; display: inline-block;">11 - 8 = 3</span></p>
+                        <p><strong>תשובה:</strong> 2 שלמים ו-<span style="direction: ltr; display: inline-block;">3/4</span></p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>שברים עשרוניים - היכרות ראשונית</h3>
+                    <p>שברים עשרוניים הם שברים שהמכנה שלהם הוא 10, 100, 1000...</p>
+                    <div class="calculation">
+                        <div class="fraction">
+                            <div class="numerator">3</div>
+                            <div class="denominator">10</div>
+                        </div>
+                        <span class="operator">=</span>
+                        <strong style="font-size: 1.5em;">0.3</strong>
+                        <span style="margin: 0 20px;"></span>
+                        <div class="fraction">
+                            <div class="numerator">7</div>
+                            <div class="denominator">100</div>
+                        </div>
+                        <span class="operator">=</span>
+                        <strong style="font-size: 1.5em;">0.07</strong>
+                    </div>
+                    <div class="steps">
+                        <p><span style="direction: ltr; display: inline-block;">1/10 = 0.1</span> (עשירית)</p>
+                        <p><span style="direction: ltr; display: inline-block;">1/100 = 0.01</span> (מאית)</p>
+                        <p><span style="direction: ltr; display: inline-block;">5/10 = 0.5</span> (חמש עשיריות)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game5" class="content">
+            <div class="game">
+                <h2>משחק מספרים מעורבים</h2>
+                <div class="question-counter">שאלה <span id="qc5">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="sc5">0</span></div>
+                <div class="problem-display" id="prob5"></div>
+                <div class="controls">
+                    <div class="answer-fractions" style="direction: ltr;">
+                        <div class="fraction-input-group">
+                            <label>חלק שלם</label>
+                            <input type="number" id="w5" placeholder="שלם" style="width: 100px;">
+                        </div>
+                        <div class="fraction-input-group">
+                            <label>חלק שברי</label>
+                            <div class="fraction-input-container">
+                                <input type="number" id="n5" placeholder="מונה">
+                                <div class="fraction-divider"></div>
+                                <input type="number" id="d5" placeholder="מכנה">
+                            </div>
+                        </div>
+                    </div>
+                    <br><br>
+                    <button onclick="checkAnswer(5)">בדוק</button>
+                </div>
+                <div id="fb5" class="feedback"></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+var score = {1:0, 2:0, 3:0, 4:0, 5:0};
+var qNum = {1:0, 2:0, 3:0, 4:0, 5:0};
+var qs = {1:[], 2:[], 3:[], 4:[], 5:[]};
+var curr = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}};
+var isAnswering = {1:false, 2:false, 3:false, 4:false, 5:false};
+
+// תיקון 1: תיקון פונקציית gcd למניעת לולאה אינסופית
+function gcd(a,b){
+    a = Math.abs(a);
+    b = Math.abs(b);
+    // טיפול במקרה שאחד מהערכים הוא 0
+    if(a === 0) return b || 1;
+    if(b === 0) return a || 1;
+    
+    while(b){
+        var t=b;
+        b=a%b;
+        a=t;
+    }
+    return a;
+}
+
+// תיקון 2: תיקון פונקציית simp למניעת חלוקה באפס
+function simp(n,d){
+    // בדיקה שהמכנה לא אפס
+    if(d === 0) return {n: n, d: 1};
+    
+    var g=gcd(Math.abs(n),Math.abs(d));
+    // בדיקה נוספת שה-gcd לא אפס
+    if(g === 0) g = 1;
+    
+    return{n:n/g,d:d/g};
+}
+
+function makeFrac(n, d) {
+    return '<div class="problem-fraction"><div class="pf-num">' + n + '</div><div class="pf-den">' + d + '</div></div>';
+}
+
+function gen1(){
+    if(Math.random()<0.5){
+        var d=[2,3,4,5,6][Math.floor(Math.random()*5)];
+        var n=Math.floor(Math.random()*(d-1))+1;
+        var m=Math.floor(Math.random()*4)+2;
+        return{
+            html: '<div style="direction: rtl; display: flex; align-items: center; gap: 15px;"><span>מצא שבר שווה ל-</span>' + makeFrac(n, d) + '<span>(הרחב פי '+m+')</span></div>',
+            an:n*m,
+            ad:d*m
+        };
+    }else{
+        var d=[6,8,10,12,15][Math.floor(Math.random()*5)];
+        var divs=[];
+        for(var i=2;i<=d/2;i++)if(d%i==0)divs.push(i);
+        var dv=divs[Math.floor(Math.random()*divs.length)];
+        var n=(Math.floor(Math.random()*(d/dv-1))+1)*dv;
+        return{
+            html: '<div style="direction: rtl; display: flex; align-items: center; gap: 15px;"><span>צמצם:</span>' + makeFrac(n, d) + '</div>',
+            an:n/dv,
+            ad:d/dv
+        };
+    }
+}
+
+function gen2(){
+    var d1=[2,3,4,5,6][Math.floor(Math.random()*5)];
+    var d2=[2,3,4,5,6][Math.floor(Math.random()*5)];
+    while(d1==d2)d2=[2,3,4,5,6][Math.floor(Math.random()*5)];
+    var n1=Math.floor(Math.random()*(d1-1))+1;
+    var n2=Math.floor(Math.random()*(d2-1))+1;
+    var v1=n1/d1,v2=n2/d2;
+    var ans=v1>v2?'>':v1<v2?'<':'=';
+    return{
+        html: makeFrac(n1, d1) + '<span class="operator">__</span>' + makeFrac(n2, d2),
+        ans:ans
+    };
+}
+
+// תיקון 3: תיקון פונקציית gen3 לטיפול נכון בתוצאות שלי
+function gen3(){
+    var op=Math.random()<0.5?'+':'-';
+    var d1=[2,3,4,5,6][Math.floor(Math.random()*5)];
+    var d2=[2,3,4,5,6][Math.floor(Math.random()*5)];
+    var n1=Math.floor(Math.random()*(d1-1))+1;
+    var n2=Math.floor(Math.random()*(d2-1))+1;
+    var lcd=d1*d2/gcd(d1,d2);
+    var new1=n1*(lcd/d1),new2=n2*(lcd/d2);
+    var rn=op=='+'?new1+new2:new1-new2;
+    
+    // תיקון: וידוא שתוצאה תמיד חיובית
+    if(rn<=0){
+        // אם התוצאה שלילית או אפס, הופכים את הפעולה או מחליפים מספרים
+        if(op === '-') {
+            // מחליפים בין n1 ל-n2 כך שn1 יהיה גדול יותר
+            var t=n1;n1=n2;n2=t;
+            t=d1;d1=d2;d2=t;
+            // מחשבים מחדש
+            lcd=d1*d2/gcd(d1,d2);
+            new1=n1*(lcd/d1);
+            new2=n2*(lcd/d2);
+            rn=new1-new2;
+            
+            // אם עדיין שלילי, נבצע חיבור במקום
+            if(rn<=0) {
+                op = '+';
+                rn=new1+new2;
+            }
+        }
+    }
+    
+    var s=simp(rn,lcd);
+    return{
+        html: '<div style="direction: ltr; display: flex; align-items: center; gap: 15px; justify-content: center;">' + makeFrac(n1, d1) + '<span class="operator">' + op + '</span>' + makeFrac(n2, d2) + '<span class="operator">= ?</span></div>',
+        an:s.n,
+        ad:s.d
+    };
+}
+
+function gen4(){
+    var d=[2,3,4,5,6][Math.floor(Math.random()*5)];
+    var n=Math.floor(Math.random()*(d-1))+1;
+    var m=Math.floor(Math.random()*4)+2;
+    var s=simp(n*m,d);
+    return{
+        html: '<div style="direction: ltr; display: flex; align-items: center; gap: 15px; justify-content: center;">' + makeFrac(n, d) + '<span class="operator">× ' + m + ' = ?</span></div>',
+        an:s.n,
+        ad:s.d
+    };
+}
+
+function gen5(){
+    var d=[2,3,4,5,6][Math.floor(Math.random()*5)];
+    var w=Math.floor(Math.random()*4)+1;
+    var n=Math.floor(Math.random()*(d-1))+1;
+    return{
+        html: '<div style="direction: rtl; display: flex; align-items: center; gap: 15px;"><span>המר למספר מעורב:</span>' + makeFrac(w*d+n, d) + '</div>',
+        aw:w,
+        an:n,
+        ad:d
+    };
+}
+
+// פונקציית ערבוב מערך (Fisher-Yates shuffle)
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+}
+
+function initG(g){
+    qs[g]=[];
+    // יצירת 30 שאלות במאגר
+    for(var i=0;i<30;i++){
+        if(g==1)qs[g].push(gen1());
+        else if(g==2)qs[g].push(gen2());
+        else if(g==3)qs[g].push(gen3());
+        else if(g==4)qs[g].push(gen4());
+        else qs[g].push(gen5());
+    }
+    // ערבוב השאלות לפני תחילת המשחק
+    qs[g] = shuffleArray(qs[g]);
+    nextQ(g);
+}
+
+function nextQ(g){
+    if(qNum[g]>=12){
+        var finalScore = score[g];
+        var percentage = Math.round(finalScore/12*100);
+        var emoji, msg;
+        
+        if(percentage === 100) {
+            emoji = '🌟';
+            msg = 'מושלם! אתה אלוף שברים!';
+        } else if(percentage >= 80) {
+            emoji = '👍';
+            msg = 'מעולה! המשך כך!';
+        } else if(percentage >= 60) {
+            emoji = '💪';
+            msg = 'יפה! עוד קצת תרגול ותהיה מושלם!';
+        } else {
+            emoji = '📚';
+            msg = 'כדאי לחזור על החומר ולנסות שוב!';
+        }
+        
+        var summaryHTML = '<div style="text-align: center;">';
+        summaryHTML += '<div style="font-size: 3em; margin: 20px 0;">'+emoji+' סיימת את הסיבוב! '+emoji+'</div>';
+        summaryHTML += '<div style="font-size: 4em; color: white; font-weight: bold; margin: 20px 0;">'+finalScore+'/12</div>';
+        summaryHTML += '<div style="font-size:2em; color:white; font-weight:bold; margin:10px 0;">'+percentage+'%</div>';
+        summaryHTML += '<div style="font-size: 1.8em; margin: 20px 0;">'+msg+'</div>';
+        summaryHTML += '<button onclick="restartGame('+g+')" style="font-size: 1.3em; padding: 20px 40px; margin-top: 20px;">🔄 סיבוב נוסף</button>';
+        summaryHTML += '</div>';
+        
+        document.getElementById('prob'+g).innerHTML = summaryHTML;
+        document.getElementById('fb'+g).innerHTML='';
+        
+        // מסתיר את כפתורי התשובה בסוף הסיבוב
+        var controlsDiv = document.querySelector('#game'+g+' .controls');
+        if(controlsDiv) controlsDiv.style.display = 'none';
+        
+        // מאפשר לחיצה על כפתור "סיבוב נוסף" בלבד
+        isAnswering[g] = false;
+        return;
+    }
+    
+    // מציג בחזרה את כפתורי התשובה אם היו מוסתרים
+    var controlsDiv = document.querySelector('#game'+g+' .controls');
+    if(controlsDiv) controlsDiv.style.display = 'block';
+    
+    curr[g]=qs[g][qNum[g]];
+    document.getElementById('qc'+g).textContent=qNum[g]+1;
+    var probElem=document.getElementById('prob'+g);
+    if(probElem && curr[g]){
+        if(curr[g].html){
+            probElem.innerHTML=curr[g].html;
+        }else{
+            probElem.innerHTML='טוען שאלה...';
+        }
+    }
+    if(g==1){document.getElementById('n1').value='';document.getElementById('d1').value='';}
+    if(g==3){document.getElementById('n3').value='';document.getElementById('d3').value='';}
+    if(g==4){document.getElementById('n4').value='';document.getElementById('d4').value='';}
+    if(g==5){document.getElementById('w5').value='';document.getElementById('n5').value='';document.getElementById('d5').value='';}
+    document.getElementById('fb'+g).innerHTML='';
+}
+
+function restartGame(g){
+    // מונע הפעלה כפולה
+    if(isAnswering[g]) return;
+    
+    score[g]=0;
+    qNum[g]=0;
+    isAnswering[g]=false;
+    document.getElementById('sc'+g).textContent='0';
+    initG(g);
+}
+
+// תיקון 4: תיקון הסדר של הבדיקות בפונקציית checkAnswer
+// תיקון 5: מניעת לחיצות מרובות על אותה שאלה
+function checkAnswer(g){
+    // מונע לחיצות מרובות
+    if(isAnswering[g]) return;
+    
+    if(g==5){
+        var w=parseInt(document.getElementById('w5').value);
+        var n=parseInt(document.getElementById('n5').value);
+        var d=parseInt(document.getElementById('d5').value);
+        
+        // בדיקה לפני עדכון qNum - זה הסדר הנכון!
+        if(isNaN(w)||isNaN(n)||isNaN(d))return;
+        
+        isAnswering[g] = true;
+        
+        if(w==curr[g].aw && n==curr[g].an && d==curr[g].ad){
+            score[g]++;
+            playSound('correct');
+            document.getElementById('fb5').innerHTML='<div class="correct">✓ מצוין! תשובה נכונה! ✓</div>';
+        }else{
+            playSound('incorrect');
+            document.getElementById('fb5').innerHTML='<div class="incorrect">✗ טעות - התשובה: '+curr[g].aw+' ו-'+curr[g].an+'/'+curr[g].ad+' ✗</div>';
+        }
+        
+        // עדכון qNum רק אחרי הבדיקה
+        qNum[g]++;
+        document.getElementById('sc5').textContent=score[g];
+        
+        setTimeout(function(){
+            document.getElementById('fb'+g).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+        
+        setTimeout(function(){
+            isAnswering[g] = false;
+            nextQ(g);
+        },2000);
+    }else{
+        var n=parseInt(document.getElementById('n'+g).value);
+        var d=parseInt(document.getElementById('d'+g).value);
+        
+        // בדיקה לפני עדכון qNum - זה הסדר הנכון!
+        if(isNaN(n)||isNaN(d)||d==0)return;
+        
+        isAnswering[g] = true;
+        
+        var s = simp(n, d);
+        var correctS = simp(curr[g].an, curr[g].ad);
+        
+        if(s.n == correctS.n && s.d == correctS.d){
+            score[g]++;
+            playSound('correct');
+            document.getElementById('fb'+g).innerHTML='<div class="correct">✓ מצוין! תשובה נכונה! ✓</div>';
+        }else{
+            playSound('incorrect');
+            document.getElementById('fb'+g).innerHTML='<div class="incorrect">✗ טעות - התשובה הנכונה: '+curr[g].an+'/'+curr[g].ad+' ✗</div>';
+        }
+        
+        // עדכון qNum רק אחרי הבדיקה
+        qNum[g]++;
+        document.getElementById('sc'+g).textContent=score[g];
+        
+        setTimeout(function(){
+            document.getElementById('fb'+g).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+        
+        setTimeout(function(){
+            isAnswering[g] = false;
+            nextQ(g);
+        },2000);
+    }
+}
+
+function checkComp(ans){
+    // מונע לחיצות מרובות
+    if(isAnswering[2]) return;
+    
+    isAnswering[2] = true;
+    
+    if(ans==curr[2].ans){
+        score[2]++;
+        playSound('correct');
+        document.getElementById('fb2').innerHTML='<div class="correct">✓ מצוין! תשובה נכונה! ✓</div>';
+    }else{
+        playSound('incorrect');
+        document.getElementById('fb2').innerHTML='<div class="incorrect">✗ טעות - נסה שוב! ✗</div>';
+    }
+    
+    // עדכון qNum רק אחרי הבדיקה
+    qNum[2]++;
+    document.getElementById('sc2').textContent=score[2];
+    
+    setTimeout(function(){
+        document.getElementById('fb2').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+    
+    setTimeout(function(){
+        isAnswering[2] = false;
+        nextQ(2);
+    },2000);
+}
+
+function switchTab(tabId){
+    playSound('click');
+    var tabs=document.querySelectorAll('.tab');
+    var contents=document.querySelectorAll('.content');
+    for(var i=0;i<contents.length;i++)contents[i].classList.remove('active');
+    for(var i=0;i<tabs.length;i++)tabs[i].classList.remove('active');
+    document.getElementById(tabId).classList.add('active');
+    event.target.classList.add('active');
+    
+    if(tabId.includes('game')){
+        var gameNum = parseInt(tabId.replace('game',''));
+        score[gameNum]=0;
+        qNum[gameNum]=0;
+        document.getElementById('sc'+gameNum).textContent='0';
+        document.getElementById('qc'+gameNum).textContent='1';
+        document.getElementById('fb'+gameNum).innerHTML='';
+        initG(gameNum);
+    }
+}
+
+function playSound(type){
+    var ctx=new(window.AudioContext||window.webkitAudioContext)();
+    if(type=='click'){
+        var o=ctx.createOscillator();
+        var g=ctx.createGain();
+        o.connect(g);g.connect(ctx.destination);
+        o.type='sine';o.frequency.value=600;
+        g.gain.setValueAtTime(0.15,ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.15);
+        o.start(ctx.currentTime);o.stop(ctx.currentTime+0.15);
+    }else if(type=='correct'){
+        var notes=[523.25,659.25,783.99];
+        for(var i=0;i<notes.length;i++){
+            var o=ctx.createOscillator();
+            var g=ctx.createGain();
+            o.connect(g);g.connect(ctx.destination);
+            o.type='sine';o.frequency.value=notes[i];
+            g.gain.setValueAtTime(0.1,ctx.currentTime+i*0.1);
+            g.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+i*0.1+0.3);
+            o.start(ctx.currentTime+i*0.1);
+            o.stop(ctx.currentTime+i*0.1+0.3);
+        }
+    }else if(type=='incorrect'){
+        var o=ctx.createOscillator();
+        var g=ctx.createGain();
+        o.connect(g);g.connect(ctx.destination);
+        o.type='sine';o.frequency.value=200;
+        g.gain.setValueAtTime(0.15,ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.3);
+        o.start(ctx.currentTime);o.stop(ctx.currentTime+0.3);
+    }
+}
+
+window.onload=function(){
+    initG(1);
+    initG(2);
+    initG(3);
+    initG(4);
+    initG(5);
+    
+    document.addEventListener('wheel', function(e) {
+        if (document.activeElement.type === 'number') {
+            document.activeElement.blur();
+        }
+    });
+};
+</script>
+</body>
+</html>
+    
