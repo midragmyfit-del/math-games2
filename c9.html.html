@@ -1,0 +1,1763 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>גיאומטריה - כיתה ג'</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .tab {
+            padding: 12px 25px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .tab:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        .content {
+            display: none;
+        }
+        .content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .lesson-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #764ba2;
+            margin-bottom: 15px;
+        }
+        h3 {
+            color: #667eea;
+            margin: 15px 0 10px 0;
+        }
+        .angles-demo {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .angle-box {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        canvas {
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .game-area {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        .question {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .option {
+            padding: 15px;
+            background: white;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 1.1em;
+            transition: all 0.3s;
+        }
+        .option:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+        }
+        .option.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+        .option.wrong {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+        .score-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        .score {
+            text-align: center;
+            font-size: 1.3em;
+            color: #667eea;
+            font-weight: bold;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn.restart {
+            background: #4caf50;
+        }
+        .btn.restart:hover {
+            background: #45a049;
+        }
+        .grid-area {
+            display: inline-block;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px;
+        }
+        .grid {
+            display: grid;
+            gap: 2px;
+            background: #333;
+            padding: 2px;
+        }
+        .cell {
+            width: 30px;
+            height: 30px;
+            background: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .cell.filled {
+            background: #667eea;
+        }
+        .symmetry-canvas {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .feedback {
+            text-align: center;
+            font-size: 1.2em;
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .feedback.success {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+        .feedback.error {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+        .game-complete {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.5em;
+        }
+        .game-complete h3 {
+            color: white;
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔷 גיאומטריה לכיתה ג' 🔷</h1>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('angles')">זוויות</button>
+            <button class="tab" onclick="showTab('triangles')">משולשים</button>
+            <button class="tab" onclick="showTab('quadrilaterals')">מרובעים</button>
+            <button class="tab" onclick="showTab('perimeter')">היקף</button>
+            <button class="tab" onclick="showTab('area')">שטח</button>
+            <button class="tab" onclick="showTab('symmetry')">סימטריה</button>
+        </div>
+
+        <!-- זוויות -->
+        <div id="angles" class="content active">
+            <div class="lesson-section">
+                <h2>מהי זווית?</h2>
+                <p>זווית היא הפתיחה בין שני קווים שנפגשים בנקודה אחת.</p>
+                <div class="angles-demo">
+                    <div class="angle-box">
+                        <h3>זווית חדה</h3>
+                        <canvas id="acute" width="120" height="120"></canvas>
+                        <p>פחות מ-90 מעלות</p>
+                    </div>
+                    <div class="angle-box">
+                        <h3>זווית ישרה</h3>
+                        <canvas id="right" width="120" height="120"></canvas>
+                        <p>בדיוק 90 מעלות</p>
+                    </div>
+                    <div class="angle-box">
+                        <h3>זווית קהה</h3>
+                        <canvas id="obtuse" width="120" height="120"></canvas>
+                        <p>יותר מ-90 מעלות</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-area">
+                <h2>🎮 משחק: זהה את הזווית!</h2>
+                <div class="score-container">
+                    <div class="score">ניקוד: <span id="angleScore">0</span></div>
+                    <div class="score">שאלה: <span id="angleRound">1</span>/12</div>
+                </div>
+                <canvas id="angleGame" width="200" height="200" style="display: block; margin: 0 auto;"></canvas>
+                <div class="question" id="angleQuestion">איזה סוג זווית זו?</div>
+                <div class="options" id="angleOptions"></div>
+                <div id="angleComplete" style="display: none;"></div>
+                <button class="btn" id="angleNextBtn" onclick="nextAngleQuestion()">שאלה הבאה</button>
+            </div>
+        </div>
+
+        <!-- משולשים -->
+        <div id="triangles" class="content">
+            <div class="lesson-section">
+                <h2>סוגי משולשים</h2>
+                <div class="angles-demo">
+                    <div class="angle-box">
+                        <h3>משולש שווה צלעות</h3>
+                        <canvas id="equilateral" width="150" height="150"></canvas>
+                        <p><strong>כל 3 הצלעות שוות</strong></p>
+                    </div>
+                    <div class="angle-box">
+                        <h3>משולש שווה שוקיים</h3>
+                        <canvas id="isosceles" width="150" height="150"></canvas>
+                        <p><strong>2 צלעות שוות בלבד</strong></p>
+                    </div>
+                    <div class="angle-box">
+                        <h3>משולש שונה צלעות</h3>
+                        <canvas id="scalene" width="150" height="150"></canvas>
+                        <p><strong>כל הצלעות שונות</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-area">
+                <h2>🎮 משחק: זהה את המשולש!</h2>
+                <div class="score-container">
+                    <div class="score">ניקוד: <span id="triangleScore">0</span></div>
+                    <div class="score">שאלה: <span id="triangleRound">1</span>/12</div>
+                </div>
+                <canvas id="triangleGame" width="200" height="200" style="display: block; margin: 0 auto;"></canvas>
+                <div class="question" id="triangleQuestion">איזה סוג משולש זה?</div>
+                <div class="options" id="triangleOptions"></div>
+                <div id="triangleComplete" style="display: none;"></div>
+                <button class="btn" id="triangleNextBtn" onclick="nextTriangleQuestion()">שאלה הבאה</button>
+            </div>
+        </div>
+
+        <!-- מרובעים -->
+        <div id="quadrilaterals" class="content">
+            <div class="lesson-section">
+                <h2>סוגי מרובעים</h2>
+                <div class="angles-demo">
+                    <div class="angle-box">
+                        <h3>ריבוע</h3>
+                        <canvas id="square" width="120" height="120"></canvas>
+                        <p>4 צלעות שוות, 4 זוויות ישרות</p>
+                    </div>
+                    <div class="angle-box">
+                        <h3>מלבן</h3>
+                        <canvas id="rectangle" width="140" height="100"></canvas>
+                        <p>צלעות נגדיות שוות, 4 זוויות ישרות</p>
+                    </div>
+                    <div class="angle-box">
+                        <h3>מקבילית</h3>
+                        <canvas id="parallelogram" width="140" height="100"></canvas>
+                        <p>צלעות נגדיות שוות ומקבילות</p>
+                    </div>
+                    <div class="angle-box">
+                        <h3>טרפז</h3>
+                        <canvas id="trapezoid" width="140" height="100"></canvas>
+                        <p>זוג אחד של צלעות מקבילות</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-area">
+                <h2>🎮 משחק: זהה את המרובע!</h2>
+                <div class="score-container">
+                    <div class="score">ניקוד: <span id="quadScore">0</span></div>
+                    <div class="score">שאלה: <span id="quadRound">1</span>/12</div>
+                </div>
+                <canvas id="quadGame" width="200" height="200" style="display: block; margin: 0 auto;"></canvas>
+                <div class="question" id="quadQuestion">איזה מרובע זה?</div>
+                <div class="options" id="quadOptions"></div>
+                <div id="quadComplete" style="display: none;"></div>
+                <button class="btn" id="quadNextBtn" onclick="nextQuadQuestion()">שאלה הבאה</button>
+            </div>
+        </div>
+
+        <!-- היקף -->
+        <div id="perimeter" class="content">
+            <div class="lesson-section">
+                <h2>מהו היקף?</h2>
+                <p><strong>היקף</strong> הוא אורך כל הקווים שמקיפים צורה. כדי למצוא את ההיקף, נחבר את אורכי כל הצלעות!</p>
+                <h3>דוגמה:</h3>
+                <div style="text-align: center; margin: 20px 0;">
+                    <p style="font-size: 1.3em; font-weight: bold; color: #764ba2; margin-bottom: 15px;">
+                        היקף = 5 + 10 + 5 + 10 = 30 ס"מ
+                    </p>
+                    <canvas id="perimeterExample" width="300" height="180" style="display: block; margin: 0 auto;"></canvas>
+                </div>
+            </div>
+
+            <div class="game-area">
+                <h2>🎮 משחק: חשב היקף!</h2>
+                <div class="score-container">
+                    <div class="score">ניקוד: <span id="perimeterScore">0</span></div>
+                    <div class="score">שאלה: <span id="perimeterRound">1</span>/12</div>
+                </div>
+                <canvas id="perimeterGame" width="250" height="200" style="display: block; margin: 20px auto;"></canvas>
+                <div class="question" id="perimeterQuestion"></div>
+                <div class="options" id="perimeterOptions"></div>
+                <div id="perimeterFeedback" class="feedback" style="display: none;"></div>
+                <div id="perimeterComplete" style="display: none;"></div>
+                <button class="btn" id="perimeterNextBtn" onclick="nextPerimeterQuestion()">שאלה הבאה</button>
+            </div>
+        </div>
+
+        <!-- שטח -->
+        <div id="area" class="content">
+            <div class="lesson-section">
+                <h2>מהו שטח?</h2>
+                <p><strong>שטח</strong> הוא כמה מקום תופסת הצורה. נמדוד אותו על ידי ספירת יחידות רבועים!</p>
+                <h3>דוגמה:</h3>
+                <div style="text-align: center;">
+                    <div class="grid-area">
+                        <div id="areaExample" class="grid" style="grid-template-columns: repeat(5, 30px);"></div>
+                        <p>שטח = 10 יחידות ריבוע</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-area">
+                <h2>🎮 משחק: ספור את השטח!</h2>
+                <div class="score-container">
+                    <div class="score">ניקוד: <span id="areaScore">0</span></div>
+                    <div class="score">שאלה: <span id="areaRound">1</span>/12</div>
+                </div>
+                <div style="text-align: center;">
+                    <div class="grid-area">
+                        <div id="areaGame" class="grid"></div>
+                    </div>
+                </div>
+                <div class="question" id="areaQuestion">כמה יחידות ריבוע יש בצורה?</div>
+                <div class="options" id="areaOptions"></div>
+                <div id="areaFeedback" class="feedback" style="display: none;"></div>
+                <div id="areaComplete" style="display: none;"></div>
+                <button class="btn" id="areaNextBtn" onclick="nextAreaQuestion()">שאלה הבאה</button>
+            </div>
+        </div>
+
+        <!-- סימטריה -->
+        <div id="symmetry" class="content">
+            <div class="lesson-section">
+                <h2>מהי סימטריה?</h2>
+                <p>צורה סימטרית היא צורה שאפשר לקפל אותה באמצע והצדדים יהיו זהים!</p>
+                <h3>דוגמאות לצורות סימטריות:</h3>
+                <div class="symmetry-canvas">
+                    <div style="text-align: center;">
+                        <canvas id="symmetry1" width="150" height="150"></canvas>
+                        <p>סימטריה אנכית</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <canvas id="symmetry2" width="150" height="150"></canvas>
+                        <p>סימטריה אופקית</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <canvas id="symmetry3" width="150" height="150"></canvas>
+                        <p>2 צירי סימטריה</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-area">
+                <h2>🎮 משחק: השלם את הצורה הסימטרית!</h2>
+                <div class="score-container">
+                    <div class="score">ניקוד: <span id="symmetryScore">0</span></div>
+                    <div class="score">שאלה: <span id="symmetryRound">1</span>/12</div>
+                </div>
+                <p style="text-align: center;">לחץ על המשבצות כדי להשלים את הצורה בצורה סימטרית!</p>
+                <div style="text-align: center;">
+                    <div class="grid-area">
+                        <div id="symmetryGame" class="grid" style="grid-template-columns: repeat(8, 30px);"></div>
+                    </div>
+                </div>
+                <div id="symmetryFeedback" class="feedback" style="display: none;"></div>
+                <div id="symmetryComplete" style="display: none;"></div>
+                <button class="btn" onclick="checkSymmetry()">בדוק תשובה</button>
+                <button class="btn" id="symmetryNextBtn" onclick="nextSymmetryQuestion()" style="display: none;">שאלה הבאה</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // יצירת צלילים
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(type) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            if (type === 'click') {
+                oscillator.frequency.value = 800;
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } else if (type === 'correct') {
+                oscillator.frequency.value = 523.25; // C5
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+                
+                const osc2 = audioContext.createOscillator();
+                const gain2 = audioContext.createGain();
+                osc2.connect(gain2);
+                gain2.connect(audioContext.destination);
+                osc2.frequency.value = 659.25; // E5
+                gain2.gain.setValueAtTime(0.3, audioContext.currentTime + 0.1);
+                gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                osc2.start(audioContext.currentTime + 0.1);
+                osc2.stop(audioContext.currentTime + 0.4);
+            } else if (type === 'wrong') {
+                oscillator.frequency.value = 200;
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } else if (type === 'complete') {
+                [523.25, 587.33, 659.25, 783.99].forEach((freq, i) => {
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.3, audioContext.currentTime + i * 0.15);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.15 + 0.3);
+                    osc.start(audioContext.currentTime + i * 0.15);
+                    osc.stop(audioContext.currentTime + i * 0.15 + 0.3);
+                });
+            }
+        }
+
+        // טאבים
+        function showTab(tabName) {
+            playSound('click');
+            const contents = document.querySelectorAll('.content');
+            const tabs = document.querySelectorAll('.tab');
+            contents.forEach(c => c.classList.remove('active'));
+            tabs.forEach(t => t.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // ציור זוויות
+        function drawAngle(canvasId, angle, isRight = false) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            const centerX = 30;
+            const centerY = 90;
+            const length = 80;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 3;
+
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(centerX + length, centerY);
+            ctx.stroke();
+
+            const radian = (angle * Math.PI) / 180;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(centerX + length * Math.cos(radian), centerY - length * Math.sin(radian));
+            ctx.stroke();
+
+            if (isRight) {
+                ctx.strokeStyle = '#764ba2';
+                ctx.strokeRect(centerX, centerY - 15, 15, 15);
+            }
+
+            ctx.strokeStyle = '#ff6b6b';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 25, -radian, 0);
+            ctx.stroke();
+        }
+
+        drawAngle('acute', 45);
+        drawAngle('right', 90, true);
+        drawAngle('obtuse', 135);
+
+        // משחק זוויות
+        let angleScore = 0;
+        let angleRound = 1;
+        let currentAngle = {};
+        let angleAnswered = false;
+
+        function generateAngleQuestion() {
+            angleAnswered = false;
+            const angles = [
+                { type: 'חדה', range: [25, 75], correct: 'חדה' },
+                { type: 'ישרה', range: [88, 92], correct: 'ישרה' },
+                { type: 'קהה', range: [105, 155], correct: 'קהה' }
+            ];
+            currentAngle = angles[Math.floor(Math.random() * angles.length)];
+            const angle = currentAngle.range[0] + Math.random() * (currentAngle.range[1] - currentAngle.range[0]);
+            
+            const canvas = document.getElementById('angleGame');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = 50;
+            const centerY = 150;
+            const length = 120;
+            const radian = (angle * Math.PI) / 180;
+
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(centerX + length, centerY);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(centerX + length * Math.cos(radian), centerY - length * Math.sin(radian));
+            ctx.stroke();
+
+            if (Math.abs(angle - 90) < 3) {
+                ctx.strokeStyle = '#764ba2';
+                ctx.strokeRect(centerX, centerY - 20, 20, 20);
+            }
+
+            const options = ['חדה', 'ישרה', 'קהה'];
+            const optionsDiv = document.getElementById('angleOptions');
+            optionsDiv.innerHTML = '';
+            options.forEach(opt => {
+                const btn = document.createElement('div');
+                btn.className = 'option';
+                btn.textContent = opt;
+                btn.onclick = () => checkAngleAnswer(opt);
+                optionsDiv.appendChild(btn);
+            });
+
+            document.getElementById('angleRound').textContent = angleRound;
+        }
+
+        function checkAngleAnswer(answer) {
+            if (angleAnswered) return;
+            angleAnswered = true;
+            
+            const options = document.querySelectorAll('#angleOptions .option');
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.textContent === currentAngle.correct) {
+                    opt.classList.add('correct');
+                } else if (opt.textContent === answer) {
+                    opt.classList.add('wrong');
+                }
+            });
+
+            if (answer === currentAngle.correct) {
+                angleScore += 10;
+                document.getElementById('angleScore').textContent = angleScore;
+                playSound('correct');
+            } else {
+                playSound('wrong');
+            }
+        }
+
+        function nextAngleQuestion() {
+            playSound('click');
+            if (angleRound >= 12) {
+                showAngleComplete();
+                return;
+            }
+            angleRound++;
+            generateAngleQuestion();
+        }
+
+        function showAngleComplete() {
+            const completeDiv = document.getElementById('angleComplete');
+            completeDiv.innerHTML = `
+                <div class="game-complete">
+                    <h3>🎉 כל הכבוד! 🎉</h3>
+                    <p>סיימת את כל 12 השאלות!</p>
+                    <p>הניקוד שלך: ${angleScore} מתוך 120</p>
+                </div>
+            `;
+            completeDiv.style.display = 'block';
+            document.getElementById('angleNextBtn').textContent = 'התחל סיבוב חדש';
+            document.getElementById('angleNextBtn').className = 'btn restart';
+            document.getElementById('angleNextBtn').onclick = restartAngleGame;
+            playSound('complete');
+        }
+
+        function restartAngleGame() {
+            playSound('click');
+            angleScore = 0;
+            angleRound = 1;
+            document.getElementById('angleScore').textContent = '0';
+            document.getElementById('angleComplete').style.display = 'none';
+            document.getElementById('angleNextBtn').textContent = 'שאלה הבאה';
+            document.getElementById('angleNextBtn').className = 'btn';
+            document.getElementById('angleNextBtn').onclick = nextAngleQuestion;
+            generateAngleQuestion();
+        }
+
+        generateAngleQuestion();
+
+        // ציור משולשים - עם הבדלים ברורים וסימונים
+        function drawTriangle(canvasId, type) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#667eea';
+            ctx.fillStyle = 'rgba(102, 126, 234, 0.2)';
+            ctx.lineWidth = 4;
+
+            ctx.beginPath();
+            if (type === 'equilateral') {
+                // משולש שווה צלעות - גדול ומרכזי, סימטרי לגמרי
+                ctx.moveTo(75, 20);
+                ctx.lineTo(20, 130);
+                ctx.lineTo(130, 130);
+            } else if (type === 'isosceles') {
+                // משולש שווה שוקיים - גבוה מאוד וצר, כמו חץ
+                ctx.moveTo(75, 10);
+                ctx.lineTo(50, 140);
+                ctx.lineTo(100, 140);
+            } else {
+                // משולש שונה צלעות - שטוח ורחב, ממש לא סימטרי
+                ctx.moveTo(20, 50);
+                ctx.lineTo(30, 130);
+                ctx.lineTo(140, 120);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // הוספת סימוני צלעות שוות - גדולים ובולטים
+            ctx.strokeStyle = '#ff6b6b';
+            ctx.lineWidth = 3;
+            
+            if (type === 'equilateral') {
+                // 3 סימנים זהים על כל הצלעות
+                // צלע ימין
+                ctx.beginPath();
+                ctx.moveTo(95, 65);
+                ctx.lineTo(100, 70);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(95, 70);
+                ctx.lineTo(100, 75);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(95, 75);
+                ctx.lineTo(100, 80);
+                ctx.stroke();
+                
+                // צלע שמאל
+                ctx.beginPath();
+                ctx.moveTo(50, 70);
+                ctx.lineTo(55, 65);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(50, 75);
+                ctx.lineTo(55, 70);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(50, 80);
+                ctx.lineTo(55, 75);
+                ctx.stroke();
+                
+                // צלע תחתונה
+                ctx.beginPath();
+                ctx.moveTo(60, 125);
+                ctx.lineTo(65, 130);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(70, 125);
+                ctx.lineTo(75, 130);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(80, 125);
+                ctx.lineTo(85, 130);
+                ctx.stroke();
+            } else if (type === 'isosceles') {
+                // 2 סימנים זהים על הצלעות השוות בלבד
+                // צלע ימין
+                ctx.beginPath();
+                ctx.moveTo(85, 60);
+                ctx.lineTo(88, 65);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(85, 68);
+                ctx.lineTo(88, 73);
+                ctx.stroke();
+                
+                // צלע שמאל
+                ctx.beginPath();
+                ctx.moveTo(62, 65);
+                ctx.lineTo(65, 60);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(62, 73);
+                ctx.lineTo(65, 68);
+                ctx.stroke();
+                
+                // צלע תחתונה - סימן אחד שונה
+                ctx.beginPath();
+                ctx.moveTo(70, 135);
+                ctx.lineTo(75, 140);
+                ctx.stroke();
+            }
+            
+            // הוספת טקסט מסביר
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 12px Arial';
+            if (type === 'equilateral') {
+                ctx.fillText('3 צלעות שוות', 45, 10);
+            } else if (type === 'isosceles') {
+                ctx.fillText('2 צלעות שוות', 42, 5);
+            } else {
+                ctx.fillText('אין צלעות שוות', 35, 40);
+            }
+        }
+
+        drawTriangle('equilateral', 'equilateral');
+        drawTriangle('isosceles', 'isosceles');
+        drawTriangle('scalene', 'scalene');
+
+        // משחק משולשים
+        let triangleScore = 0;
+        let triangleRound = 1;
+        let currentTriangle = {};
+        let triangleAnswered = false;
+
+        function generateTriangleQuestion() {
+            triangleAnswered = false;
+            const triangles = [
+                { type: 'equilateral', name: 'שווה צלעות' },
+                { type: 'isosceles', name: 'שווה שוקיים' },
+                { type: 'scalene', name: 'שונה צלעות' }
+            ];
+            currentTriangle = triangles[Math.floor(Math.random() * triangles.length)];
+            
+            drawTriangle('triangleGame', currentTriangle.type);
+
+            const options = ['שווה צלעות', 'שווה שוקיים', 'שונה צלעות'];
+            const optionsDiv = document.getElementById('triangleOptions');
+            optionsDiv.innerHTML = '';
+            options.forEach(opt => {
+                const btn = document.createElement('div');
+                btn.className = 'option';
+                btn.textContent = opt;
+                btn.onclick = () => checkTriangleAnswer(opt);
+                optionsDiv.appendChild(btn);
+            });
+
+            document.getElementById('triangleRound').textContent = triangleRound;
+        }
+
+        function checkTriangleAnswer(answer) {
+            if (triangleAnswered) return;
+            triangleAnswered = true;
+
+            const options = document.querySelectorAll('#triangleOptions .option');
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.textContent === currentTriangle.name) {
+                    opt.classList.add('correct');
+                } else if (opt.textContent === answer) {
+                    opt.classList.add('wrong');
+                }
+            });
+
+            if (answer === currentTriangle.name) {
+                triangleScore += 10;
+                document.getElementById('triangleScore').textContent = triangleScore;
+                playSound('correct');
+            } else {
+                playSound('wrong');
+            }
+        }
+
+        function nextTriangleQuestion() {
+            playSound('click');
+            if (triangleRound >= 12) {
+                showTriangleComplete();
+                return;
+            }
+            triangleRound++;
+            generateTriangleQuestion();
+        }
+
+        function showTriangleComplete() {
+            const completeDiv = document.getElementById('triangleComplete');
+            completeDiv.innerHTML = `
+                <div class="game-complete">
+                    <h3>🎉 מצוין! 🎉</h3>
+                    <p>סיימת את כל 12 השאלות!</p>
+                    <p>הניקוד שלך: ${triangleScore} מתוך 120</p>
+                </div>
+            `;
+            completeDiv.style.display = 'block';
+            document.getElementById('triangleNextBtn').textContent = 'התחל סיבוב חדש';
+            document.getElementById('triangleNextBtn').className = 'btn restart';
+            document.getElementById('triangleNextBtn').onclick = restartTriangleGame;
+            playSound('complete');
+        }
+
+        function restartTriangleGame() {
+            playSound('click');
+            triangleScore = 0;
+            triangleRound = 1;
+            document.getElementById('triangleScore').textContent = '0';
+            document.getElementById('triangleComplete').style.display = 'none';
+            document.getElementById('triangleNextBtn').textContent = 'שאלה הבאה';
+            document.getElementById('triangleNextBtn').className = 'btn';
+            document.getElementById('triangleNextBtn').onclick = nextTriangleQuestion;
+            generateTriangleQuestion();
+        }
+
+        generateTriangleQuestion();
+
+        // ציור מרובעים - עם הבדלים ברורים
+        function drawQuad(canvasId, type) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#667eea';
+            ctx.fillStyle = 'rgba(102, 126, 234, 0.2)';
+            ctx.lineWidth = 3;
+
+            ctx.beginPath();
+            if (type === 'square') {
+                // ריבוע - זוויות ישרות מודגשות
+                ctx.rect(20, 20, 80, 80);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                
+                // סימון זוויות ישרות
+                ctx.strokeStyle = '#ff6b6b';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(20, 20, 10, 10);
+                ctx.strokeRect(90, 20, 10, 10);
+                ctx.strokeRect(20, 90, 10, 10);
+                ctx.strokeRect(90, 90, 10, 10);
+                
+                // סימוני צלעות שוות
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(55, 15);
+                ctx.lineTo(60, 20);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(65, 15);
+                ctx.lineTo(70, 20);
+                ctx.stroke();
+                
+            } else if (type === 'rectangle') {
+                // מלבן - ארוך ונמוך, זוויות ישרות
+                ctx.rect(10, 35, 120, 50);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                
+                // סימון זוויות ישרות
+                ctx.strokeStyle = '#ff6b6b';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(10, 35, 10, 10);
+                ctx.strokeRect(120, 35, 10, 10);
+                ctx.strokeRect(10, 75, 10, 10);
+                ctx.strokeRect(120, 75, 10, 10);
+                
+                // סימוני צלעות - ארוכות מסומנות ב-||, קצרות ב-|
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 3;
+                // צלע עליונה ארוכה
+                ctx.beginPath();
+                ctx.moveTo(60, 30);
+                ctx.lineTo(65, 35);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(70, 30);
+                ctx.lineTo(75, 35);
+                ctx.stroke();
+                
+                // צד ימין קצר
+                ctx.beginPath();
+                ctx.moveTo(125, 55);
+                ctx.lineTo(130, 60);
+                ctx.stroke();
+                
+            } else if (type === 'parallelogram') {
+                // מקבילית - נטויה מאוד, ללא זוויות ישרות
+                ctx.moveTo(50, 30);
+                ctx.lineTo(120, 30);
+                ctx.lineTo(90, 80);
+                ctx.lineTo(20, 80);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                
+                // קווי עזר להראות הקבלה
+                ctx.strokeStyle = '#ff6b6b';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(50, 30);
+                ctx.lineTo(50, 80);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(120, 30);
+                ctx.lineTo(120, 80);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // סימוני צלעות מקבילות
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 3;
+                // צלע עליונה
+                ctx.beginPath();
+                ctx.moveTo(80, 25);
+                ctx.lineTo(85, 30);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(88, 25);
+                ctx.lineTo(93, 30);
+                ctx.stroke();
+                
+                // צלע תחתונה
+                ctx.beginPath();
+                ctx.moveTo(50, 75);
+                ctx.lineTo(55, 80);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(58, 75);
+                ctx.lineTo(63, 80);
+                ctx.stroke();
+                
+            } else if (type === 'trapezoid') {
+                // טרפז - בסיס רחב למטה, קטן למעלה
+                ctx.moveTo(40, 25);
+                ctx.lineTo(100, 25);
+                ctx.lineTo(120, 85);
+                ctx.lineTo(20, 85);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                
+                // קווי עזר להראות צלעות מקבילות בלבד
+                ctx.strokeStyle = '#ff6b6b';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(40, 25);
+                ctx.lineTo(40, 85);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(100, 25);
+                ctx.lineTo(100, 85);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // סימון צלעות מקבילות
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 3;
+                // צלע עליונה
+                ctx.beginPath();
+                ctx.moveTo(65, 20);
+                ctx.lineTo(70, 25);
+                ctx.stroke();
+                
+                // צלע תחתונה
+                ctx.beginPath();
+                ctx.moveTo(65, 80);
+                ctx.lineTo(70, 85);
+                ctx.stroke();
+            }
+        }
+
+        drawQuad('square', 'square');
+        drawQuad('rectangle', 'rectangle');
+        drawQuad('parallelogram', 'parallelogram');
+        drawQuad('trapezoid', 'trapezoid');
+
+        // משחק מרובעים
+        let quadScore = 0;
+        let quadRound = 1;
+        let currentQuad = {};
+        let quadAnswered = false;
+
+        function generateQuadQuestion() {
+            quadAnswered = false;
+            const quads = [
+                { type: 'square', name: 'ריבוע' },
+                { type: 'rectangle', name: 'מלבן' },
+                { type: 'parallelogram', name: 'מקבילית' },
+                { type: 'trapezoid', name: 'טרפז' }
+            ];
+            currentQuad = quads[Math.floor(Math.random() * quads.length)];
+            
+            drawQuad('quadGame', currentQuad.type);
+
+            const options = ['ריבוע', 'מלבן', 'מקבילית', 'טרפז'];
+            const optionsDiv = document.getElementById('quadOptions');
+            optionsDiv.innerHTML = '';
+            options.forEach(opt => {
+                const btn = document.createElement('div');
+                btn.className = 'option';
+                btn.textContent = opt;
+                btn.onclick = () => checkQuadAnswer(opt);
+                optionsDiv.appendChild(btn);
+            });
+
+            document.getElementById('quadRound').textContent = quadRound;
+        }
+
+        function checkQuadAnswer(answer) {
+            if (quadAnswered) return;
+            quadAnswered = true;
+
+            const options = document.querySelectorAll('#quadOptions .option');
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.textContent === currentQuad.name) {
+                    opt.classList.add('correct');
+                } else if (opt.textContent === answer) {
+                    opt.classList.add('wrong');
+                }
+            });
+
+            if (answer === currentQuad.name) {
+                quadScore += 10;
+                document.getElementById('quadScore').textContent = quadScore;
+                playSound('correct');
+            } else {
+                playSound('wrong');
+            }
+        }
+
+        function nextQuadQuestion() {
+            playSound('click');
+            if (quadRound >= 12) {
+                showQuadComplete();
+                return;
+            }
+            quadRound++;
+            generateQuadQuestion();
+        }
+
+        function showQuadComplete() {
+            const completeDiv = document.getElementById('quadComplete');
+            completeDiv.innerHTML = `
+                <div class="game-complete">
+                    <h3>🎉 יפה מאוד! 🎉</h3>
+                    <p>סיימת את כל 12 השאלות!</p>
+                    <p>הניקוד שלך: ${quadScore} מתוך 120</p>
+                </div>
+            `;
+            completeDiv.style.display = 'block';
+            document.getElementById('quadNextBtn').textContent = 'התחל סיבוב חדש';
+            document.getElementById('quadNextBtn').className = 'btn restart';
+            document.getElementById('quadNextBtn').onclick = restartQuadGame;
+            playSound('complete');
+        }
+
+        function restartQuadGame() {
+            playSound('click');
+            quadScore = 0;
+            quadRound = 1;
+            document.getElementById('quadScore').textContent = '0';
+            document.getElementById('quadComplete').style.display = 'none';
+            document.getElementById('quadNextBtn').textContent = 'שאלה הבאה';
+            document.getElementById('quadNextBtn').className = 'btn';
+            document.getElementById('quadNextBtn').onclick = nextQuadQuestion;
+            generateQuadQuestion();
+        }
+
+        generateQuadQuestion();
+
+        // היקף - דוגמה
+        const perimeterCanvas = document.getElementById('perimeterExample');
+        const pctx = perimeterCanvas.getContext('2d');
+        pctx.strokeStyle = '#667eea';
+        pctx.fillStyle = 'rgba(102, 126, 234, 0.2)';
+        pctx.lineWidth = 3;
+        pctx.fillRect(60, 40, 180, 100);
+        pctx.strokeRect(60, 40, 180, 100);
+        pctx.fillStyle = '#333';
+        pctx.font = 'bold 16px Arial';
+        pctx.fillText('5 ס"מ', 130, 30);
+        pctx.fillText('5 ס"מ', 130, 165);
+        pctx.fillText('10 ס"מ', 18, 95);
+        pctx.fillText('10 ס"מ', 248, 95);
+
+        // משחק היקף
+        let perimeterScore = 0;
+        let perimeterRound = 1;
+        let currentPerimeter = {};
+        let perimeterAnswered = false;
+
+        function generatePerimeterQuestion() {
+            perimeterAnswered = false;
+            const shapes = [
+                { sides: [5, 5, 6], type: 'isosceles' },
+                { sides: [5, 5, 5, 5], type: 'square' },
+                { sides: [4, 6, 4, 6], type: 'rectangle' },
+                { sides: [4, 4, 4], type: 'equilateral' },
+                { sides: [7, 7, 7, 7], type: 'square' },
+                { sides: [5, 8, 5, 8], type: 'rectangle' },
+                { sides: [6, 6, 8], type: 'isosceles' },
+                { sides: [6, 6, 6, 6], type: 'square' },
+                { sides: [3, 7, 3, 7], type: 'rectangle' },
+                { sides: [5, 5, 5], type: 'equilateral' }
+            ];
+            
+            const shape = shapes[Math.floor(Math.random() * shapes.length)];
+            currentPerimeter = {
+                sides: shape.sides,
+                answer: shape.sides.reduce((a, b) => a + b, 0),
+                type: shape.type
+            };
+
+            const canvas = document.getElementById('perimeterGame');
+            const ctx = canvas.getContext('2d');
+            
+            // ניקוי מלא של הקנבס
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // הגדרות ציור
+            ctx.strokeStyle = '#667eea';
+            ctx.fillStyle = 'rgba(102, 126, 234, 0.2)';
+            ctx.lineWidth = 3;
+
+            if (shape.type === 'isosceles') {
+                // משולש שווה שוקיים
+                ctx.beginPath();
+                ctx.moveTo(125, 30);
+                ctx.lineTo(65, 170);
+                ctx.lineTo(185, 170);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 16px Arial';
+                ctx.fillText(shape.sides[0] + ' ס"מ', 60, 95);
+                ctx.fillText(shape.sides[1] + ' ס"מ', 160, 95);
+                ctx.fillText(shape.sides[2] + ' ס"מ', 110, 190);
+                
+            } else if (shape.type === 'equilateral') {
+                // משולש שווה צלעות
+                ctx.beginPath();
+                ctx.moveTo(125, 30);
+                ctx.lineTo(50, 170);
+                ctx.lineTo(200, 170);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 16px Arial';
+                ctx.fillText(shape.sides[0] + ' ס"מ', 55, 95);
+                ctx.fillText(shape.sides[1] + ' ס"מ', 165, 95);
+                ctx.fillText(shape.sides[2] + ' ס"מ', 110, 190);
+                
+            } else if (shape.type === 'square') {
+                // ריבוע
+                ctx.beginPath();
+                ctx.rect(60, 50, 130, 130);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 16px Arial';
+                ctx.fillText(shape.sides[0] + ' ס"מ', 105, 40);
+                ctx.fillText(shape.sides[1] + ' ס"מ', 200, 115);
+                ctx.fillText(shape.sides[2] + ' ס"מ', 105, 200);
+                ctx.fillText(shape.sides[3] + ' ס"מ', 25, 115);
+                
+            } else if (shape.type === 'rectangle') {
+                // מלבן
+                ctx.beginPath();
+                ctx.rect(40, 60, 170, 100);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 16px Arial';
+                ctx.fillText(shape.sides[0] + ' ס"מ', 100, 50);
+                ctx.fillText(shape.sides[1] + ' ס"מ', 220, 110);
+                ctx.fillText(shape.sides[2] + ' ס"מ', 100, 180);
+                ctx.fillText(shape.sides[3] + ' ס"מ', 5, 110);
+            }
+
+            document.getElementById('perimeterQuestion').textContent = 'מה ההיקף של הצורה?';
+            
+            const correctAnswer = currentPerimeter.answer;
+            const wrongAnswers = [
+                correctAnswer + Math.floor(Math.random() * 5) + 1,
+                correctAnswer - Math.floor(Math.random() * 5) - 1,
+                correctAnswer + Math.floor(Math.random() * 8) + 3
+            ].filter(a => a > 0 && a !== correctAnswer);
+            
+            const allAnswers = [correctAnswer, ...wrongAnswers.slice(0, 3)].sort(() => Math.random() - 0.5);
+            
+            const optionsDiv = document.getElementById('perimeterOptions');
+            optionsDiv.innerHTML = '';
+            allAnswers.forEach(opt => {
+                const btn = document.createElement('div');
+                btn.className = 'option';
+                btn.textContent = opt + ' ס"מ';
+                btn.onclick = () => checkPerimeterAnswer(opt);
+                optionsDiv.appendChild(btn);
+            });
+
+            document.getElementById('perimeterFeedback').style.display = 'none';
+            document.getElementById('perimeterRound').textContent = perimeterRound;
+        }
+
+        function checkPerimeterAnswer(answer) {
+            if (perimeterAnswered) return;
+            perimeterAnswered = true;
+
+            const options = document.querySelectorAll('#perimeterOptions .option');
+            const feedback = document.getElementById('perimeterFeedback');
+            
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                const optValue = parseInt(opt.textContent);
+                if (optValue === currentPerimeter.answer) {
+                    opt.classList.add('correct');
+                } else if (optValue === answer) {
+                    opt.classList.add('wrong');
+                }
+            });
+
+            if (answer === currentPerimeter.answer) {
+                perimeterScore += 10;
+                document.getElementById('perimeterScore').textContent = perimeterScore;
+                feedback.textContent = '🎉 נכון! ' + currentPerimeter.sides.join(' + ') + ' = ' + currentPerimeter.answer;
+                feedback.className = 'feedback success';
+                playSound('correct');
+            } else {
+                feedback.textContent = '❌ לא נכון. התשובה הנכונה: ' + currentPerimeter.sides.join(' + ') + ' = ' + currentPerimeter.answer;
+                feedback.className = 'feedback error';
+                playSound('wrong');
+            }
+            feedback.style.display = 'block';
+        }
+
+        function nextPerimeterQuestion() {
+            playSound('click');
+            if (perimeterRound >= 12) {
+                showPerimeterComplete();
+                return;
+            }
+            perimeterRound++;
+            generatePerimeterQuestion();
+        }
+
+        function showPerimeterComplete() {
+            const completeDiv = document.getElementById('perimeterComplete');
+            completeDiv.innerHTML = `
+                <div class="game-complete">
+                    <h3>🎉 מדהים! 🎉</h3>
+                    <p>סיימת את כל 12 השאלות!</p>
+                    <p>הניקוד שלך: ${perimeterScore} מתוך 120</p>
+                </div>
+            `;
+            completeDiv.style.display = 'block';
+            document.getElementById('perimeterNextBtn').textContent = 'התחל סיבוב חדש';
+            document.getElementById('perimeterNextBtn').className = 'btn restart';
+            document.getElementById('perimeterNextBtn').onclick = restartPerimeterGame;
+            playSound('complete');
+        }
+
+        function restartPerimeterGame() {
+            playSound('click');
+            perimeterScore = 0;
+            perimeterRound = 1;
+            document.getElementById('perimeterScore').textContent = '0';
+            document.getElementById('perimeterComplete').style.display = 'none';
+            document.getElementById('perimeterNextBtn').textContent = 'שאלה הבאה';
+            document.getElementById('perimeterNextBtn').className = 'btn';
+            document.getElementById('perimeterNextBtn').onclick = nextPerimeterQuestion;
+            generatePerimeterQuestion();
+        }
+
+        generatePerimeterQuestion();
+
+        // שטח - דוגמה
+        const areaExampleDiv = document.getElementById('areaExample');
+        areaExampleDiv.innerHTML = '';
+        for (let i = 0; i < 5; i++) {
+            for (let j = 0; j < 5; j++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                // שורה 1: 5 משבצות, שורה 2: 5 משבצות = 10 משבצות
+                if (i < 2) {
+                    cell.classList.add('filled');
+                }
+                areaExampleDiv.appendChild(cell);
+            }
+        }
+
+        // משחק שטח
+        let areaScore = 0;
+        let areaRound = 1;
+        let currentArea = {};
+        let areaAnswered = false;
+
+        function generateAreaQuestion() {
+            areaAnswered = false;
+            const shapes = [
+                { pattern: [[1,1,1],[1,1,1]], answer: 6 },
+                { pattern: [[1,1,1,1],[1,1,1,1]], answer: 8 },
+                { pattern: [[0,1,1,0],[1,1,1,1],[0,1,1,0]], answer: 10 },
+                { pattern: [[1,1,1],[1,1,0]], answer: 5 },
+                { pattern: [[1,1],[1,1],[1,1]], answer: 6 },
+                { pattern: [[1,1,1,1,1]], answer: 5 },
+                { pattern: [[1,1,1],[1,1,1],[1,1,1]], answer: 9 },
+                { pattern: [[1,1,1,1],[1,0,0,1],[1,1,1,1]], answer: 10 },
+                { pattern: [[1,1],[1,1]], answer: 4 },
+                { pattern: [[1,1,1,1,1],[1,1,1,1,1]], answer: 10 },
+                { pattern: [[1,1,1,1],[1,1,1,1],[1,1,1,1]], answer: 12 },
+                { pattern: [[1,1,1,1,1,1]], answer: 6 }
+            ];
+
+            const shape = shapes[Math.floor(Math.random() * shapes.length)];
+            
+            // חישוב האמת של כמות המשבצות
+            let actualCount = 0;
+            shape.pattern.forEach(row => {
+                row.forEach(cell => {
+                    if (cell === 1) actualCount++;
+                });
+            });
+            
+            currentArea = { answer: actualCount };
+
+            const rows = shape.pattern.length;
+            const cols = shape.pattern[0].length;
+            const gameDiv = document.getElementById('areaGame');
+            gameDiv.innerHTML = '';
+            gameDiv.style.gridTemplateColumns = `repeat(${cols}, 30px)`;
+
+            shape.pattern.forEach(row => {
+                row.forEach(cell => {
+                    const cellDiv = document.createElement('div');
+                    cellDiv.className = 'cell';
+                    if (cell === 1) {
+                        cellDiv.classList.add('filled');
+                    }
+                    gameDiv.appendChild(cellDiv);
+                });
+            });
+
+            const correctAnswer = currentArea.answer;
+            const wrongAnswers = [
+                correctAnswer + 1,
+                correctAnswer - 1,
+                correctAnswer + 2
+            ].filter(a => a > 0 && a !== correctAnswer);
+            
+            const allAnswers = [correctAnswer, ...wrongAnswers.slice(0, 3)].sort(() => Math.random() - 0.5);
+            
+            const optionsDiv = document.getElementById('areaOptions');
+            optionsDiv.innerHTML = '';
+            allAnswers.forEach(opt => {
+                const btn = document.createElement('div');
+                btn.className = 'option';
+                btn.textContent = opt + ' יחידות';
+                btn.onclick = () => checkAreaAnswer(opt);
+                optionsDiv.appendChild(btn);
+            });
+
+            document.getElementById('areaFeedback').style.display = 'none';
+            document.getElementById('areaRound').textContent = areaRound;
+        }
+
+        function checkAreaAnswer(answer) {
+            if (areaAnswered) return;
+            areaAnswered = true;
+
+            const options = document.querySelectorAll('#areaOptions .option');
+            const feedback = document.getElementById('areaFeedback');
+            
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                const optValue = parseInt(opt.textContent);
+                if (optValue === currentArea.answer) {
+                    opt.classList.add('correct');
+                } else if (optValue === answer) {
+                    opt.classList.add('wrong');
+                }
+            });
+
+            if (answer === currentArea.answer) {
+                areaScore += 10;
+                document.getElementById('areaScore').textContent = areaScore;
+                feedback.textContent = '🎉 כל הכבוד! ספרת נכון!';
+                feedback.className = 'feedback success';
+                playSound('correct');
+            } else {
+                feedback.textContent = '❌ נסה שוב. התשובה הנכונה: ' + currentArea.answer + ' יחידות ריבוע';
+                feedback.className = 'feedback error';
+                playSound('wrong');
+            }
+            feedback.style.display = 'block';
+        }
+
+        function nextAreaQuestion() {
+            playSound('click');
+            if (areaRound >= 12) {
+                showAreaComplete();
+                return;
+            }
+            areaRound++;
+            generateAreaQuestion();
+        }
+
+        function showAreaComplete() {
+            const completeDiv = document.getElementById('areaComplete');
+            completeDiv.innerHTML = `
+                <div class="game-complete">
+                    <h3>🎉 פנטסטי! 🎉</h3>
+                    <p>סיימת את כל 12 השאלות!</p>
+                    <p>הניקוד שלך: ${areaScore} מתוך 120</p>
+                </div>
+            `;
+            completeDiv.style.display = 'block';
+            document.getElementById('areaNextBtn').textContent = 'התחל סיבוב חדש';
+            document.getElementById('areaNextBtn').className = 'btn restart';
+            document.getElementById('areaNextBtn').onclick = restartAreaGame;
+            playSound('complete');
+        }
+
+        function restartAreaGame() {
+            playSound('click');
+            areaScore = 0;
+            areaRound = 1;
+            document.getElementById('areaScore').textContent = '0';
+            document.getElementById('areaComplete').style.display = 'none';
+            document.getElementById('areaNextBtn').textContent = 'שאלה הבאה';
+            document.getElementById('areaNextBtn').className = 'btn';
+            document.getElementById('areaNextBtn').onclick = nextAreaQuestion;
+            generateAreaQuestion();
+        }
+
+        generateAreaQuestion();
+
+        // סימטריה - דוגמאות
+        function drawSymmetryExample(canvasId, type) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.fillStyle = 'rgba(102, 126, 234, 0.3)';
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 2;
+
+            if (type === 'vertical') {
+                ctx.fillRect(20, 40, 50, 70);
+                ctx.strokeRect(20, 40, 50, 70);
+                ctx.fillRect(80, 40, 50, 70);
+                ctx.strokeRect(80, 40, 50, 70);
+                
+                ctx.strokeStyle = '#ff6b6b';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(75, 10);
+                ctx.lineTo(75, 140);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            } else if (type === 'horizontal') {
+                ctx.fillRect(40, 20, 70, 40);
+                ctx.strokeRect(40, 20, 70, 40);
+                ctx.fillRect(40, 90, 70, 40);
+                ctx.strokeRect(40, 90, 70, 40);
+                
+                ctx.strokeStyle = '#ff6b6b';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(10, 75);
+                ctx.lineTo(140, 75);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            } else {
+                ctx.beginPath();
+                ctx.arc(75, 75, 50, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                
+                ctx.strokeStyle = '#ff6b6b';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(75, 15);
+                ctx.lineTo(75, 135);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(15, 75);
+                ctx.lineTo(135, 75);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+        }
+
+        drawSymmetryExample('symmetry1', 'vertical');
+        drawSymmetryExample('symmetry2', 'horizontal');
+        drawSymmetryExample('symmetry3', 'both');
+
+        // משחק סימטריה
+        let symmetryScore = 0;
+        let symmetryRound = 1;
+        let currentSymmetryPattern = [];
+        let userPattern = [];
+        let symmetryChecked = false;
+
+        function generateSymmetryQuestion() {
+            symmetryChecked = false;
+            const gameDiv = document.getElementById('symmetryGame');
+            gameDiv.innerHTML = '';
+            currentSymmetryPattern = [];
+            userPattern = [];
+
+            for (let i = 0; i < 8; i++) {
+                currentSymmetryPattern[i] = [];
+                for (let j = 0; j < 8; j++) {
+                    if (j < 4) {
+                        currentSymmetryPattern[i][j] = Math.random() > 0.6 ? 1 : 0;
+                    } else {
+                        currentSymmetryPattern[i][j] = 0;
+                    }
+                }
+            }
+
+            for (let i = 0; i < 8; i++) {
+                userPattern[i] = [];
+                for (let j = 0; j < 8; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    
+                    if (j < 4 && currentSymmetryPattern[i][j] === 1) {
+                        cell.classList.add('filled');
+                    }
+                    
+                    if (j >= 4) {
+                        cell.addEventListener('click', toggleCell);
+                    }
+                    
+                    userPattern[i][j] = currentSymmetryPattern[i][j];
+                    gameDiv.appendChild(cell);
+                }
+            }
+
+            document.getElementById('symmetryFeedback').style.display = 'none';
+            document.getElementById('symmetryNextBtn').style.display = 'none';
+            document.getElementById('symmetryRound').textContent = symmetryRound;
+        }
+
+        function toggleCell(e) {
+            playSound('click');
+            const cell = e.target;
+            const row = parseInt(cell.dataset.row);
+            const col = parseInt(cell.dataset.col);
+            
+            if (cell.classList.contains('filled')) {
+                cell.classList.remove('filled');
+                userPattern[row][col] = 0;
+            } else {
+                cell.classList.add('filled');
+                userPattern[row][col] = 1;
+            }
+        }
+
+        function checkSymmetry() {
+            if (symmetryChecked) return;
+            
+            playSound('click');
+            let correct = true;
+            const feedback = document.getElementById('symmetryFeedback');
+
+            for (let i = 0; i < 8; i++) {
+                for (let j = 4; j < 8; j++) {
+                    const mirrorCol = 7 - j;
+                    if (userPattern[i][j] !== currentSymmetryPattern[i][mirrorCol]) {
+                        correct = false;
+                        break;
+                    }
+                }
+                if (!correct) break;
+            }
+
+            if (correct) {
+                symmetryScore += 10;
+                document.getElementById('symmetryScore').textContent = symmetryScore;
+                feedback.textContent = '🎉 מעולה! יצרת צורה סימטרית מושלמת!';
+                feedback.className = 'feedback success';
+                playSound('correct');
+                symmetryChecked = true;
+                document.getElementById('symmetryNextBtn').style.display = 'block';
+            } else {
+                feedback.textContent = '❌ עדיין לא מושלם. נסה להשלים את הצורה בצורה סימטרית.';
+                feedback.className = 'feedback error';
+                playSound('wrong');
+            }
+            feedback.style.display = 'block';
+        }
+
+        function nextSymmetryQuestion() {
+            playSound('click');
+            if (symmetryRound >= 12) {
+                showSymmetryComplete();
+                return;
+            }
+            symmetryRound++;
+            generateSymmetryQuestion();
+        }
+
+        function showSymmetryComplete() {
+            const completeDiv = document.getElementById('symmetryComplete');
+            completeDiv.innerHTML = `
+                <div class="game-complete">
+                    <h3>🎉 מושלם! 🎉</h3>
+                    <p>סיימת את כל 12 השאלות!</p>
+                    <p>הניקוד שלך: ${symmetryScore} מתוך 120</p>
+                </div>
+            `;
+            completeDiv.style.display = 'block';
+            document.getElementById('symmetryNextBtn').textContent = 'התחל סיבוב חדש';
+            document.getElementById('symmetryNextBtn').className = 'btn restart';
+            document.getElementById('symmetryNextBtn').onclick = restartSymmetryGame;
+            playSound('complete');
+        }
+
+        function restartSymmetryGame() {
+            playSound('click');
+            symmetryScore = 0;
+            symmetryRound = 1;
+            document.getElementById('symmetryScore').textContent = '0';
+            document.getElementById('symmetryComplete').style.display = 'none';
+            document.getElementById('symmetryNextBtn').textContent = 'שאלה הבאה';
+            document.getElementById('symmetryNextBtn').className = 'btn';
+            document.getElementById('symmetryNextBtn').onclick = nextSymmetryQuestion;
+            generateSymmetryQuestion();
+        }
+
+        generateSymmetryQuestion();
+    </script>
+</body>
+</html>
