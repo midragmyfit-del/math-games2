@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>חישובי כסף - כיתה ג'</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; border-radius: 25px; padding: 40px; box-shadow: 0 25px 70px rgba(0,0,0,0.4); }
+        h1 { color: #43cea2; text-align: center; margin-bottom: 15px; font-size: 3em; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .subtitle { text-align: center; color: #666; margin-bottom: 35px; font-size: 1.3em; }
+        .tabs { display: flex; gap: 12px; margin-bottom: 35px; flex-wrap: wrap; justify-content: center; }
+        .tab { padding: 16px 28px; background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%); border: none; border-radius: 12px; cursor: pointer; font-size: 1.15em; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: white; }
+        .tab:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); background: linear-gradient(135deg, #56d8b4 0%, #2a6eb5 100%); }
+        .tab.active { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); transform: scale(1.05); }
+        .content { display: none; }
+        .content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .lesson { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .lesson h2 { color: #43cea2; margin-bottom: 20px; font-size: 1.8em; }
+        .lesson p { font-size: 1.2em; line-height: 1.8; margin-bottom: 15px; color: #333; }
+        .example { background: white; padding: 20px; border-right: 5px solid #43cea2; margin: 20px 0; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
+        .example h3 { color: #fda085; margin-bottom: 12px; font-size: 1.3em; }
+        .game { background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .game h2 { margin-bottom: 20px; font-size: 2em; }
+        .question-counter { text-align: center; font-size: 1.3em; margin: 15px 0; color: #fff; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px; }
+        .score { text-align: center; font-size: 1.8em; margin: 25px 0; color: #fff; font-weight: bold; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; }
+        .problem-display { font-size: 1.3em; text-align: right; margin: 30px 0; padding: 25px; background: rgba(255,255,255,0.3); border-radius: 15px; line-height: 1.8; }
+        input[type="number"] { width: 250px; padding: 15px; font-size: 1.5em; border: 4px solid white; border-radius: 10px; text-align: center; margin: 10px; font-weight: bold; }
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
+        button { background: white; color: #43cea2; border: none; padding: 14px 35px; font-size: 1.2em; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-weight: bold; box-shadow: 0 6px 12px rgba(0,0,0,0.2); margin: 5px; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+        .feedback { padding: 20px; border-radius: 12px; margin-top: 20px; font-size: 1.3em; text-align: center; font-weight: bold; }
+        .correct { background: #51cf66; color: white; }
+        .incorrect { background: #ff6b6b; color: white; }
+        .controls { text-align: center; margin: 25px 0; }
+        .round-complete { background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%); padding: 40px; border-radius: 20px; text-align: center; color: white; margin: 20px 0; }
+        .round-complete h3 { font-size: 2.5em; margin-bottom: 20px; }
+        .round-complete p { font-size: 1.5em; margin: 15px 0; }
+        .new-round-btn { background: white; color: #51cf66; font-size: 1.5em; padding: 20px 40px; margin-top: 20px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; box-shadow: 0 8px 16px rgba(0,0,0,0.2); transition: all 0.3s; }
+        .new-round-btn:hover { transform: scale(1.05); box-shadow: 0 12px 24px rgba(0,0,0,0.3); }
+        .steps { background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin: 20px 0; text-align: right; }
+        .steps p { margin: 10px 0; font-size: 1.1em; }
+        .formula-box { background: #fff3cd; border: 3px solid #ffc107; padding: 15px; border-radius: 10px; margin: 15px 0; text-align: center; font-size: 1.3em; font-weight: bold; color: #856404; }
+        .strategy-box { background: #e7f5ff; border: 3px solid #339af0; padding: 20px; border-radius: 10px; margin: 15px 0; text-align: right; }
+        .strategy-box h4 { color: #1971c2; margin-bottom: 10px; font-size: 1.2em; }
+        .strategy-box p { font-size: 1.1em; line-height: 1.6; margin: 8px 0; }
+        .money-box { background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%); border: 3px solid #f39c12; padding: 20px; border-radius: 10px; margin: 15px 0; text-align: center; }
+        .money-box h4 { color: #d35400; margin-bottom: 15px; font-size: 1.3em; }
+        .coin-row { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
+        .coin { background: #f39c12; color: white; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.1em; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .bill { background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%); color: white; border-radius: 8px; padding: 10px 20px; font-weight: bold; font-size: 1.1em; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .calc-box { direction: ltr; text-align: left; font-size: 1.4em; margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; font-family: 'Courier New', monospace; white-space: pre; display: inline-block; color: #2d3436; font-weight: bold; }
+        .tip { color: #0d5a3a; font-weight: bold; font-size: 1.05em; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>חישובי כסף 💰</h1>
+        <div class="subtitle">כיתה ג' - למדו לחשב כסף כמו מקצוענים!</div>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="lesson1">📚 שיעור: חישובי כסף</button>
+            <button class="tab" data-tab="game1">🎮 משחק: חישובי כסף</button>
+            <button class="tab" data-tab="lesson2">📚 שיעור: עודף והחזר</button>
+            <button class="tab" data-tab="game2">💵 משחק: עודף והחזר</button>
+            <button class="tab" data-tab="lesson3">📚 שיעור: חיסכון והוצאות</button>
+            <button class="tab" data-tab="game3">🏦 משחק: חיסכון</button>
+        </div>
+        
+        <!-- שיעור 1 -->
+        <div id="lesson1" class="content active">
+            <div class="lesson">
+                <h2>חישובי כסף בסיסיים</h2>
+                <p>בואו נלמד לחשב כסף בשקלים ואגורות!</p>
+                
+                <div class="formula-box">1 שקל = 100 אגורות</div>
+                
+                <div class="money-box">
+                    <h4>💰 מטבעות ושטרות בישראל</h4>
+                    <div class="coin-row">
+                        <div class="coin">10 א'</div>
+                        <div class="coin">50 א'</div>
+                        <div class="coin">1 ₪</div>
+                        <div class="coin">2 ₪</div>
+                        <div class="coin">5 ₪</div>
+                        <div class="coin">10 ₪</div>
+                    </div>
+                    <div class="coin-row">
+                        <div class="bill">20 ₪</div>
+                        <div class="bill">50 ₪</div>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: חיבור כסף</h3>
+                    <p><strong>בעיה:</strong> לדני יש 12.50 ₪ ולרונית יש 15.30 ₪. כמה יש להם ביחד?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">  12.50
++ 15.30
+_______
+  27.80</div>
+                        <p><strong>תשובה:</strong> יש להם 27.80 ₪ ביחד</p>
+                        <p class="tip">💡 מיישרים את הנקודה ומחברים!</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: חיסור כסף</h3>
+                    <p><strong>בעיה:</strong> לאמא היו 50 ₪. היא קנתה לחם ב-9.80 ₪. כמה נשאר?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">  50.00
+-  9.80
+_______
+  40.20</div>
+                        <p><strong>תשובה:</strong> נשארו 40.20 ₪</p>
+                        <p class="tip">💡 50 ₪ = 50.00 ₪</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 3: כפל כסף</h3>
+                    <p><strong>בעיה:</strong> כל ארטיק עולה 3.50 ₪. כמה עולים 3 ארטיקים?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">  3.50
+×    3
+_______
+ 10.50</div>
+                        <p><strong>תשובה:</strong> 10.50 ₪</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 4: המרה</h3>
+                    <p><strong>בעיה:</strong> לשרה יש 250 אגורות. כמה זה שקלים?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>אגורות → שקלים: חולקים ב-100</p>
+                        <div class="calc-box">250 ÷ 100 = 2.50</div>
+                        <p><strong>תשובה:</strong> 2.50 ₪</p>
+                    </div>
+                </div>
+                
+                <div class="strategy-box">
+                    <h4>💡 טיפים:</h4>
+                    <p>✓ תמיד שימו לב לנקודה העשרונית</p>
+                    <p>✓ מיישרים בחיבור וחיסור</p>
+                    <p>✓ אחרי הנקודה תמיד 2 ספרות</p>
+                    <p>✓ בודקים שהתשובה הגיונית</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 1 -->
+        <div id="game1" class="content">
+            <div class="game">
+                <h2>משחק חישובי כסף</h2>
+                <div class="question-counter">שאלה <span id="q-count1">1</span> מתוך 10</div>
+                <div class="score">ניקוד: <span id="score1">0</span></div>
+                <div class="problem-display" id="problem1">טוען...</div>
+                <div class="controls">
+                    <input type="number" step="0.01" id="answer1" placeholder="הכנס תשובה">
+                    <br><br>
+                    <button onclick="checkAns(1);">בדוק</button>
+                </div>
+                <div id="feedback1"></div>
+                <div id="round-end1" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <!-- שיעור 2 -->
+        <div id="lesson2" class="content">
+            <div class="lesson">
+                <h2>עודף והחזר כסף</h2>
+                <p>כשמשלמים יותר מהמחיר - מקבלים עודף!</p>
+                
+                <div class="formula-box">עודף = שילמתי - מחיר</div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: עודף פשוט</h3>
+                    <p><strong>בעיה:</strong> יוסי קנה ספר ב-28 ₪. שילם עם 50 ₪. כמה עודף?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">  50
+- 28
+_____
+  22</div>
+                        <p><strong>תשובה:</strong> 22 ₪ עודף</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: עם אגורות</h3>
+                    <p><strong>בעיה:</strong> דנה קנתה חלב ב-6.50 ₪. שילמה עם 10 ₪. כמה עודף?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">  10.00
+-  6.50
+_______
+   3.50</div>
+                        <p><strong>תשובה:</strong> 3.50 ₪ עודף</p>
+                        <p class="tip">💡 3.50 ₪ = 3 שקלים ו-50 אגורות</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 3: שתי קניות</h3>
+                    <p><strong>בעיה:</strong> רונית קנתה משחק (18.50 ₪) וספר (12.80 ₪). שילמה 50 ₪. כמה עודף?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>שלב 1: כמה עלו הקניות?</p>
+                        <div class="calc-box">18.50 + 12.80 = 31.30</div>
+                        <p>שלב 2: כמה עודף?</p>
+                        <div class="calc-box">  50.00
+- 31.30
+_______
+  18.70</div>
+                        <p><strong>תשובה:</strong> 18.70 ₪ עודף</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 4: כמה נשאר?</h3>
+                    <p><strong>בעיה:</strong> לאבא היו 60 ₪. הוא קנה משחק (24.50 ₪) ומחברת (8.30 ₪). כמה נשאר?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>סכום הקניות:</p>
+                        <div class="calc-box">24.50 + 8.30 = 32.80</div>
+                        <p>כמה נשאר:</p>
+                        <div class="calc-box">  60.00
+- 32.80
+_______
+  27.20</div>
+                        <p><strong>תשובה:</strong> 27.20 ₪</p>
+                    </div>
+                </div>
+                
+                <div class="strategy-box">
+                    <h4>🎯 שלבים:</h4>
+                    <p>1. כמה שילמתי?</p>
+                    <p>2. כמה עלתה הקנייה?</p>
+                    <p>3. מחסרים</p>
+                    <p>4. בודקים</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 2 -->
+        <div id="game2" class="content">
+            <div class="game">
+                <h2>משחק עודף והחזר</h2>
+                <div class="question-counter">שאלה <span id="q-count2">1</span> מתוך 10</div>
+                <div class="score">ניקוד: <span id="score2">0</span></div>
+                <div class="problem-display" id="problem2">טוען...</div>
+                <div class="controls">
+                    <input type="number" step="0.01" id="answer2" placeholder="הכנס תשובה">
+                    <br><br>
+                    <button onclick="checkAns(2);">בדוק</button>
+                </div>
+                <div id="feedback2"></div>
+                <div id="round-end2" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <!-- שיעור 3 -->
+        <div id="lesson3" class="content">
+            <div class="lesson">
+                <h2>חיסכון והוצאות</h2>
+                <p>איך לחסוך כסף ולתכנן נכון!</p>
+                
+                <div class="formula-box">נשאר = חסכתי - הוצאתי</div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: חיסכון קבוע</h3>
+                    <p><strong>בעיה:</strong> דני חוסך 10 ₪ כל שבוע. כמה ב-4 שבועות?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">10 × 4 = 40</div>
+                        <p><strong>תשובה:</strong> 40 ₪</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: חסר כסף</h3>
+                    <p><strong>בעיה:</strong> לשרה יש 45 ₪. המשחק עולה 70 ₪. כמה חסר?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">  70
+- 45
+_____
+  25</div>
+                        <p><strong>תשובה:</strong> חסרים 25 ₪</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 3: אחרי קנייה</h3>
+                    <p><strong>בעיה:</strong> ליוסי היו 80 ₪. קנה נעליים ב-55 ₪. כמה נשאר?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">  80
+- 55
+_____
+  25</div>
+                        <p><strong>תשובה:</strong> 25 ₪</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 4: סיכום חודשי</h3>
+                    <p><strong>בעיה:</strong> מיכל חסכה: ינואר 18 ₪, פברואר 22 ₪, מרץ 25 ₪. כמה בסך הכל?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">  18
++ 22
++ 25
+_____
+  65</div>
+                        <p><strong>תשובה:</strong> 65 ₪</p>
+                    </div>
+                </div>
+                
+                <div class="strategy-box">
+                    <h4>💰 טיפי חיסכון:</h4>
+                    <p>✓ חסכו בקביעות</p>
+                    <p>✓ תכננו לפני קנייה</p>
+                    <p>✓ שאלו: האם אני צריך?</p>
+                    <p>✓ התאזרו בסבלנות</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 3 -->
+        <div id="game3" class="content">
+            <div class="game">
+                <h2>משחק חיסכון</h2>
+                <div class="question-counter">שאלה <span id="q-count3">1</span> מתוך 10</div>
+                <div class="score">ניקוד: <span id="score3">0</span></div>
+                <div class="problem-display" id="problem3">טוען...</div>
+                <div class="controls">
+                    <input type="number" step="0.01" id="answer3" placeholder="הכנס תשובה">
+                    <br><br>
+                    <button onclick="checkAns(3);">בדוק</button>
+                </div>
+                <div id="feedback3"></div>
+                <div id="round-end3" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+var scores = {1: 0, 2: 0, 3: 0};
+var currentQuestion = {1: 0, 2: 0, 3: 0};
+var questionBank = {1: [], 2: [], 3: []};
+var gameData = {1: {}, 2: {}, 3: {}};
+var answerLocked = {1: false, 2: false, 3: false};
+
+function generateQ1(n) {
+    var qs = [
+        {t: 'דני יש 12.50 ₪ ולשרה יש 15.30 ₪. כמה ביחד?', a: 27.80},
+        {t: 'אמא שילמה 18.50 ₪ על ירקות ו-14.20 ₪ על פירות. כמה בסך הכל?', a: 32.70},
+        {t: 'בחנות היו 45.60 ₪. מכרו ב-22.30 ₪. כמה נשאר?', a: 23.30},
+        {t: 'כל עוגייה 2.50 ₪. כמה עולות 3 עוגיות?', a: 7.50},
+        {t: 'ליוסי היו 50 ₪. קנה משחק ב-32.80 ₪. כמה נשאר?', a: 17.20},
+        {t: 'רונית קנתה 3 מחברות ב-4.50 ₪ כל אחת. כמה שילמה?', a: 13.50},
+        {t: 'דני חסך 8.50 ₪ ביום ראשון ו-12.30 ₪ ביום שני. כמה בסך הכל?', a: 20.80},
+        {t: 'כל ארטיק 3.50 ₪. כמה עולים 4 ארטיקים?', a: 14.00},
+        {t: 'לשרה יש 200 אגורות. כמה זה שקלים?', a: 2.00},
+        {t: 'אבא קנה חלב (7.90 ₪) ולחם (11.50 ₪). כמה בסך הכל?', a: 19.40},
+        {t: 'מיכל יש 16.80 ₪ ולתומר יש 22.50 ₪. כמה להם ביחד?', a: 39.30},
+        {t: 'ליוסי היו 60 ₪. קנה צעצוע ב-28.40 ₪. כמה נשאר?', a: 31.60},
+        {t: 'כל סוכריה 1.50 ₪. כמה עולות 5 סוכריות?', a: 7.50},
+        {t: 'דנה קנתה פירות (13.60 ₪) וירקות (19.80 ₪). כמה בסך הכל?', a: 33.40},
+        {t: 'בכיס היו 38.90 ₪. הוצאתי 15.70 ₪. כמה נשאר?', a: 23.20},
+        {t: 'רונית קנתה 4 עפרונות ב-3.25 ₪ כל אחד. כמה שילמה?', a: 13.00},
+        {t: 'אמא חסכה 14.50 ₪ ביום ראשון ו-18.70 ₪ ביום שני. כמה בסך הכל?', a: 33.20},
+        {t: 'כל מחברת 5.50 ₪. כמה עולות 3 מחברות?', a: 16.50},
+        {t: 'לדני יש 350 אגורות. כמה זה שקלים?', a: 3.50},
+        {t: 'אבא קנה ביצים (16.80 ₪) וגבינה (24.50 ₪). כמה בסך הכל?', a: 41.30}
+    ];
+    return {text: qs[n].t, answer: qs[n].a};
+}
+
+function generateQ2(n) {
+    var qs = [
+        {t: 'דני קנה ספר ב-32 ₪. שילם עם 50 ₪. כמה עודף?', a: 18.00},
+        {t: 'שרה קנתה חלב ב-6.50 ₪. שילמה עם 10 ₪. כמה עודף?', a: 3.50},
+        {t: 'יוסי קנה משחק ב-28.50 ₪. שילם עם 50 ₪. כמה עודף?', a: 21.50},
+        {t: 'רונית קנתה ממתקים ב-12.80 ₪. שילמה עם 20 ₪. כמה עודף?', a: 7.20},
+        {t: 'אמא קנתה גבינה (18.50 ₪) וחלב (6.90 ₪). שילמה עם 50 ₪. כמה עודף?', a: 24.60},
+        {t: 'דנה קנתה 2 מחברות ב-5.50 ₪ כל אחת. שילמה עם 20 ₪. כמה עודף?', a: 9.00},
+        {t: 'אבא קנה לחם (9.90 ₪) וחלב (6.50 ₪). שילם עם 20 ₪. כמה עודף?', a: 3.60},
+        {t: 'לרונית היו 50 ₪. קנתה נעליים ב-38.80 ₪. כמה נשאר?', a: 11.20},
+        {t: 'יוסי קנה צעצוע ב-24.70 ₪. שילם עם 50 ₪. כמה עודף?', a: 25.30},
+        {t: 'שרה קנתה ארטיק (3.50 ₪) וממתק (2.80 ₪). שילמה עם 10 ₪. כמה עודף?', a: 3.70},
+        {t: 'מיכל קנתה ספר ב-26 ₪. שילמה עם 50 ₪. כמה עודף?', a: 24.00},
+        {t: 'דני קנה מחברת ב-7.80 ₪. שילם עם 10 ₪. כמה עודף?', a: 2.20},
+        {t: 'תומר קנה משחק ב-34.50 ₪. שילם עם 50 ₪. כמה עודף?', a: 15.50},
+        {t: 'נועה קנתה עוגיות ב-14.30 ₪. שילמה עם 20 ₪. כמה עודף?', a: 5.70},
+        {t: 'אמא קנתה פירות (15.60 ₪) וירקות (12.40 ₪). שילמה עם 50 ₪. כמה עודף?', a: 22.00},
+        {t: 'יוסי קנה 3 עפרונות ב-2.50 ₪ כל אחד. שילם עם 10 ₪. כמה עודף?', a: 2.50},
+        {t: 'אבא קנה חלב (8.30 ₪) וביצים (13.70 ₪). שילם עם 50 ₪. כמה עודף?', a: 28.00},
+        {t: 'לדנה היו 60 ₪. קנתה נעליים ב-44.80 ₪. כמה נשאר?', a: 15.20},
+        {t: 'רונית קנתה צעצוע ב-19.90 ₪. שילמה עם 20 ₪. כמה עודף?', a: 0.10},
+        {t: 'שרה קנתה סוכריות (4.20 ₪) ושוקולד (5.30 ₪). שילמה עם 10 ₪. כמה עודף?', a: 0.50}
+    ];
+    return {text: qs[n].t, answer: qs[n].a};
+}
+
+function generateQ3(n) {
+    var qs = [
+        {t: 'דני חוסך 10 ₪ כל שבוע. כמה ב-4 שבועות?', a: 40.00},
+        {t: 'לשרה יש 35 ₪. המשחק עולה 60 ₪. כמה כסף חסר?', a: 25.00},
+        {t: 'ליוסי היו 80 ₪. קנה נעליים ב-55 ₪. כמה נשאר?', a: 25.00},
+        {t: 'רונית חסכה 18 ₪ בינואר, 22 ₪ בפברואר ו-25 ₪ במרץ. כמה בסך הכל?', a: 65.00},
+        {t: 'דנה חוסכת 7 ₪ כל יום. כמה ב-5 ימים?', a: 35.00},
+        {t: 'לאבא היו 100 ₪. קנה מתנה (42.50 ₪) וספר (28.30 ₪). כמה נשאר?', a: 29.20},
+        {t: 'יוסי חוסך 12 ₪ כל שבוע. כמה ב-5 שבועות?', a: 60.00},
+        {t: 'לשרה יש 50 ₪. קנתה 3 מחברות ב-5.50 ₪ כל אחת. כמה נשאר?', a: 33.50},
+        {t: 'דני חסך 45 ₪. האופניים עולים 120 ₪. כמה עוד חסר?', a: 75.00},
+        {t: 'רונית חוסכת 15 ₪ כל שבוע. כמה ב-3 שבועות?', a: 45.00},
+        {t: 'מיכל חוסכת 8 ₪ כל שבוע. כמה ב-6 שבועות?', a: 48.00},
+        {t: 'לתומר יש 28 ₪. המשחק עולה 55 ₪. כמה כסף חסר?', a: 27.00},
+        {t: 'לנועה היו 70 ₪. קנתה תיק ב-48 ₪. כמה נשאר?', a: 22.00},
+        {t: 'דני חסך 20 ₪ באפריל, 16 ₪ במאי ו-29 ₪ ביוני. כמה בסך הכל?', a: 65.00},
+        {t: 'שרה חוסכת 9 ₪ כל יום. כמה ב-4 ימים?', a: 36.00},
+        {t: 'לאמא היו 90 ₪. קנתה נעליים (38.50 ₪) וחולצה (24.80 ₪). כמה נשאר?', a: 26.70},
+        {t: 'רונית חוסכת 14 ₪ כל שבוע. כמה ב-4 שבועות?', a: 56.00},
+        {t: 'ליוסי יש 65 ₪. קנה 4 מחברות ב-6.50 ₪ כל אחת. כמה נשאר?', a: 39.00},
+        {t: 'דנה חסכה 38 ₪. הבובה עולה 95 ₪. כמה עוד חסר?', a: 57.00},
+        {t: 'תומר חוסך 11 ₪ כל שבוע. כמה ב-5 שבועות?', a: 55.00}
+    ];
+    return {text: qs[n].t, answer: qs[n].a};
+}
+
+function initGame(g) {
+    questionBank[g] = [];
+    var order = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
+    order.sort(function() { return Math.random() - 0.5; });
+    for (var i = 0; i < 10; i++) {
+        var q;
+        if (g === 1) q = generateQ1(order[i]);
+        else if (g === 2) q = generateQ2(order[i]);
+        else q = generateQ3(order[i]);
+        questionBank[g].push(q);
+    }
+    nextQ(g);
+}
+
+function nextQ(g) {
+    if (currentQuestion[g] >= 10) {
+        document.getElementById('feedback' + g).innerHTML = '';
+        showEnd(g);
+        return;
+    }
+    answerLocked[g] = false;
+    gameData[g] = questionBank[g][currentQuestion[g]];
+    document.getElementById('q-count' + g).textContent = currentQuestion[g] + 1;
+    document.getElementById('problem' + g).innerHTML = gameData[g].text;
+    document.getElementById('feedback' + g).innerHTML = '';
+    document.getElementById('answer' + g).value = '';
+}
+
+function checkAns(g) {
+    if (answerLocked[g]) return;
+    var ans = parseFloat(document.getElementById('answer' + g).value);
+    if (isNaN(ans)) return;
+    
+    var correct = Math.abs(ans - gameData[g].answer) < 0.01;
+    answerLocked[g] = true;
+    currentQuestion[g]++;
+    
+    if (correct) {
+        scores[g]++;
+        playSound('correct');
+        document.getElementById('feedback' + g).innerHTML = '<div class="feedback correct">נכון מעולה! ✓</div>';
+    } else {
+        playSound('incorrect');
+        document.getElementById('feedback' + g).innerHTML = '<div class="feedback incorrect">לא נכון. התשובה: ' + gameData[g].answer.toFixed(2) + ' ₪</div>';
+    }
+    document.getElementById('score' + g).textContent = scores[g];
+    
+    setTimeout(function() {
+        document.getElementById('feedback' + g).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+    
+    setTimeout(function() { nextQ(g); }, 3000);
+}
+
+function showEnd(g) {
+    var roundEndEl = document.getElementById('round-end' + g);
+    var problemEl = document.getElementById('problem' + g);
+    var controlsEl = document.querySelector('#game' + g + ' .controls');
+    var feedbackEl = document.getElementById('feedback' + g);
+    
+    if (controlsEl) controlsEl.style.display = 'none';
+    if (feedbackEl) {
+        feedbackEl.innerHTML = '';
+        feedbackEl.style.display = 'none';
+    }
+    
+    var pct = Math.round((scores[g] / 10) * 100);
+    var msg = pct >= 80 ? 'מעולה! 💰🌟' : pct >= 60 ? 'יפה מאוד! 👍' : 'כל הכבוד! 💪';
+    roundEndEl.innerHTML = '<div class="round-complete"><h3>סיימת!</h3><p>' + msg + '</p><p>ציון: ' + scores[g] + '/10 (' + pct + '%)</p><button class="new-round-btn" onclick="resetGame(' + g + ')">סיבוב נוסף</button></div>';
+    roundEndEl.style.display = 'block';
+    problemEl.style.display = 'none';
+}
+
+function resetGame(g) {
+    scores[g] = 0;
+    currentQuestion[g] = 0;
+    answerLocked[g] = false;
+    questionBank[g] = [];
+    
+    document.getElementById('score' + g).textContent = '0';
+    document.getElementById('round-end' + g).style.display = 'none';
+    document.getElementById('feedback' + g).innerHTML = '';
+    document.getElementById('feedback' + g).style.display = 'block';
+    document.getElementById('problem' + g).style.display = 'block';
+    
+    var controlsEl = document.querySelector('#game' + g + ' .controls');
+    if (controlsEl) controlsEl.style.display = 'block';
+    document.getElementById('answer' + g).value = '';
+    
+    initGame(g);
+}
+
+window.onload = function() {
+    var tabs = document.querySelectorAll('.tab');
+    for (var i = 0; i < tabs.length; i++) {
+        (function(tab) {
+            tab.onclick = function() {
+                playSound('click');
+                var tabId = tab.getAttribute('data-tab');
+                var allContent = document.querySelectorAll('.content');
+                var allTabs = document.querySelectorAll('.tab');
+                for (var j = 0; j < allContent.length; j++) allContent[j].classList.remove('active');
+                for (var k = 0; k < allTabs.length; k++) allTabs[k].classList.remove('active');
+                document.getElementById(tabId).classList.add('active');
+                tab.classList.add('active');
+                
+                if (tabId === 'game1' || tabId === 'game2' || tabId === 'game3') {
+                    var gameNum = parseInt(tabId.replace('game', ''));
+                    scores[gameNum] = 0;
+                    currentQuestion[gameNum] = 0;
+                    answerLocked[gameNum] = false;
+                    questionBank[gameNum] = [];
+                    document.getElementById('score' + gameNum).textContent = '0';
+                    document.getElementById('round-end' + gameNum).style.display = 'none';
+                    document.getElementById('problem' + gameNum).style.display = 'block';
+                    document.getElementById('feedback' + gameNum).innerHTML = '';
+                    document.getElementById('feedback' + gameNum).style.display = 'block';
+                    
+                    document.getElementById('answer' + gameNum).value = '';
+                    var controlsEl = document.querySelector('#game' + gameNum + ' .controls');
+                    if (controlsEl) controlsEl.style.display = 'block';
+                    
+                    setTimeout(function() { initGame(gameNum); }, 50);
+                }
+            };
+        })(tabs[i]);
+    }
+    
+    document.addEventListener('wheel', function(e) {
+        if (document.activeElement.type === 'number') document.activeElement.blur();
+    });
+};
+
+function playSound(type) {
+    try {
+        var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (type === 'click') {
+            var osc = audioContext.createOscillator();
+            var gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.type = 'sine';
+            osc.frequency.value = 600;
+            gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + 0.15);
+        } else if (type === 'correct') {
+            var notes = [523.25, 659.25, 783.99];
+            for (var i = 0; i < notes.length; i++) {
+                (function(index) {
+                    var osc = audioContext.createOscillator();
+                    var gain = audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    osc.type = 'sine';
+                    osc.frequency.value = notes[index];
+                    gain.gain.setValueAtTime(0.1, audioContext.currentTime + index * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + index * 0.1 + 0.3);
+                    osc.start(audioContext.currentTime + index * 0.1);
+                    osc.stop(audioContext.currentTime + index * 0.1 + 0.3);
+                })(i);
+            }
+        } else if (type === 'incorrect') {
+            var osc = audioContext.createOscillator();
+            var gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.type = 'sine';
+            osc.frequency.value = 200;
+            gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + 0.3);
+        }
+    } catch (e) {
+        console.log('Audio not supported');
+    }
+}
+    </script>
+</body>
+</html>
