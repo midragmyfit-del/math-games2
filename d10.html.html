@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>זמן וכסף - כיתה ד'</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; border-radius: 25px; padding: 40px; box-shadow: 0 25px 70px rgba(0,0,0,0.4); }
+        h1 { color: #667eea; text-align: center; margin-bottom: 15px; font-size: 3em; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .subtitle { text-align: center; color: #666; margin-bottom: 35px; font-size: 1.3em; }
+        .tabs { display: flex; gap: 12px; margin-bottom: 35px; flex-wrap: wrap; justify-content: center; }
+        .tab { padding: 16px 28px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px; cursor: pointer; font-size: 1.15em; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: white; }
+        .tab:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); background: linear-gradient(135deg, #7c8ef5 0%, #8a5eb8 100%); }
+        .tab.active { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); transform: scale(1.05); }
+        .content { display: none; }
+        .content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .lesson { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .lesson h2 { color: #ff6b6b; margin-bottom: 20px; font-size: 1.8em; }
+        .lesson p { font-size: 1.2em; line-height: 1.8; margin-bottom: 15px; color: #333; }
+        .example { background: white; padding: 20px; border-right: 5px solid #667eea; margin: 20px 0; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
+        .example h3 { color: #f093fb; margin-bottom: 12px; font-size: 1.3em; }
+        .game { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .game h2 { margin-bottom: 20px; font-size: 2em; }
+        .question-counter { text-align: center; font-size: 1.3em; margin: 15px 0; color: #fff; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px; }
+        .score { text-align: center; font-size: 1.8em; margin: 25px 0; color: #fff; font-weight: bold; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; }
+        .problem-display { font-size: 1.8em; text-align: center; margin: 30px 0; padding: 25px; background: rgba(255,255,255,0.3); border-radius: 15px; font-weight: bold; line-height: 1.6; }
+        input[type="number"] { width: 200px; padding: 15px; font-size: 1.8em; border: 4px solid white; border-radius: 10px; text-align: center; margin: 10px; font-weight: bold; }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
+        input[type="number"]::placeholder { text-align: center; font-size: 0.7em; color: #999; }
+        button { background: white; color: #667eea; border: none; padding: 14px 35px; font-size: 1.2em; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-weight: bold; box-shadow: 0 6px 12px rgba(0,0,0,0.2); margin: 5px; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+        .feedback { padding: 20px; border-radius: 12px; margin-top: 20px; font-size: 1.3em; text-align: center; font-weight: bold; }
+        .correct { background: #51cf66; color: white; }
+        .incorrect { background: #ff6b6b; color: white; }
+        .controls { text-align: center; margin: 25px 0; }
+        .round-complete { background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%); padding: 40px; border-radius: 20px; text-align: center; color: white; margin: 20px 0; }
+        .round-complete h3 { font-size: 2.5em; margin-bottom: 20px; }
+        .round-complete p { font-size: 1.5em; margin: 15px 0; }
+        .new-round-btn { background: white; color: #51cf66; font-size: 1.5em; padding: 20px 40px; margin-top: 20px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; box-shadow: 0 8px 16px rgba(0,0,0,0.2); transition: all 0.3s; }
+        .new-round-btn:hover { transform: scale(1.05); box-shadow: 0 12px 24px rgba(0,0,0,0.3); }
+        .steps { background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin: 20px 0; text-align: right; }
+        .steps p { margin: 10px 0; font-size: 1.1em; }
+        .conversion-table { background: white; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .conversion-table table { width: 100%; border-collapse: collapse; }
+        .conversion-table th, .conversion-table td { padding: 12px; border: 2px solid #667eea; text-align: center; font-size: 1.1em; }
+        .conversion-table th { background: #667eea; color: white; font-weight: bold; }
+        .conversion-table td { background: #f8f9fa; }
+        .money-visual { display: flex; gap: 15px; justify-content: center; align-items: center; margin: 20px 0; flex-wrap: wrap; }
+        .coin { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2em; box-shadow: 0 4px 8px rgba(0,0,0,0.2); border: 3px solid #daa520; }
+        .bill { padding: 15px 25px; background: linear-gradient(135deg, #90ee90 0%, #98fb98 100%); border-radius: 8px; font-weight: bold; font-size: 1.2em; box-shadow: 0 4px 8px rgba(0,0,0,0.2); border: 2px solid #228b22; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>זמן וכסף ⏰💰</h1>
+        <div class="subtitle">כיתה ד' - בואו נלמד חישובי זמן, כסף ואחוזים!</div>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="lesson1">📚 שיעור: חישובי זמן</button>
+            <button class="tab" data-tab="game1">🎮 משחק: תרגילי זמן</button>
+            <button class="tab" data-tab="lesson2">📚 שיעור: כסף ותקציב</button>
+            <button class="tab" data-tab="game2">🎯 משחק: בעיות כסף</button>
+            <button class="tab" data-tab="lesson3">📚 שיעור: אחוזים</button>
+            <button class="tab" data-tab="game3">🏆 משחק: חישובי אחוזים</button>
+        </div>
+        
+        <div id="lesson1" class="content active">
+            <div class="lesson">
+                <h2>חישובי זמן מורכבים</h2>
+                <p>יחידות זמן שונות וכיצד לחשב איתן.</p>
+                
+                <div class="conversion-table">
+                    <table>
+                        <tr>
+                            <th>יחידה</th>
+                            <th>יחס</th>
+                        </tr>
+                        <tr>
+                            <td>שעה</td>
+                            <td>60 דקות = 1 שעה</td>
+                        </tr>
+                        <tr>
+                            <td>דקה</td>
+                            <td>60 שניות = 1 דקה</td>
+                        </tr>
+                        <tr>
+                            <td>יום</td>
+                            <td>24 שעות = 1 יום</td>
+                        </tr>
+                        <tr>
+                            <td>שבוע</td>
+                            <td>7 ימים = 1 שבוע</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: חיבור זמן</h3>
+                    <p><strong>בעיה:</strong> סרט מתחיל ב-15:30 ונמשך שעה ו-45 דקות. מתי הוא מסתיים?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>זמן התחלה: 15:30</p>
+                        <p>מוסיפים שעה: 16:30</p>
+                        <p>מוסיפים 45 דקות: 17:15</p>
+                        <p><strong>תשובה:</strong> הסרט מסתיים ב-17:15</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: חישוב משך זמן</h3>
+                    <p><strong>בעיה:</strong> יצאנו מהבית ב-8:20 והגענו ליעד ב-10:05. כמה זמן נסענו?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>מ-8:20 עד 9:00 = 40 דקות</p>
+                        <p>מ-9:00 עד 10:00 = שעה (60 דקות)</p>
+                        <p>מ-10:00 עד 10:05 = 5 דקות</p>
+                        <p style="direction: ltr; text-align: center; font-size: 1.3em;"><strong>40 + 60 + 5 = 105</strong></p>
+                        <p><strong>תשובה:</strong> שעה ו-45 דקות (105 דקות)</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 3: המרת זמן</h3>
+                    <p><strong>בעיה:</strong> המר 150 דקות לשעות ודקות</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>60 דקות = 1 שעה</p>
+                        <p style="direction: ltr; text-align: center; font-size: 1.3em;"><strong>150 ÷ 60 = 2</strong></p>
+                        <p>(כי 2 × 60 = 120, ונשארו 30 דקות)</p>
+                        <p><strong>תשובה:</strong> 2 שעות ו-30 דקות</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 4: תכנון יומי</h3>
+                    <p><strong>בעיה:</strong> יש לנו 3 שעות פנויות. רוצים לשחק 50 דקות, לקרוא 40 דקות ולצייר. כמה זמן נשאר לציור?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>3 שעות = 180 דקות</p>
+                        <p style="direction: ltr; text-align: center; font-size: 1.3em;"><strong>50 + 40 = 90</strong></p>
+                        <p style="direction: ltr; text-align: center; font-size: 1.3em;"><strong>180 - 90 = 90</strong></p>
+                        <p><strong>תשובה:</strong> שעה וחצי (90 דקות) לציור</p>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px; padding: 25px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px;">
+                    <h3 style="color: white; margin-bottom: 15px; font-size: 1.5em;">✨ מוכנים לתרגל?</h3>
+                    <p style="color: white; font-size: 1.2em; margin-bottom: 20px;">עכשיו שלמדתם על חישובי זמן, בואו נתרגל במשחק!</p>
+                    <button class="tab" data-tab="game1" style="font-size: 1.3em; padding: 18px 40px;">🎮 למשחק תרגילי זמן</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game1" class="content">
+            <div class="game">
+                <h2>משחק תרגילי זמן</h2>
+                <div class="question-counter">שאלה <span id="q-count1">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="score1">0</span></div>
+                <div class="problem-display" id="problem1">טוען...</div>
+                <div class="controls">
+                    <input type="number" id="answer1" placeholder="הכנס תשובה">
+                    <br><br>
+                    <button onclick="checkAns(1);">בדוק</button>
+                </div>
+                <div id="feedback1"></div>
+                <div id="round-end1" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <div id="lesson2" class="content">
+            <div class="lesson">
+                <h2>כסף ותקציב</h2>
+                <p>מטבעות ושטרות בישראל וכיצד לנהל תקציב.</p>
+                
+                <div class="money-visual">
+                    <div class="coin">10 ₪</div>
+                    <div class="coin">5 ₪</div>
+                    <div class="coin">2 ₪</div>
+                    <div class="coin">1 ₪</div>
+                    <div class="bill">20 ₪</div>
+                    <div class="bill">50 ₪</div>
+                    <div class="bill">100 ₪</div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: חישוב עודף</h3>
+                    <p><strong>בעיה:</strong> קנינו משחק ב-85 ₪ ושילמנו בשטר של 100 ₪. כמה עודף קיבלנו?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p style="direction: ltr; text-align: center; font-size: 1.3em;"><strong>100 - 85 = 15</strong></p>
+                        <p><strong>תשובה:</strong> 15 ₪ עודף</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: תכנון תקציב</h3>
+                    <p><strong>בעיה:</strong> יש לנו 150 ₪. רוצים לקנות 3 ספרים ב-35 ₪ כל אחד. האם יש לנו מספיק כסף?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p style="direction: ltr; text-align: center; font-size: 1.3em;"><strong>35 × 3 = 105</strong></p>
+                        <p style="direction: ltr; text-align: center; font-size: 1.3em;"><strong>150 - 105 = 45</strong></p>
+                        <p><strong>תשובה:</strong> כן, יש מספיק כסף ונשארו 45 ₪</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 3: חיסכון</h3>
+                    <p><strong>בעיה:</strong> חוסכים 20 ₪ כל שבוע. כמה נחסוך תוך 8 שבועות?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p style="direction: ltr; text-align: center; font-size: 1.3em;"><strong>20 × 8 = 160</strong></p>
+                        <p><strong>תשובה:</strong> 160 ₪</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 4: חלוקת כסף</h3>
+                    <p><strong>בעיה:</strong> 4 ילדים מחלקים ביניהם 240 ₪ בשווה. כמה כל אחד מקבל?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p style="direction: ltr; text-align: center; font-size: 1.3em;"><strong>240 ÷ 4 = 60</strong></p>
+                        <p><strong>תשובה:</strong> כל אחד מקבל 60 ₪</p>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px; padding: 25px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px;">
+                    <h3 style="color: white; margin-bottom: 15px; font-size: 1.5em;">✨ מוכנים לתרגל?</h3>
+                    <p style="color: white; font-size: 1.2em; margin-bottom: 20px;">עכשיו שלמדתם על כסף ותקציב, בואו נתרגל במשחק!</p>
+                    <button class="tab" data-tab="game2" style="font-size: 1.3em; padding: 18px 40px;">🎯 למשחק בעיות כסף</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game2" class="content">
+            <div class="game">
+                <h2>משחק בעיות כסף</h2>
+                <div class="question-counter">שאלה <span id="q-count2">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="score2">0</span></div>
+                <div class="problem-display" id="problem2">טוען...</div>
+                <div class="controls">
+                    <input type="number" id="answer2" placeholder="הכנס תשובה">
+                    <br><br>
+                    <button onclick="checkAns(2);">בדוק</button>
+                </div>
+                <div id="feedback2"></div>
+                <div id="round-end2" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <div id="lesson3" class="content">
+            <div class="lesson">
+                <h2>אחוזים פשוטים</h2>
+                <p>אחוז פירושו "מתוך מאה". נלמד לחשב 10%, 25% ו-50%.</p>
+                
+                <div class="conversion-table">
+                    <table>
+                        <tr>
+                            <th>אחוז</th>
+                            <th>שבר</th>
+                            <th>דרך חישוב</th>
+                            <th>דוגמה</th>
+                        </tr>
+                        <tr>
+                            <td>10%</td>
+                            <td>1/10</td>
+                            <td>חלק ב-10</td>
+                            <td>10% מ-50 = 5</td>
+                        </tr>
+                        <tr>
+                            <td>25%</td>
+                            <td>1/4</td>
+                            <td>חלק ב-4</td>
+                            <td>25% מ-100 = 25</td>
+                        </tr>
+                        <tr>
+                            <td>50%</td>
+                            <td>1/2</td>
+                            <td>חלק ב-2</td>
+                            <td>50% מ-80 = 40</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: חישוב 10%</h3>
+                    <p><strong>בעיה:</strong> מהם 10% מ-80?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>10% = חלק ב-10</p>
+                        <p style="direction: ltr; text-align: center; font-size: 1.3em;"><strong>80 ÷ 10 = 8</strong></p>
+                        <p><strong>תשובה:</strong> 10% מ-80 זה 8</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: חישוב 25%</h3>
+                    <p><strong>בעיה:</strong> מהם 25% מ-120?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>25% = רבע = חלק ב-4</p>
+                        <p style="direction: ltr; text-align: center; font-size: 1.3em;"><strong>120 ÷ 4 = 30</strong></p>
+                        <p><strong>תשובה:</strong> 25% מ-120 זה 30</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 3: חישוב 50%</h3>
+                    <p><strong>בעיה:</strong> מהם 50% מ-200?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>50% = חצי = חלק ב-2</p>
+                        <p style="direction: ltr; text-align: center; font-size: 1.3em;"><strong>200 ÷ 2 = 100</strong></p>
+                        <p><strong>תשובה:</strong> 50% מ-200 זה 100</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 4: הנחה בחנות</h3>
+                    <p><strong>בעיה:</strong> משחק עולה 160 ₪ ויש הנחה של 25%. כמה נשלם?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>שלב 1: חשב את ההנחה</p>
+                        <p style="direction: ltr; text-align: center; font-size: 1.3em;"><strong>160 ÷ 4 = 40</strong></p>
+                        <p>ההנחה היא 40 ₪</p>
+                        <p>שלב 2: המחיר החדש</p>
+                        <p style="direction: ltr; text-align: center; font-size: 1.3em;"><strong>160 - 40 = 120</strong></p>
+                        <p><strong>תשובה:</strong> נשלם 120 ₪</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 5: בעיה מהחיים</h3>
+                    <p><strong>בעיה:</strong> בכיתה 40 ילדים. 50% מהם משחקים כדורסל. כמה ילדים משחקים?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>50% = חצי</p>
+                        <p style="direction: ltr; text-align: center; font-size: 1.3em;"><strong>40 ÷ 2 = 20</strong></p>
+                        <p><strong>תשובה:</strong> 20 ילדים משחקים כדורסל</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 6: הנחה של 50%</h3>
+                    <p><strong>בעיה:</strong> חולצה עולה 80 ₪. במבצע יש הנחה של 50%. מה המחיר במבצע?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>50% = חצי מהמחיר</p>
+                        <p style="direction: ltr; text-align: center; font-size: 1.3em;"><strong>80 ÷ 2 = 40</strong></p>
+                        <p><strong>תשובה:</strong> המחיר במבצע הוא 40 ₪</p>
+                    </div>
+                </div>
+                
+                <h2 style="color: #ff6b6b; margin-top: 30px;">טיפים לחישוב אחוזים</h2>
+                <div class="example">
+                    <h3>💡 זכרו!</h3>
+                    <p>• <strong>10%</strong> - מחלקים ב-10 (מזזים נקודה עשרונית שמאלה)</p>
+                    <p>• <strong>25%</strong> - מחלקים ב-4 (רבע מהמספר)</p>
+                    <p>• <strong>50%</strong> - מחלקים ב-2 (חצי מהמספר)</p>
+                    <p style="margin-top: 15px;">כדי למצוא את המחיר אחרי הנחה:</p>
+                    <p style="direction: ltr; text-align: center; font-size: 1.2em; background: rgba(255,255,255,0.3); padding: 10px; border-radius: 8px; margin-top: 10px;">
+                        <strong>מחיר מקורי - הנחה = מחיר סופי</strong>
+                    </p>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px; padding: 25px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px;">
+                    <h3 style="color: white; margin-bottom: 15px; font-size: 1.5em;">✨ מוכנים לתרגל?</h3>
+                    <p style="color: white; font-size: 1.2em; margin-bottom: 20px;">עכשיו שלמדתם על אחוזים, בואו נתרגל במשחק!</p>
+                    <button class="tab" data-tab="game3" style="font-size: 1.3em; padding: 18px 40px;">🏆 למשחק חישובי אחוזים</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game3" class="content">
+            <div class="game">
+                <h2>משחק חישובי אחוזים</h2>
+                <div class="question-counter">שאלה <span id="q-count3">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="score3">0</span></div>
+                <div class="problem-display" id="problem3">טוען...</div>
+                <div class="controls">
+                    <input type="number" id="answer3" placeholder="הכנס תשובה">
+                    <br><br>
+                    <button onclick="checkAns(3);">בדוק</button>
+                </div>
+                <div id="feedback3"></div>
+                <div id="round-end3" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+var scores = {1: 0, 2: 0, 3: 0};
+var currentQuestion = {1: 0, 2: 0, 3: 0};
+var questionBank = {1: [], 2: [], 3: []};
+var gameData = {1: {}, 2: {}, 3: {}};
+var answerLocked = {1: false, 2: false, 3: false};
+
+function generateQ1() {
+    var type = Math.floor(Math.random() * 10);
+    if (type === 0) {
+        var mins = (Math.floor(Math.random() * 4) + 2) * 60;
+        return { text: 'המר ' + mins + ' דקות לשעות', answer: mins / 60 };
+    } else if (type === 1) {
+        var hours = Math.floor(Math.random() * 4) + 2;
+        return { text: 'המר ' + hours + ' שעות לדקות', answer: hours * 60 };
+    } else if (type === 2) {
+        var days = Math.floor(Math.random() * 3) + 2;
+        return { text: 'כמה שעות יש ב-' + days + ' ימים?', answer: days * 24 };
+    } else if (type === 3) {
+        var start = Math.floor(Math.random() * 3) + 1;
+        var duration = Math.floor(Math.random() * 4) + 2;
+        return { text: 'פעילות מתחילה ב-' + start + ':00<br>ונמשכת ' + duration + ' שעות.<br>מתי היא מסתיימת? (בשעות)', answer: start + duration };
+    } else if (type === 4) {
+        var weeks = Math.floor(Math.random() * 3) + 2;
+        return { text: 'כמה ימים יש ב-' + weeks + ' שבועות?', answer: weeks * 7 };
+    } else if (type === 5) {
+        var totalMins = (Math.floor(Math.random() * 3) + 2) * 60;
+        return { text: 'המר ' + totalMins + ' דקות לשעות', answer: totalMins / 60 };
+    } else if (type === 6) {
+        var hours1 = Math.floor(Math.random() * 3) + 1;
+        var mins1 = Math.floor(Math.random() * 6) * 10;
+        var totalMins = hours1 * 60 + mins1;
+        return { text: hours1 + ' שעות ו-' + mins1 + ' דקות<br>= כמה דקות?', answer: totalMins };
+    } else if (type === 7) {
+        var startH = Math.floor(Math.random() * 4) + 8;
+        var endH = startH + Math.floor(Math.random() * 3) + 2;
+        return { text: 'מ-' + startH + ':00 עד ' + endH + ':00<br>כמה שעות עברו?', answer: endH - startH };
+    } else if (type === 8) {
+        var task1 = Math.floor(Math.random() * 3) + 1;
+        var task2 = Math.floor(Math.random() * 3) + 1;
+        return { text: 'משימה ראשונה: ' + task1 + ' שעות<br>משימה שנייה: ' + task2 + ' שעות<br>כמה זמן בסך הכל?', answer: task1 + task2 };
+    } else {
+        var totalHours = Math.floor(Math.random() * 4) + 3;
+        var used = Math.floor(Math.random() * 2) + 1;
+        return { text: 'יש ' + totalHours + ' שעות פנויות<br>השתמשנו ב-' + used + ' שעות<br>כמה שעות נשארו?', answer: totalHours - used };
+    }
+}
+
+function generateQ2() {
+    var type = Math.floor(Math.random() * 10);
+    if (type === 0) {
+        var paid = [50, 100, 200][Math.floor(Math.random() * 3)];
+        var cost = paid - (Math.floor(Math.random() * 8) + 5) * 5;
+        return { text: 'קנית משהו ב-' + cost + ' ₪<br>שילמת ב-' + paid + ' ₪<br>כמה עודף תקבל?', answer: paid - cost };
+    } else if (type === 1) {
+        var price = Math.floor(Math.random() * 30) + 15;
+        var quantity = Math.floor(Math.random() * 5) + 3;
+        return { text: 'קנית ' + quantity + ' פריטים<br>כל אחד עולה ' + price + ' ₪<br>כמה שילמת בסך הכל?', answer: price * quantity };
+    } else if (type === 2) {
+        var weekly = [15, 20, 25, 30][Math.floor(Math.random() * 4)];
+        var weeks = Math.floor(Math.random() * 6) + 4;
+        return { text: 'חוסך ' + weekly + ' ₪ כל שבוע<br>כמה יחסוך תוך ' + weeks + ' שבועות?', answer: weekly * weeks };
+    } else if (type === 3) {
+        var total = [120, 180, 240, 300][Math.floor(Math.random() * 4)];
+        var people = [3, 4, 5, 6][Math.floor(Math.random() * 4)];
+        return { text: total + ' ₪ מחולקים בין ' + people + ' ילדים<br>בשווה. כמה כל אחד מקבל?', answer: total / people };
+    } else if (type === 4) {
+        var item1 = Math.floor(Math.random() * 30) + 20;
+        var item2 = Math.floor(Math.random() * 30) + 20;
+        return { text: 'קנית 2 פריטים:<br>' + item1 + ' ₪ ו-' + item2 + ' ₪<br>כמה שילמת?', answer: item1 + item2 };
+    } else if (type === 5) {
+        var budget = [100, 150, 200][Math.floor(Math.random() * 3)];
+        var spent = budget - (Math.floor(Math.random() * 5) + 2) * 10;
+        return { text: 'תקציב: ' + budget + ' ₪<br>הוצאת: ' + spent + ' ₪<br>כמה נשאר?', answer: budget - spent };
+    } else if (type === 6) {
+        var priceEach = [5, 10, 15, 20][Math.floor(Math.random() * 4)];
+        var quantity = Math.floor(Math.random() * 6) + 5;
+        var total = priceEach * quantity;
+        return { text: 'כל פריט עולה ' + priceEach + ' ₪<br>קנית ב-' + total + ' ₪<br>כמה פריטים קנית?', answer: quantity };
+    } else if (type === 7) {
+        var saved = Math.floor(Math.random() * 50) + 50;
+        var goal = saved + (Math.floor(Math.random() * 50) + 30);
+        return { text: 'חסכת ' + saved + ' ₪<br>המטרה: ' + goal + ' ₪<br>כמה עוד צריך לחסוך?', answer: goal - saved };
+    } else if (type === 8) {
+        var daily = [5, 10, 15][Math.floor(Math.random() * 3)];
+        var days = Math.floor(Math.random() * 5) + 3;
+        return { text: 'מוציא ' + daily + ' ₪ כל יום<br>כמה יוצא תוך ' + days + ' ימים?', answer: daily * days };
+    } else {
+        var coins10 = Math.floor(Math.random() * 5) + 2;
+        var coins5 = Math.floor(Math.random() * 4) + 1;
+        return { text: coins10 + ' מטבעות של 10 ₪<br>ו-' + coins5 + ' מטבעות של 5 ₪<br>כמה כסף יש?', answer: coins10 * 10 + coins5 * 5 };
+    }
+}
+
+function generateQ3() {
+    var type = Math.floor(Math.random() * 10);
+    if (type === 0) {
+        var num = [20, 40, 60, 80, 100, 120][Math.floor(Math.random() * 6)];
+        return { text: 'מהם 10% מ-' + num + '?', answer: num / 10 };
+    } else if (type === 1) {
+        var num = [20, 40, 60, 80, 100, 120, 160][Math.floor(Math.random() * 7)];
+        return { text: 'מהם 25% מ-' + num + '?', answer: num / 4 };
+    } else if (type === 2) {
+        var num = [20, 40, 60, 80, 100, 120, 140, 160, 200][Math.floor(Math.random() * 9)];
+        return { text: 'מהם 50% מ-' + num + '?', answer: num / 2 };
+    } else if (type === 3) {
+        var price = [80, 120, 160, 200][Math.floor(Math.random() * 4)];
+        var discount = price / 4;
+        return { text: 'מחיר: ' + price + ' ₪<br>הנחה של 25%<br>כמה ההנחה?', answer: discount };
+    } else if (type === 4) {
+        var total = [30, 40, 50, 60][Math.floor(Math.random() * 4)];
+        return { text: 'בכיתה ' + total + ' תלמידים<br>50% מהם בנות<br>כמה בנות?', answer: total / 2 };
+    } else if (type === 5) {
+        var price = [100, 120, 140, 160, 200][Math.floor(Math.random() * 5)];
+        var discount = price / 10;
+        var final = price - discount;
+        return { text: 'מחיר: ' + price + ' ₪<br>הנחה 10%<br>מה המחיר אחרי הנחה?', answer: final };
+    } else if (type === 6) {
+        var num = [40, 80, 120, 160][Math.floor(Math.random() * 4)];
+        return { text: 'מהם 50% מ-' + num + '?', answer: num / 2 };
+    } else if (type === 7) {
+        var students = [20, 30, 40, 50][Math.floor(Math.random() * 4)];
+        var percent10 = students / 10;
+        return { text: 'בבית ספר ' + students + ' תלמידים<br>10% חולים<br>כמה תלמידים חולים?', answer: percent10 };
+    } else if (type === 8) {
+        var price = [80, 100, 120, 140][Math.floor(Math.random() * 4)];
+        var newPrice = price / 2;
+        return { text: 'מחיר: ' + price + ' ₪<br>הנחה של 50%<br>מה המחיר החדש?', answer: newPrice };
+    } else {
+        var num = [100, 200, 300, 400][Math.floor(Math.random() * 4)];
+        var percent25 = num / 4;
+        return { text: num + ' תפוחים<br>25% מהם אדומים<br>כמה אדומים?', answer: percent25 };
+    }
+}
+
+function initGame(g) {
+    questionBank[g] = [];
+    for (var i = 0; i < 20; i++) {
+        var newQ;
+        if (g === 1) newQ = generateQ1();
+        else if (g === 2) newQ = generateQ2();
+        else newQ = generateQ3();
+        questionBank[g].push(newQ);
+    }
+    questionBank[g].sort(function() { return Math.random() - 0.5; });
+    questionBank[g] = questionBank[g].slice(0, 12);
+    nextQ(g);
+}
+
+function nextQ(g) {
+    if (currentQuestion[g] >= 12) {
+        var feedbackEl = document.getElementById('feedback' + g);
+        if (feedbackEl) feedbackEl.innerHTML = '';
+        showEnd(g);
+        return;
+    }
+    answerLocked[g] = false;
+    gameData[g] = questionBank[g][currentQuestion[g]];
+    document.getElementById('q-count' + g).textContent = currentQuestion[g] + 1;
+    document.getElementById('problem' + g).innerHTML = gameData[g].text;
+    document.getElementById('answer' + g).value = '';
+    document.getElementById('feedback' + g).innerHTML = '';
+}
+
+function checkAns(g) {
+    if (answerLocked[g]) return;
+    var answerEl = document.getElementById('answer' + g);
+    var ans = parseFloat(answerEl.value);
+    if (isNaN(ans)) return;
+    answerLocked[g] = true;
+    currentQuestion[g]++;
+    
+    if (ans === gameData[g].answer) {
+        scores[g]++;
+        playSound('correct');
+        document.getElementById('feedback' + g).innerHTML = '<div class="feedback correct">נכון מעולה! ✔</div>';
+    } else {
+        playSound('incorrect');
+        document.getElementById('feedback' + g).innerHTML = '<div class="feedback incorrect">לא נכון. תשובה נכונה: ' + gameData[g].answer + '</div>';
+    }
+    document.getElementById('score' + g).textContent = scores[g];
+    
+    if (currentQuestion[g] < 12) {
+        setTimeout(function() {
+            var feedbackEl = document.getElementById('feedback' + g);
+            if (feedbackEl && feedbackEl.style.display !== 'none') {
+                feedbackEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 100);
+    }
+    
+    setTimeout(function() { nextQ(g); }, 2000);
+}
+
+function showEnd(g) {
+    var pct = Math.round((scores[g] / 12) * 100);
+    var msg = pct >= 80 ? 'מעולה! 🌟' : pct >= 60 ? 'יפה מאוד! 👍' : 'כל הכבוד! המשך להתאמן! 💪';
+    document.getElementById('round-end' + g).innerHTML = '<div class="round-complete"><h3>סיימת!</h3><p>' + msg + '</p><p>ציון: ' + scores[g] + '/12 (' + pct + '%)</p><button class="new-round-btn" onclick="resetGame(' + g + ')">סיבוב נוסף</button></div>';
+    document.getElementById('round-end' + g).style.display = 'block';
+    document.getElementById('problem' + g).style.display = 'none';
+}
+
+function resetGame(g) {
+    scores[g] = 0;
+    currentQuestion[g] = 0;
+    answerLocked[g] = false;
+    document.getElementById('score' + g).textContent = '0';
+    document.getElementById('round-end' + g).style.display = 'none';
+    document.getElementById('problem' + g).style.display = 'block';
+    document.getElementById('feedback' + g).innerHTML = '';
+    initGame(g);
+}
+
+window.onload = function() {
+    var tabs = document.querySelectorAll('.tab');
+    tabs.forEach(function(tab) {
+        tab.onclick = function() {
+            playSound('click');
+            var tabId = this.getAttribute('data-tab');
+            var allContent = document.querySelectorAll('.content');
+            var allTabs = document.querySelectorAll('.tab');
+            allContent.forEach(function(content) { content.classList.remove('active'); });
+            allTabs.forEach(function(t) { t.classList.remove('active'); });
+            document.getElementById(tabId).classList.add('active');
+            this.classList.add('active');
+            
+            if (tabId === 'game1' || tabId === 'game2' || tabId === 'game3') {
+                var gameNum = parseInt(tabId.replace('game', ''));
+                scores[gameNum] = 0;
+                currentQuestion[gameNum] = 0;
+                answerLocked[gameNum] = false;
+                questionBank[gameNum] = [];
+                document.getElementById('score' + gameNum).textContent = '0';
+                document.getElementById('round-end' + gameNum).style.display = 'none';
+                document.getElementById('problem' + gameNum).style.display = 'block';
+                document.getElementById('feedback' + gameNum).innerHTML = '';
+                document.getElementById('feedback' + gameNum).style.display = 'block';
+                document.getElementById('answer' + gameNum).value = '';
+                var controls = document.querySelector('#game' + gameNum + ' .controls');
+                if (controls) controls.style.display = 'block';
+                setTimeout(function() { initGame(gameNum); }, 50);
+            }
+        };
+    });
+    
+    document.addEventListener('wheel', function(e) {
+        if (document.activeElement.type === 'number') {
+            document.activeElement.blur();
+        }
+    });
+};
+
+function playSound(type) {
+    var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    if (type === 'click') {
+        var osc = audioContext.createOscillator();
+        var gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.type = 'sine';
+        osc.frequency.value = 600;
+        gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+        osc.start(audioContext.currentTime);
+        osc.stop(audioContext.currentTime + 0.15);
+    } else if (type === 'correct') {
+        var notes = [523.25, 659.25, 783.99];
+        notes.forEach(function(note, index) {
+            var osc = audioContext.createOscillator();
+            var gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.type = 'sine';
+            osc.frequency.value = note;
+            gain.gain.setValueAtTime(0.1, audioContext.currentTime + index * 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + index * 0.1 + 0.3);
+            osc.start(audioContext.currentTime + index * 0.1);
+            osc.stop(audioContext.currentTime + index * 0.1 + 0.3);
+        });
+    } else if (type === 'incorrect') {
+        var osc = audioContext.createOscillator();
+        var gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.type = 'sine';
+        osc.frequency.value = 200;
+        gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        osc.start(audioContext.currentTime);
+        osc.stop(audioContext.currentTime + 0.3);
+    }
+}
+    </script>
+</body>
+</html>
+                    
