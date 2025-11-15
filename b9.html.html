@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>שיעור מדידה - כיתה ב'</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+        
+        .main-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .menu-card {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border: 3px solid #667eea;
+        }
+        
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .menu-card .emoji-large {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .menu-card h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+        
+        .menu-card:hover h2 {
+            color: white;
+        }
+        
+        .menu-card p {
+            font-size: 1.1em;
+            color: #666;
+        }
+        
+        .menu-card:hover p {
+            color: white;
+        }
+        
+        .screen {
+            display: none;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        .section {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 3px solid #667eea;
+        }
+        
+        h2 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+        
+        h3 {
+            color: #667eea;
+            margin: 20px 0 10px 0;
+            font-size: 1.4em;
+        }
+        
+        .example-box {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-right: 5px solid #ffd700;
+        }
+        
+        .game-area {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        
+        .game-title {
+            color: #d63031;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+        
+        .back-btn {
+            background: #e74c3c;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn:hover {
+            background: #c0392b;
+        }
+        
+        .question {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-size: 1.3em;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .question .value {
+            font-weight: bold;
+            color: #2d3436;
+        }
+        
+        .question .vs {
+            color: #d63031;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .option-btn {
+            background: #74b9ff;
+            min-width: 120px;
+        }
+        
+        .option-btn:hover:not(:disabled) {
+            background: #0984e3;
+        }
+        
+        .option-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .feedback {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .feedback.show {
+            display: block;
+        }
+        
+        .feedback.correct {
+            background: #00b894;
+            color: white;
+        }
+        
+        .feedback.incorrect {
+            background: #ff7675;
+            color: white;
+        }
+        
+        .score {
+            text-align: center;
+            font-size: 1.8em;
+            color: #d63031;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .emoji {
+            font-size: 2em;
+        }
+        
+        ul {
+            margin-right: 30px;
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+        
+        li {
+            margin: 10px 0;
+        }
+        
+        .highlight {
+            background: #ffeaa7;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .ruler-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .ruler {
+            width: 300px;
+            height: 40px;
+            background: #f39c12;
+            border-radius: 5px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .memory-game {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .memory-card {
+            background: #74b9ff;
+            height: 100px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .memory-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .memory-card.flipped {
+            background: white;
+            border: 3px solid #667eea;
+        }
+        
+        .memory-card.matched {
+            background: #00b894;
+            color: white;
+            cursor: default;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- תפריט ראשי -->
+        <div id="main-menu" class="screen active">
+            <h1>📏 שיעור מדידה 📏</h1>
+            <p class="subtitle">כיתה ב' - לומדים למדוד!</p>
+            
+            <div class="main-menu">
+                <div class="menu-card" id="menu-lesson">
+                    <span class="emoji-large">📚</span>
+                    <h2>חומר הלימוד</h2>
+                    <p>למד על יחידות מדידה</p>
+                </div>
+                
+                <div class="menu-card" id="menu-quiz">
+                    <span class="emoji-large">🎯</span>
+                    <h2>חידון מדידה</h2>
+                    <p>בדוק את עצמך!</p>
+                </div>
+                
+                <div class="menu-card" id="menu-memory">
+                    <span class="emoji-large">🧩</span>
+                    <h2>משחק זיכרון</h2>
+                    <p>מצא זוגות</p>
+                </div>
+                
+                <div class="menu-card" id="menu-compare">
+                    <span class="emoji-large">⚖️</span>
+                    <h2>השוואות</h2>
+                    <p>מה יותר גדול?</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- מסך לימוד -->
+        <div id="lesson" class="screen">
+            <button class="back-btn" id="back-from-lesson">⬅️ חזרה לתפריט</button>
+            
+            <h1>📚 חומר הלימוד</h1>
+            
+            <div class="section">
+                <h2>🎯 חלק א': מדידה לא-סטנדרטית</h2>
+                
+                <div class="example-box">
+                    <h3>מה זה מדידה לא-סטנדרטית?</h3>
+                    <p style="font-size: 1.1em; line-height: 1.6;">
+                        מדידה עם חפצים מהבית או מהכיתה:
+                    </p>
+                    <ul>
+                        <li>אורך השולחן = <span class="highlight">8 עפרונות</span> ✏️</li>
+                        <li>משקל התיק = <span class="highlight">5 ספרים</span> 📚</li>
+                        <li>כמות מים = <span class="highlight">3 כוסות</span> 🥤</li>
+                    </ul>
+                    <p style="margin-top: 15px; color: #d63031; font-weight: bold;">
+                        ⚠️ הבעיה הגדולה:
+                    </p>
+                    <p style="margin-top: 10px;">
+                        לכל אחד יש עפרונות בגדלים שונים! אם אתה תמדוד בעפרונות שלך ואני במשלי - נקבל תוצאות שונות לחלוטין. 
+                        <br><br>
+                        <strong>לכן צריך מדידה סטנדרטית - שכולם משתמשים באותן יחידות!</strong>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>📐 חלק ב': מדידה סטנדרטית</h2>
+                
+                <div class="example-box">
+                    <h3>1️⃣ אורך: סנטימטר (ס"מ) ומטר</h3>
+                    <div class="ruler-visual">
+                        <div class="ruler">
+                            <span>0</span>
+                            <span>5</span>
+                            <span>10 ס"מ</span>
+                        </div>
+                    </div>
+                    
+                    <p style="background: #e8f4f8; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <strong>💡 זכור:</strong> <span class="highlight">1 מטר = 100 סנטימטר</span>
+                    </p>
+                    
+                    <ul>
+                        <li><strong>1 סנטימטר (ס"מ)</strong> = רוחב האצבע שלך 👆</li>
+                        <li><strong>10 ס"מ</strong> = אורך טלפון קטן 📱</li>
+                        <li><strong>30 ס"מ</strong> = אורך סרגל הכיתה 📏</li>
+                        <li><strong>1 מטר (100 ס"מ)</strong> = גובה שולחן / גובה ילד בכיתה א' 🧒</li>
+                        <li><strong>2 מטר (200 ס"מ)</strong> = גובה הדלת 🚪</li>
+                    </ul>
+                    
+                    <p style="margin-top: 15px; background: #fff9e6; padding: 10px; border-radius: 8px;">
+                        <strong>🎯 מתי משתמשים בסנטימטר?</strong> כשמודדים דברים קטנים (עפרון, ספר, טלפון)<br>
+                        <strong>🎯 מתי משתמשים במטר?</strong> כשמודדים דברים גדולים (החדר, הגינה, גובה האדם)
+                    </p>
+                </div>
+                
+                <div class="example-box">
+                    <h3>2️⃣ משקל: גרם וקילוגרם (ק"ג)</h3>
+                    
+                    <p style="background: #e8f4f8; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <strong>💡 זכור:</strong> <span class="highlight">1 קילוגרם = 1,000 גרם</span>
+                    </p>
+                    
+                    <ul>
+                        <li><strong>1 גרם</strong> = משקל קליפ נייר 📎</li>
+                        <li><strong>5 גרם</strong> = משקל מטבע 🪙</li>
+                        <li><strong>100 גרם</strong> = משקל תפוח קטן 🍎</li>
+                        <li><strong>200 גרם</strong> = משקל כוס יוגורט 🥛</li>
+                        <li><strong>500 גרם (חצי קילו)</strong> = משקל חבילת אורז קטנה</li>
+                        <li><strong>1 קילוגרם (1,000 גרם)</strong> = בקבוק מים גדול 💧</li>
+                        <li><strong>5 קילוגרם</strong> = משקל תיק בית ספר מלא 🎒</li>
+                        <li><strong>30 קילוגרם</strong> = משקל ילד בכיתה ב' ⚖️</li>
+                    </ul>
+                    
+                    <p style="margin-top: 15px; background: #fff9e6; padding: 10px; border-radius: 8px;">
+                        <strong>🎯 מתי משתמשים בגרם?</strong> כשמודדים דברים קלים מאוד (ממתקים, תבלינים, מטבעות)<br>
+                        <strong>🎯 מתי משתמשים בקילוגרם?</strong> כשמודדים דברים כבדים יותר (אנשים, תיקים, שקיות קניות)
+                    </p>
+                </div>
+                
+                <div class="example-box">
+                    <h3>3️⃣ נפח: ליטר (מדידת נוזלים)</h3>
+                    
+                    <p style="background: #e8f4f8; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <strong>💡 זכור:</strong> <span class="highlight">1 ליטר = 1,000 מיליליטר (מ"ל)</span>
+                    </p>
+                    
+                    <ul>
+                        <li><strong>250 מ"ל (רבע ליטר)</strong> = כוס קטנה ☕</li>
+                        <li><strong>500 מ"ל (חצי ליטר)</strong> = בקבוק מים קטן 🍶</li>
+                        <li><strong>1 ליטר (1,000 מ"ל)</strong> = בקבוק מים גדול / קרטון חלב 🥛</li>
+                        <li><strong>2 ליטר</strong> = בקבוק קולה גדול 🥤</li>
+                        <li><strong>5 ליטר</strong> = גלון מים 💧</li>
+                    </ul>
+                    
+                    <p style="margin-top: 15px; background: #fff9e6; padding: 10px; border-radius: 8px;">
+                        <strong>🎯 ליטר משמש למדידת נוזלים:</strong> מים, מיץ, חלב, שמן, משקאות
+                    </p>
+                </div>
+                
+                <div class="example-box" style="background: #e3f2fd; border-right: 5px solid #2196f3;">
+                    <h3>📊 טבלת המרות - חשוב לזכור!</h3>
+                    <table style="width: 100%; margin: 15px 0; border-collapse: collapse;">
+                        <tr style="background: #fff;">
+                            <td style="padding: 12px; border: 2px solid #667eea; font-size: 1.1em;"><strong>1 מטר</strong></td>
+                            <td style="padding: 12px; border: 2px solid #667eea; text-align: center;">⬅️ ➡️</td>
+                            <td style="padding: 12px; border: 2px solid #667eea; font-size: 1.1em;"><strong>100 סנטימטר</strong></td>
+                        </tr>
+                        <tr style="background: #fff;">
+                            <td style="padding: 12px; border: 2px solid #667eea; font-size: 1.1em;"><strong>1 קילוגרם</strong></td>
+                            <td style="padding: 12px; border: 2px solid #667eea; text-align: center;">⬅️ ➡️</td>
+                            <td style="padding: 12px; border: 2px solid #667eea; font-size: 1.1em;"><strong>1,000 גרם</strong></td>
+                        </tr>
+                        <tr style="background: #fff;">
+                            <td style="padding: 12px; border: 2px solid #667eea; font-size: 1.1em;"><strong>1 ליטר</strong></td>
+                            <td style="padding: 12px; border: 2px solid #667eea; text-align: center;">⬅️ ➡️</td>
+                            <td style="padding: 12px; border: 2px solid #667eea; font-size: 1.1em;"><strong>1,000 מיליליטר</strong></td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="example-box" style="background: #fff3e0; border-right: 5px solid #ff9800;">
+                    <h3>🏋️ תרגול מהיר - נסה לענות!</h3>
+                    <ul>
+                        <li>❓ כמה סנטימטרים יש ב-2 מטר? (תשובה: 200 ס"מ)</li>
+                        <li>❓ מה יותר כבד: 500 גרם או 1 קילוגרם? (תשובה: 1 קילוגרם)</li>
+                        <li>❓ מה יותר ארוך: 50 ס"מ או 1 מטר? (תשובה: 1 מטר)</li>
+                        <li>❓ כמה גרם יש בחצי קילו? (תשובה: 500 גרם)</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-weight: bold; color: #ff6b6b;">
+                        עכשיו נסה את המשחקים כדי לתרגל! 🎮
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- מסך חידון -->
+        <div id="quiz" class="screen">
+            <button class="back-btn" id="back-from-quiz">⬅️ חזרה לתפריט</button>
+            
+            <div class="game-area">
+                <h2 class="game-title">🎮 חידון מדידה</h2>
+                <div class="score">ניקוד: <span id="score">0</span> / <span id="total-questions">8</span></div>
+                
+                <div id="quiz-area">
+                    <div class="question" id="question"></div>
+                    <div class="options" id="options"></div>
+                    <div class="feedback" id="feedback"></div>
+                    <button id="next-btn" style="display: none;">שאלה הבאה ➡️</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- מסך משחק זיכרון -->
+        <div id="memory" class="screen">
+            <button class="back-btn" id="back-from-memory">⬅️ חזרה לתפריט</button>
+            
+            <div class="game-area">
+                <h2 class="game-title">🎯 משחק זיכרון - מצא את ההתאמה</h2>
+                <p style="text-align: center; font-size: 1.2em; margin-bottom: 15px;">
+                    לחץ על שתי קלפים כדי למצוא זוגות מתאימים!
+                </p>
+                <div class="score">זוגות שנמצאו: <span id="pairs-found">0</span> / 6</div>
+                <div class="memory-game" id="memory-game"></div>
+                <button id="reset-memory">התחל מחדש 🔄</button>
+            </div>
+        </div>
+        
+        <!-- מסך השוואות -->
+        <div id="compare" class="screen">
+            <button class="back-btn" id="back-from-compare">⬅️ חזרה לתפריט</button>
+            
+            <div class="game-area">
+                <h2 class="game-title">⚖️ משחק השוואות - מה יותר גדול?</h2>
+                <div class="score">ניקוד: <span id="compare-score">0</span> / <span id="total-comparisons">8</span></div>
+                
+                <div id="compare-area">
+                    <div class="question" id="compare-question"></div>
+                    <div class="options" id="compare-options">
+                        <button class="option-btn" id="compare-first">הראשון גדול יותר</button>
+                        <button class="option-btn" id="compare-equal">שווים</button>
+                        <button class="option-btn" id="compare-second">השני גדול יותר</button>
+                    </div>
+                    <div class="feedback" id="compare-feedback"></div>
+                    <button id="next-compare-btn" style="display: none;">השוואה הבאה ➡️</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let audioContext;
+        let score = 0;
+        let currentQuestionIndex = 0;
+        let answered = false;
+        let compareScore = 0;
+        let currentCompareIndex = 0;
+        let compareAnswered = false;
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let canFlip = true;
+        
+        const questions = [
+            {q: "כמה סנטימטרים יש במטר אחד?", options: ["10", "50", "100", "1000"], correct: 2},
+            {q: "במה נמדוד את אורך העפרון?", options: ["סנטימטר", "ליטר", "קילוגרם", "גרם"], correct: 0},
+            {q: "כמה גרם יש בקילוגרם אחד?", options: ["10", "100", "500", "1000"], correct: 3},
+            {q: "במה נמדוד כמות מים?", options: ["קילוגרם", "ליטר", "מטר", "ס״מ"], correct: 1},
+            {q: "מה שוקל יותר?", options: ["100 גרם", "1 קילוגרם", "שווים", "תלוי בחפץ"], correct: 1},
+            {q: "איזו מדידה היא לא-סטנדרטית?", options: ["10 ס״מ", "5 עפרונות", "2 מטר", "3 ליטר"], correct: 1},
+            {q: "מה ארוך יותר?", options: ["50 ס״מ", "1 מטר", "שווים", "אי אפשר לדעת"], correct: 1},
+            {q: "בקבוק מים גדול מכיל בערך...", options: ["חצי ליטר", "1 ליטר", "5 ליטר", "10 ליטר"], correct: 1}
+        ];
+        
+        const comparisons = [
+            {q: "50 ס״מ", vs: "VS", q2: "1 מטר", answer: "second"},
+            {q: "1000 גרם", vs: "VS", q2: "1 ק״ג", answer: "equal"},
+            {q: "2 ליטר", vs: "VS", q2: "1 ליטר", answer: "first"},
+            {q: "100 ס״מ", vs: "VS", q2: "1 מטר", answer: "equal"},
+            {q: "500 גרם", vs: "VS", q2: "1 ק״ג", answer: "second"},
+            {q: "200 ס״מ", vs: "VS", q2: "3 מטר", answer: "second"},
+            {q: "½ ליטר", vs: "VS", q2: "500 מ״ל", answer: "equal"},
+            {q: "2000 גרם", vs: "VS", q2: "2 ק״ג", answer: "equal"}
+        ];
+        
+        const memoryPairs = [
+            {a: "1 מטר", b: "100 ס״מ"},
+            {a: "1 ק״ג", b: "1000 גרם"},
+            {a: "ליטר", b: "נוזלים"},
+            {a: "סנטימטר", b: "אורך"},
+            {a: "קילוגרם", b: "משקל"},
+            {a: "מדידה", b: "סטנדרטית"}
+        ];
+        
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        
+        function playTone(frequency, duration, volume = 0.3) {
+            initAudio();
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            osc.frequency.value = frequency;
+            osc.type = 'sine';
+            
+            gain.gain.setValueAtTime(volume, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + duration);
+        }
+        
+        function playClick() {
+            playTone(600, 0.08, 0.2);
+        }
+        
+        function playCorrect() {
+            playTone(523.25, 0.1, 0.25);
+            setTimeout(() => playTone(659.25, 0.1, 0.25), 100);
+            setTimeout(() => playTone(783.99, 0.15, 0.25), 200);
+        }
+        
+        function playWrong() {
+            playTone(200, 0.2, 0.2);
+        }
+        
+        function playSuccess() {
+            playTone(523.25, 0.12, 0.2);
+            setTimeout(() => playTone(659.25, 0.12, 0.2), 120);
+            setTimeout(() => playTone(783.99, 0.12, 0.2), 240);
+            setTimeout(() => playTone(1046.50, 0.25, 0.2), 360);
+        }
+        
+        function showScreen(screenId) {
+            playClick();
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            
+            if (screenId === 'quiz') resetQuiz();
+            else if (screenId === 'memory') createMemoryGame();
+            else if (screenId === 'compare') resetComparison();
+        }
+        
+        function resetQuiz() {
+            score = 0;
+            currentQuestionIndex = 0;
+            answered = false;
+            document.getElementById('score').textContent = score;
+            showQuestion();
+        }
+        
+        function showQuestion() {
+            answered = false;
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('feedback').classList.remove('show', 'correct', 'incorrect');
+            
+            if (currentQuestionIndex >= questions.length) {
+                playSuccess();
+                document.getElementById('question').innerHTML = `🎉 כל הכבוד! סיימת את החידון!<br>הניקוד הסופי שלך: ${score}/${questions.length}`;
+                document.getElementById('options').innerHTML = '';
+                
+                const playAgainBtn = document.createElement('button');
+                playAgainBtn.textContent = '🔄 שחק שוב';
+                playAgainBtn.onclick = resetQuiz;
+                document.getElementById('options').appendChild(playAgainBtn);
+                return;
+            }
+            
+            const q = questions[currentQuestionIndex];
+            document.getElementById('question').textContent = q.q;
+            
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+            
+            q.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = option;
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsDiv.appendChild(btn);
+            });
+        }
+        
+        function checkAnswer(selected, clickedBtn) {
+            if (answered) return;
+            
+            answered = true;
+            const q = questions[currentQuestionIndex];
+            const feedback = document.getElementById('feedback');
+            const buttons = document.querySelectorAll('#options .option-btn');
+            
+            buttons.forEach(btn => btn.disabled = true);
+            
+            if (selected === q.correct) {
+                playCorrect();
+                feedback.textContent = '✅ נכון! כל הכבוד!';
+                feedback.className = 'feedback show correct';
+                score++;
+                document.getElementById('score').textContent = score;
+                clickedBtn.style.background = '#00b894';
+            } else {
+                playWrong();
+                feedback.textContent = '❌ לא נכון. התשובה הנכונה היא: ' + q.options[q.correct];
+                feedback.className = 'feedback show incorrect';
+                clickedBtn.style.background = '#ff7675';
+                buttons[q.correct].style.background = '#00b894';
+            }
+            
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+        
+        function nextQuestion() {
+            playClick();
+            currentQuestionIndex++;
+            showQuestion();
+        }
+        
+        function createMemoryGame() {
+            const gameDiv = document.getElementById('memory-game');
+            gameDiv.innerHTML = '';
+            memoryCards = [];
+            flippedCards = [];
+            matchedPairs = 0;
+            canFlip = true;
+            document.getElementById('pairs-found').textContent = '0';
+            
+            let cards = [];
+            memoryPairs.forEach((pair, index) => {
+                cards.push({text: pair.a, pairId: index});
+                cards.push({text: pair.b, pairId: index});
+            });
+            
+            cards.sort(() => Math.random() - 0.5);
+            
+            cards.forEach((card, index) => {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'memory-card';
+                cardDiv.textContent = '?';
+                cardDiv.dataset.pairId = card.pairId;
+                cardDiv.dataset.text = card.text;
+                cardDiv.onclick = () => flipCard(cardDiv);
+                gameDiv.appendChild(cardDiv);
+                memoryCards.push(cardDiv);
+            });
+        }
+        
+        function flipCard(card) {
+            if (!canFlip || card.classList.contains('flipped') || card.classList.contains('matched') || flippedCards.length >= 2) {
+                return;
+            }
+            
+            playClick();
+            card.classList.add('flipped');
+            card.textContent = card.dataset.text;
+            flippedCards.push(card);
+            
+            if (flippedCards.length === 2) {
+                canFlip = false;
+                setTimeout(checkMatch, 1000);
+            }
+        }
+        
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            
+            if (card1.dataset.pairId === card2.dataset.pairId) {
+                playCorrect();
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedPairs++;
+                document.getElementById('pairs-found').textContent = matchedPairs;
+                
+                if (matchedPairs === memoryPairs.length) {
+                    setTimeout(() => {
+                        playSuccess();
+                        alert('🎉 כל הכבוד! מצאת את כל הזוגות!');
+                    }, 500);
+                }
+            } else {
+                playWrong();
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                card1.textContent = '?';
+                card2.textContent = '?';
+            }
+            
+            flippedCards = [];
+            canFlip = true;
+        }
+        
+        function resetComparison() {
+            compareScore = 0;
+            currentCompareIndex = 0;
+            compareAnswered = false;
+            document.getElementById('compare-score').textContent = compareScore;
+            document.getElementById('total-comparisons').textContent = comparisons.length;
+            showComparison();
+        }
+        
+        function showComparison() {
+            compareAnswered = false;
+            document.getElementById('next-compare-btn').style.display = 'none';
+            document.getElementById('compare-feedback').classList.remove('show', 'correct', 'incorrect');
+            
+            const buttons = [
+                document.getElementById('compare-first'),
+                document.getElementById('compare-equal'),
+                document.getElementById('compare-second')
+            ];
+            
+            buttons.forEach(btn => {
+                btn.disabled = false;
+                btn.style.background = '';
+            });
+            
+            if (currentCompareIndex >= comparisons.length) {
+                playSuccess();
+                document.getElementById('compare-question').innerHTML = `🎉 כל הכבוד! סיימת!<br>הניקוד הסופי: ${compareScore}/${comparisons.length}`;
+                buttons.forEach(btn => btn.style.display = 'none');
+                
+                const playAgainBtn = document.createElement('button');
+                playAgainBtn.textContent = '🔄 שחק שוב';
+                playAgainBtn.style.display = 'inline-block';
+                playAgainBtn.onclick = resetComparison;
+                document.getElementById('compare-options').appendChild(playAgainBtn);
+                return;
+            }
+            
+            buttons.forEach(btn => btn.style.display = '');
+            const comp = comparisons[currentCompareIndex];
+            document.getElementById('compare-question').innerHTML = `<span class="value">${comp.q}</span><span class="vs">${comp.vs}</span><span class="value">${comp.q2}</span>`;
+        }
+        
+        function checkComparison(answer) {
+            if (compareAnswered) return;
+            
+            compareAnswered = true;
+            const comp = comparisons[currentCompareIndex];
+            const feedback = document.getElementById('compare-feedback');
+            const buttons = [
+                document.getElementById('compare-first'),
+                document.getElementById('compare-equal'),
+                document.getElementById('compare-second')
+            ];
+            
+            buttons.forEach(btn => btn.disabled = true);
+            
+            if (answer === comp.answer) {
+                playCorrect();
+                feedback.textContent = '✅ נכון מאוד!';
+                feedback.className = 'feedback show correct';
+                compareScore++;
+                document.getElementById('compare-score').textContent = compareScore;
+            } else {
+                playWrong();
+                let correctText = '';
+                if (comp.answer === 'first') correctText = 'הראשון גדול יותר';
+                else if (comp.answer === 'second') correctText = 'השני גדול יותר';
+                else correctText = 'שווים';
+                
+                feedback.textContent = '❌ לא נכון. התשובה הנכונה: ' + correctText;
+                feedback.className = 'feedback show incorrect';
+            }
+            
+            document.getElementById('next-compare-btn').style.display = 'inline-block';
+        }
+        
+        function nextComparison() {
+            playClick();
+            currentCompareIndex++;
+            showComparison();
+        }
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Menu buttons
+            document.getElementById('menu-lesson').addEventListener('click', () => showScreen('lesson'));
+            document.getElementById('menu-quiz').addEventListener('click', () => showScreen('quiz'));
+            document.getElementById('menu-memory').addEventListener('click', () => showScreen('memory'));
+            document.getElementById('menu-compare').addEventListener('click', () => showScreen('compare'));
+            
+            // Back buttons
+            document.getElementById('back-from-lesson').addEventListener('click', () => showScreen('main-menu'));
+            document.getElementById('back-from-quiz').addEventListener('click', () => showScreen('main-menu'));
+            document.getElementById('back-from-memory').addEventListener('click', () => showScreen('main-menu'));
+            document.getElementById('back-from-compare').addEventListener('click', () => showScreen('main-menu'));
+            
+            // Quiz buttons
+            document.getElementById('next-btn').addEventListener('click', nextQuestion);
+            
+            // Memory button
+            document.getElementById('reset-memory').addEventListener('click', () => {
+                playClick();
+                createMemoryGame();
+            });
+            
+            // Comparison buttons
+            document.getElementById('compare-first').addEventListener('click', () => checkComparison('first'));
+            document.getElementById('compare-equal').addEventListener('click', () => checkComparison('equal'));
+            document.getElementById('compare-second').addEventListener('click', () => checkComparison('second'));
+            document.getElementById('next-compare-btn').addEventListener('click', nextComparison);
+        });
+    </script>
+</body>
+</html>
