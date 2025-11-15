@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>דפוסים ואלגברה - כיתה ג'</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.4);
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 3em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 35px;
+            font-size: 1.3em;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .tab {
+            padding: 16px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.15em;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            color: white;
+        }
+        
+        .tab:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background: linear-gradient(135deg, #7c8ef5 0%, #8a5eb8 100%);
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .content {
+            display: none;
+        }
+        
+        .content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .lesson {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        
+        .lesson h2 {
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .lesson p {
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .example {
+            background: white;
+            padding: 20px;
+            border-right: 5px solid #667eea;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+        }
+        
+        .example h3 {
+            color: #f093fb;
+            margin-bottom: 12px;
+            font-size: 1.3em;
+        }
+        
+        .game {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            color: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .game h2 {
+            margin-bottom: 20px;
+            font-size: 2em;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .pattern-box {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+            justify-content: center;
+            align-items: center;
+            direction: ltr;
+        }
+        
+        .pattern-item {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s;
+            direction: ltr;
+        }
+        
+        .pattern-item:hover {
+            transform: scale(1.1);
+        }
+        
+        .pattern-item.empty {
+            background: #ffe0e0;
+            border: 4px dashed #ff6b6b;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        input[type="number"] {
+            width: 90px;
+            padding: 12px;
+            font-size: 1.5em;
+            border: 4px solid #667eea;
+            border-radius: 10px;
+            text-align: center;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 10px rgba(118, 75, 162, 0.3);
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            margin-right: 10px;
+        }
+        
+        .btn-restart {
+            background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%);
+            margin-top: 15px;
+            font-size: 1.3em;
+            padding: 18px 45px;
+        }
+        
+        .feedback {
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 1.3em;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .correct {
+            background: #51cf66;
+            color: white;
+            animation: bounce 0.6s;
+        }
+        
+        .incorrect {
+            background: #ff6b6b;
+            color: white;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .score {
+            text-align: center;
+            font-size: 1.8em;
+            margin: 25px 0;
+            color: #fff;
+            font-weight: bold;
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 12px;
+        }
+        
+        .equation {
+            font-size: 2.5em;
+            text-align: center;
+            margin: 25px 0;
+            color: white;
+            font-weight: bold;
+            padding: 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            direction: ltr;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #51cf66 0%, #37b24d 100%);
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .hint {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-size: 1.1em;
+        }
+        
+        .hint-rtl {
+            direction: rtl;
+            display: inline;
+        }
+        
+        .hint-ltr {
+            direction: ltr;
+            display: inline;
+            unicode-bidi: embed;
+        }
+        
+        .property-box {
+            background: white;
+            color: #333;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            direction: ltr;
+        }
+        
+        .property-box h3 {
+            color: #f5576c;
+            margin-bottom: 10px;
+            direction: rtl;
+        }
+        
+        .game-complete {
+            background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+            font-size: 1.5em;
+            margin: 20px 0;
+            animation: bounce 0.8s;
+        }
+        
+        .game-complete h3 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 דפוסים ואלגברה</h1>
+        <div class="subtitle">כיתה ג' - למידה מתקדמת עם הרבה כיף!</div>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="lesson1">📚 שיעור: דפוסים</button>
+            <button class="tab" data-tab="game1">🎮 משחק דפוסים</button>
+            <button class="tab" data-tab="lesson2">📚 שיעור: משוואות</button>
+            <button class="tab" data-tab="game2">🎯 משחק משוואות</button>
+            <button class="tab" data-tab="lesson3">📚 שיעור: תכונות</button>
+            <button class="tab" data-tab="game3">🏆 משחק תכונות</button>
+        </div>
+        
+        <!-- שיעור 1: דפוסים -->
+        <div id="lesson1" class="content active">
+            <div class="lesson">
+                <h2>🔢 זיהוי והשלמת דפוסים מספריים</h2>
+                <p>דפוס מספרי הוא רצף של מספרים שיש ביניהם קשר מסוים. כדי למצוא את הדפוס, עלינו לשאול: <strong>מה משתנה בין מספר למספר?</strong></p>
+                
+                <div class="example">
+                    <h3>דוגמה 1: דפוס של תוספת קבועה</h3>
+                    <p style="font-size: 1.5em; color: #667eea; text-align: center; direction: ltr;">3, 6, 9, 12, 15, ...</p>
+                    <p><strong>הסבר:</strong> כל פעם מוסיפים 3. זה נקרא דפוס של תוספת קבועה.</p>
+                    <p><strong>המספר הבא:</strong> <span dir="ltr">18 (כי 15 + 3 = 18)</span></p>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: דפוס של כפל</h3>
+                    <p style="font-size: 1.5em; color: #667eea; text-align: center; direction: ltr;">2, 4, 8, 16, 32, ...</p>
+                    <p><strong>הסבר:</strong> כל מספר הוא הכפל של המספר הקודם. <span dir="ltr">(2×2=4, 4×2=8, 8×2=16...)</span></p>
+                    <p><strong>המספר הבא:</strong> <span dir="ltr">64 (כי 32 × 2 = 64)</span></p>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 3: דפוס מורכב</h3>
+                    <p style="font-size: 1.5em; color: #667eea; text-align: center; direction: ltr;">1, 4, 7, 10, 13, ...</p>
+                    <p><strong>הסבר:</strong> מוסיפים 3 כל פעם <span dir="ltr">(1+3=4, 4+3=7, 7+3=10...)</span></p>
+                    <p><strong>המספר הבא:</strong> <span dir="ltr">16 (כי 13 + 3 = 16)</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 1: דפוסים -->
+        <div id="game1" class="content">
+            <div class="game">
+                <h2>🎮 משחק זיהוי דפוסים</h2>
+                <p style="font-size: 1.2em; margin-bottom: 20px;">השלימו את הדפוס המספרי!</p>
+                
+                <div class="score">שאלה <span id="question-num1">1</span> מתוך 12 | ניקוד: <span id="score1">0</span></div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress1" style="width: 0%">0%</div>
+                </div>
+                
+                <div id="pattern-display" class="pattern-box"></div>
+                
+                <div class="controls">
+                    <input type="number" id="pattern-answer" placeholder="?">
+                    <br><br>
+                    <button id="check-pattern-btn">בדוק תשובה</button>
+                    <button class="btn-secondary" id="next-pattern-btn">דפוס חדש</button>
+                </div>
+                
+                <div id="pattern-feedback"></div>
+                <div id="pattern-complete"></div>
+                
+                <div class="hint" id="pattern-hint"></div>
+            </div>
+        </div>
+        
+        <!-- שיעור 2: משוואות -->
+        <div id="lesson2" class="content">
+            <div class="lesson">
+                <h2>🧮 משפטי מספרים חסרים</h2>
+                <p>כשיש משתנה במשוואה (מספר חסר), אנחנו צריכים למצוא איזה מספר יעבוד במקום הריק.</p>
+                
+                <div class="example">
+                    <h3>דוגמה 1: חיבור עם משתנה</h3>
+                    <p style="font-size: 1.8em; color: #667eea; text-align: center; direction: ltr;">7 + __ = 15</p>
+                    <p><strong>איך פותרים?</strong></p>
+                    <p>שואלים את עצמנו: 7 + מה = 15?</p>
+                    <p>דרך 1: נספור מ-7 עד 15: <span dir="ltr">8, 9, 10, 11, 12, 13, 14, 15</span> → ספרנו 8 מספרים</p>
+                    <p>דרך 2: נחסר: <span dir="ltr">15 - 7 = 8</span></p>
+                    <p><strong>תשובה:</strong> <span dir="ltr" style="color: #f5576c;">7 + 8 = 15 ✓</span></p>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: חיסור עם משתנה</h3>
+                    <p style="font-size: 1.8em; color: #667eea; text-align: center; direction: ltr;">__ - 9 = 12</p>
+                    <p><strong>איך פותרים?</strong></p>
+                    <p>שואלים: איזה מספר פחות 9 שווה ל-12?</p>
+                    <p>נחבר: <span dir="ltr">9 + 12 = 21</span></p>
+                    <p><strong>תשובה:</strong> <span dir="ltr" style="color: #f5576c;">21 - 9 = 12 ✓</span></p>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 3: כפל עם משתנה</h3>
+                    <p style="font-size: 1.8em; color: #667eea; text-align: center; direction: ltr;">4 × __ = 20</p>
+                    <p><strong>איך פותרים?</strong></p>
+                    <p>שואלים: 4 כפול מה שווה 20?</p>
+                    <p>נחלק: <span dir="ltr">20 ÷ 4 = 5</span></p>
+                    <p><strong>תשובה:</strong> <span dir="ltr" style="color: #f5576c;">4 × 5 = 20 ✓</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 2: משוואות -->
+        <div id="game2" class="content">
+            <div class="game">
+                <h2>🎯 משחק משוואות</h2>
+                <p style="font-size: 1.2em; margin-bottom: 20px;">מצאו את המספר החסר!</p>
+                
+                <div class="score">שאלה <span id="question-num2">1</span> מתוך 12 | ניקוד: <span id="score2">0</span></div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress2" style="width: 0%">0%</div>
+                </div>
+                
+                <div class="equation" id="equation-display"></div>
+                
+                <div class="controls">
+                    <input type="number" id="equation-answer" placeholder="?">
+                    <br><br>
+                    <button id="check-equation-btn">בדוק תשובה</button>
+                    <button class="btn-secondary" id="next-equation-btn">משוואה חדשה</button>
+                </div>
+                
+                <div id="equation-feedback"></div>
+                <div id="equation-complete"></div>
+                
+                <div class="hint" id="equation-hint"></div>
+            </div>
+        </div>
+        
+        <!-- שיעור 3: תכונות -->
+        <div id="lesson3" class="content">
+            <div class="lesson">
+                <h2>⚖️ תכונות החיבור והכפל</h2>
+                <p>יש כללים מיוחדים במתמטיקה שעוזרים לנו לפתור בעיות בקלות!</p>
+                
+                <div class="example">
+                    <h3>1️⃣ התכונה הקומוטטיבית (החלפת סדר)</h3>
+                    <p><strong>בחיבור:</strong></p>
+                    <p style="font-size: 1.6em; color: #667eea; text-align: center; direction: ltr;">5 + 3 = 3 + 5</p>
+                    <p style="font-size: 1.6em; color: #667eea; text-align: center; direction: ltr;">8 = 8 ✓</p>
+                    <p><strong>משמעות:</strong> לא משנה באיזה סדר נחבר מספרים - התוצאה תהיה זהה!</p>
+                    <hr style="margin: 15px 0;">
+                    <p><strong>בכפל:</strong></p>
+                    <p style="font-size: 1.6em; color: #667eea; text-align: center; direction: ltr;">4 × 6 = 6 × 4</p>
+                    <p style="font-size: 1.6em; color: #667eea; text-align: center; direction: ltr;">24 = 24 ✓</p>
+                    <p><strong>משמעות:</strong> גם בכפל, הסדר לא משנה!</p>
+                </div>
+                
+                <div class="example">
+                    <h3>2️⃣ התכונה האסוציאטיבית (קיבוץ)</h3>
+                    <p><strong>בחיבור:</strong></p>
+                    <p style="font-size: 1.6em; color: #667eea; text-align: center; direction: ltr;">(2 + 3) + 4 = 2 + (3 + 4)</p>
+                    <p style="font-size: 1.6em; color: #667eea; text-align: center; direction: ltr;">5 + 4 = 2 + 7</p>
+                    <p style="font-size: 1.6em; color: #667eea; text-align: center; direction: ltr;">9 = 9 ✓</p>
+                    <p><strong>משמעות:</strong> לא משנה איך נקבץ מספרים בסוגריים - התוצאה תהיה זהה!</p>
+                    <hr style="margin: 15px 0;">
+                    <p><strong>בכפל:</strong></p>
+                    <p style="font-size: 1.6em; color: #667eea; text-align: center; direction: ltr;">(2 × 3) × 4 = 2 × (3 × 4)</p>
+                    <p style="font-size: 1.6em; color: #667eea; text-align: center; direction: ltr;">6 × 4 = 2 × 12</p>
+                    <p style="font-size: 1.6em; color: #667eea; text-align: center; direction: ltr;">24 = 24 ✓</p>
+                </div>
+                
+                <div class="example">
+                    <h3>💡 למה זה חשוב?</h3>
+                    <p>תכונות אלו עוזרות לנו לחשב מהר יותר!</p>
+                    <p><strong>דוגמה:</strong> במקום לחשב <span dir="ltr">8 + 27 + 2</span>, נוכל לעשות:</p>
+                    <p style="font-size: 1.5em; text-align: center; direction: ltr;">(8 + 2) + 27 = 10 + 27 = 37</p>
+                    <p>הרבה יותר קל לחבר <span dir="ltr">8 + 2 = 10</span> תחילה!</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 3: תכונות -->
+        <div id="game3" class="content">
+            <div class="game">
+                <h2>🏆 משחק התכונות</h2>
+                <p style="font-size: 1.2em; margin-bottom: 20px;">האם המשוואות שוות זו לזו?</p>
+                
+                <div class="score">שאלה <span id="question-num3">1</span> מתוך 12 | ניקוד: <span id="score3">0</span></div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress3" style="width: 0%">0%</div>
+                </div>
+                
+                <div class="property-box" id="property-display"></div>
+                
+                <div class="controls">
+                    <button id="property-true-btn" style="margin-left: 15px; font-size: 1.3em; padding: 18px 40px;">✓ שווים</button>
+                    <button id="property-false-btn" style="background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%); font-size: 1.3em; padding: 18px 40px;">✗ לא שווים</button>
+                </div>
+                
+                <div id="property-feedback"></div>
+                <div id="property-complete"></div>
+                
+                <div class="hint" id="property-hint"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // יצירת צלילים
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(type) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            if (type === 'click') {
+                oscillator.frequency.value = 800;
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } else if (type === 'correct') {
+                // מנגינה נעימה לתשובה נכונה - 3 צלילים עולים
+                const notes = [523.25, 659.25, 783.99]; // C, E, G
+                notes.forEach((freq, index) => {
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.15, audioContext.currentTime + index * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + index * 0.1 + 0.3);
+                    osc.start(audioContext.currentTime + index * 0.1);
+                    osc.stop(audioContext.currentTime + index * 0.1 + 0.3);
+                });
+            } else if (type === 'incorrect') {
+                oscillator.frequency.value = 200;
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                oscillator.start(audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            }
+        }
+        
+        // משתנים גלובליים
+        let scores = {1: 0, 2: 0, 3: 0};
+        let questionNumber = {1: 0, 2: 0, 3: 0};
+        const MAX_QUESTIONS = 12;
+        
+        // מאגרי שאלות
+        let patternBank = [];
+        let equationBank = [];
+        let propertyBank = [];
+        
+        let currentPattern = [];
+        let patternAnswer = 0;
+        let patternType = '';
+        let equationData = {};
+        let propertyData = {};
+        
+        // יצירת מאגר שאלות
+        function createQuestionBanks() {
+            // מאגר דפוסים - 20 שאלות
+            patternBank = [];
+            for (let i = 0; i < 20; i++) {
+                const types = ['add', 'multiply', 'sequence'];
+                const type = types[Math.floor(Math.random() * types.length)];
+                let pattern = [];
+                let answer = 0;
+                
+                if (type === 'add') {
+                    const start = Math.floor(Math.random() * 10) + 1;
+                    const step = Math.floor(Math.random() * 5) + 2;
+                    pattern = [start];
+                    for (let j = 0; j < 4; j++) {
+                        pattern.push(pattern[j] + step);
+                    }
+                    answer = pattern[4] + step;
+                } else if (type === 'multiply') {
+                    const start = 2;
+                    const multiplier = 2;
+                    pattern = [start];
+                    for (let j = 0; j < 3; j++) {
+                        pattern.push(pattern[j] * multiplier);
+                    }
+                    answer = pattern[3] * multiplier;
+                } else {
+                    const start = Math.floor(Math.random() * 5) + 1;
+                    const step = Math.floor(Math.random() * 4) + 2;
+                    pattern = [start];
+                    for (let j = 0; j < 4; j++) {
+                        pattern.push(pattern[j] + step);
+                    }
+                    answer = pattern[4] + step;
+                }
+                
+                patternBank.push({ type, pattern, answer });
+            }
+            
+            // ערבוב מאגר הדפוסים
+            shuffleArray(patternBank);
+            
+            // מאגר משוואות - 20 שאלות
+            equationBank = [];
+            for (let i = 0; i < 20; i++) {
+                const types = ['add', 'subtract', 'multiply', 'divide'];
+                const type = types[Math.floor(Math.random() * types.length)];
+                let display = '';
+                let answer = 0;
+                let hint = '';
+                
+                if (type === 'add') {
+                    const a = Math.floor(Math.random() * 20) + 5;
+                    const b = Math.floor(Math.random() * 15) + 5;
+                    const position = Math.random() < 0.5;
+                    if (position) {
+                        display = `__ + ${b} = ${a + b}`;
+                        answer = a;
+                        hint = `רמז: ${a + b} - ${b} = ?`;
+                    } else {
+                        display = `${a} + __ = ${a + b}`;
+                        answer = b;
+                        hint = `רמז: ${a + b} - ${a} = ?`;
+                    }
+                } else if (type === 'subtract') {
+                    const result = Math.floor(Math.random() * 15) + 5;
+                    const b = Math.floor(Math.random() * 15) + 5;
+                    const a = result + b;
+                    const position = Math.random() < 0.5;
+                    if (position) {
+                        display = `__ - ${b} = ${result}`;
+                        answer = a;
+                        hint = `רמז: ${result} + ${b} = ?`;
+                    } else {
+                        display = `${a} - __ = ${result}`;
+                        answer = b;
+                        hint = `רמז: ${a} - ${result} = ?`;
+                    }
+                } else if (type === 'multiply') {
+                    const a = Math.floor(Math.random() * 8) + 2;
+                    const b = Math.floor(Math.random() * 8) + 2;
+                    const position = Math.random() < 0.5;
+                    if (position) {
+                        display = `__ × ${b} = ${a * b}`;
+                        answer = a;
+                        hint = `רמז: ${a * b} ÷ ${b} = ?`;
+                    } else {
+                        display = `${a} × __ = ${a * b}`;
+                        answer = b;
+                        hint = `רמז: ${a * b} ÷ ${a} = ?`;
+                    }
+                } else {
+                    const b = Math.floor(Math.random() * 8) + 2;
+                    const result = Math.floor(Math.random() * 10) + 2;
+                    const a = b * result;
+                    const position = Math.random() < 0.5;
+                    if (position) {
+                        display = `__ ÷ ${b} = ${result}`;
+                        answer = a;
+                        hint = `רמז: ${result} × ${b} = ?`;
+                    } else {
+                        display = `${a} ÷ __ = ${result}`;
+                        answer = b;
+                        hint = `רמז: ${a} ÷ ${result} = ?`;
+                    }
+                }
+                
+                equationBank.push({ display, answer, hint });
+            }
+            
+            // ערבוב מאגר המשוואות
+            shuffleArray(equationBank);
+            
+            // מאגר תכונות - 20 שאלות
+            propertyBank = [];
+            for (let i = 0; i < 20; i++) {
+                const properties = ['commutative_add', 'commutative_multiply', 'associative_add', 'associative_multiply'];
+                const prop = properties[Math.floor(Math.random() * properties.length)];
+                let display = '';
+                let answer = false;
+                let explanation = '';
+                
+                if (prop === 'commutative_add') {
+                    const a = Math.floor(Math.random() * 20) + 5;
+                    const b = Math.floor(Math.random() * 20) + 5;
+                    const isCorrect = Math.random() < 0.7;
+                    if (isCorrect) {
+                        display = `<h3 style="color: #667eea;">האם המשוואות שוות?</h3><p style="font-size: 2em; margin: 20px 0;">${a} + ${b} = ${b} + ${a}</p>`;
+                        answer = true;
+                        explanation = 'נכון! התכונה הקומוטטיבית בחיבור - הסדר לא משנה!';
+                    } else {
+                        const wrong = a + b + Math.floor(Math.random() * 5) + 1;
+                        display = `<h3 style="color: #667eea;">האם המשוואות שוות?</h3><p style="font-size: 2em; margin: 20px 0;">${a} + ${b} = ${b} + ${wrong}</p>`;
+                        answer = false;
+                        explanation = `לא נכון! ${a} + ${b} = ${a+b} אבל ${b} + ${wrong} = ${b+wrong}`;
+                    }
+                } else if (prop === 'commutative_multiply') {
+                    const a = Math.floor(Math.random() * 10) + 2;
+                    const b = Math.floor(Math.random() * 10) + 2;
+                    const isCorrect = Math.random() < 0.7;
+                    if (isCorrect) {
+                        display = `<h3 style="color: #667eea;">האם המשוואות שוות?</h3><p style="font-size: 2em; margin: 20px 0;">${a} × ${b} = ${b} × ${a}</p>`;
+                        answer = true;
+                        explanation = 'נכון! התכונה הקומוטטיבית בכפל - הסדר לא משנה!';
+                    } else {
+                        const wrong = Math.floor((a * b) / b) + Math.floor(Math.random() * 3) + 1;
+                        display = `<h3 style="color: #667eea;">האם המשוואות שוות?</h3><p style="font-size: 2em; margin: 20px 0;">${a} × ${b} = ${b} × ${wrong}</p>`;
+                        answer = false;
+                        explanation = `לא נכון! ${a} × ${b} = ${a*b} אבל ${b} × ${wrong} = ${b*wrong}`;
+                    }
+                } else if (prop === 'associative_add') {
+                    const a = Math.floor(Math.random() * 10) + 2;
+                    const b = Math.floor(Math.random() * 10) + 2;
+                    const c = Math.floor(Math.random() * 10) + 2;
+                    const isCorrect = Math.random() < 0.7;
+                    if (isCorrect) {
+                        display = `<h3 style="color: #667eea;">האם המשוואות שוות?</h3><p style="font-size: 2em; margin: 20px 0;">(${a} + ${b}) + ${c} = ${a} + (${b} + ${c})</p><p style="font-size: 1.5em;">${a+b} + ${c} = ${a} + ${b+c}</p>`;
+                        answer = true;
+                        explanation = 'נכון! התכונה האסוציאטיבית בחיבור - אופן הקיבוץ לא משנה!';
+                    } else {
+                        const wrong = a + b + c + Math.floor(Math.random() * 5) + 1;
+                        display = `<h3 style="color: #667eea;">האם המשוואות שוות?</h3><p style="font-size: 2em; margin: 20px 0;">(${a} + ${b}) + ${c} = ${wrong}</p><p style="font-size: 1.5em;">${a+b} + ${c} = ${wrong}</p>`;
+                        answer = false;
+                        explanation = `לא נכון! (${a} + ${b}) + ${c} = ${a+b+c} אבל כתוב ${wrong}`;
+                    }
+                } else {
+                    const a = Math.floor(Math.random() * 5) + 2;
+                    const b = Math.floor(Math.random() * 5) + 2;
+                    const c = Math.floor(Math.random() * 5) + 2;
+                    const isCorrect = Math.random() < 0.7;
+                    if (isCorrect) {
+                        display = `<h3 style="color: #667eea;">האם המשוואות שוות?</h3><p style="font-size: 2em; margin: 20px 0;">(${a} × ${b}) × ${c} = ${a} × (${b} × ${c})</p><p style="font-size: 1.5em;">${a*b} × ${c} = ${a} × ${b*c}</p>`;
+                        answer = true;
+                        explanation = 'נכון! התכונה האסוציאטיבית בכפל - אופן הקיבוץ לא משנה!';
+                    } else {
+                        const wrong = a * b * c + Math.floor(Math.random() * 10) + 1;
+                        display = `<h3 style="color: #667eea;">האם המשוואות שוות?</h3><p style="font-size: 2em; margin: 20px 0;">(${a} × ${b}) × ${c} = ${wrong}</p><p style="font-size: 1.5em;">${a*b} × ${c} = ${wrong}</p>`;
+                        answer = false;
+                        explanation = `לא נכון! (${a} × ${b}) × ${c} = ${a*b*c} אבל כתוב ${wrong}`;
+                    }
+                }
+                
+                propertyBank.push({ display, answer, explanation });
+            }
+            
+            // ערבוב מאגר התכונות
+            shuffleArray(propertyBank);
+        }
+        
+        // פונקציה לערבוב מערך (Fisher-Yates shuffle)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        
+        // אתחול
+        document.addEventListener('DOMContentLoaded', function() {
+            createQuestionBanks();
+            
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    playSound('click');
+                    const tabId = this.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+            
+            document.getElementById('check-pattern-btn').addEventListener('click', () => {
+                playSound('click');
+                checkPattern();
+            });
+            document.getElementById('next-pattern-btn').addEventListener('click', () => {
+                playSound('click');
+                nextPattern();
+            });
+            document.getElementById('check-equation-btn').addEventListener('click', () => {
+                playSound('click');
+                checkEquation();
+            });
+            document.getElementById('next-equation-btn').addEventListener('click', () => {
+                playSound('click');
+                nextEquation();
+            });
+            document.getElementById('property-true-btn').addEventListener('click', () => {
+                playSound('click');
+                checkProperty(true);
+            });
+            document.getElementById('property-false-btn').addEventListener('click', () => {
+                playSound('click');
+                checkProperty(false);
+            });
+            
+            generatePattern();
+            generateEquation();
+            generateProperty();
+        });
+        
+        function switchTab(tabId) {
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+        }
+        
+        // משחק 1: דפוסים
+        function generatePattern() {
+            if (questionNumber[1] >= MAX_QUESTIONS) return;
+            
+            const question = patternBank[questionNumber[1]];
+            currentPattern = [...question.pattern, '?'];
+            patternAnswer = question.answer;
+            patternType = question.type;
+            displayPattern();
+        }
+        
+        function displayPattern() {
+            const display = document.getElementById('pattern-display');
+            display.innerHTML = '';
+            display.style.direction = 'ltr';
+            
+            currentPattern.forEach((num) => {
+                const item = document.createElement('div');
+                item.className = 'pattern-item';
+                if (num === '?') item.className += ' empty';
+                item.textContent = num;
+                display.appendChild(item);
+            });
+            
+            const hint = document.getElementById('pattern-hint');
+            if (patternType === 'add' || patternType === 'sequence') {
+                hint.innerHTML = '💡 רמז: בדקו כמה מוסיפים בכל פעם!';
+            } else {
+                hint.innerHTML = '💡 רמז: בדקו באיזה מספר כופלים כל פעם!';
+            }
+        }
+        
+        function checkPattern() {
+            const answer = parseInt(document.getElementById('pattern-answer').value);
+            const feedback = document.getElementById('pattern-feedback');
+            
+            if (isNaN(answer)) {
+                feedback.innerHTML = '<div class="feedback incorrect">אנא הכניסו מספר!</div>';
+                return;
+            }
+            
+            if (answer === patternAnswer) {
+                scores[1]++;
+                playSound('correct');
+                feedback.innerHTML = '<div class="feedback correct">🌟 כל הכבוד! תשובה נכונה! 🌟</div>';
+                setTimeout(() => nextPattern(), 1500);
+            } else {
+                playSound('incorrect');
+                feedback.innerHTML = `<div class="feedback incorrect">לא נכון... התשובה הנכונה היא ${patternAnswer}. נסו שוב!</div>`;
+            }
+            
+            questionNumber[1]++;
+            updateScore(1);
+            document.getElementById('pattern-answer').value = '';
+            
+            if (questionNumber[1] >= MAX_QUESTIONS) {
+                setTimeout(() => showComplete(1), 2000);
+            }
+        }
+        
+        function nextPattern() {
+            document.getElementById('pattern-feedback').innerHTML = '';
+            document.getElementById('pattern-answer').value = '';
+            if (questionNumber[1] < MAX_QUESTIONS) {
+                generatePattern();
+            }
+        }
+        
+        // משחק 2: משוואות
+        function generateEquation() {
+            if (questionNumber[2] >= MAX_QUESTIONS) return;
+            
+            const question = equationBank[questionNumber[2]];
+            equationData = question;
+            displayEquation();
+        }
+        
+        function displayEquation() {
+            const equationEl = document.getElementById('equation-display');
+            equationEl.textContent = equationData.display;
+            equationEl.style.direction = 'ltr';
+            
+            const hintEl = document.getElementById('equation-hint');
+            // מסיר "רמז:" אם זה קיים ב-hint
+            let cleanHint = equationData.hint.replace(/רמז:\s*/g, '');
+            
+            hintEl.innerHTML = '';
+            hintEl.style.direction = 'rtl';
+            hintEl.style.textAlign = 'right';
+            
+            const hebrewPart = document.createElement('span');
+            hebrewPart.textContent = '💡 רמז: ';
+            hebrewPart.style.direction = 'rtl';
+            
+            const mathPart = document.createElement('span');
+            mathPart.textContent = cleanHint;
+            mathPart.style.direction = 'ltr';
+            mathPart.style.unicodeBidi = 'embed';
+            
+            hintEl.appendChild(hebrewPart);
+            hintEl.appendChild(mathPart);
+        }
+        
+        function checkEquation() {
+            const answer = parseInt(document.getElementById('equation-answer').value);
+            const feedback = document.getElementById('equation-feedback');
+            
+            if (isNaN(answer)) {
+                feedback.innerHTML = '<div class="feedback incorrect">אנא הכניסו מספר!</div>';
+                return;
+            }
+            
+            if (answer === equationData.answer) {
+                scores[2]++;
+                playSound('correct');
+                feedback.innerHTML = '<div class="feedback correct">🎯 מצוין! תשובה נכונה! 🎯</div>';
+                setTimeout(() => nextEquation(), 1500);
+            } else {
+                playSound('incorrect');
+                feedback.innerHTML = `<div class="feedback incorrect">לא נכון... התשובה הנכונה היא ${equationData.answer}. נסו שוב!</div>`;
+            }
+            
+            questionNumber[2]++;
+            updateScore(2);
+            document.getElementById('equation-answer').value = '';
+            
+            if (questionNumber[2] >= MAX_QUESTIONS) {
+                setTimeout(() => showComplete(2), 2000);
+            }
+        }
+        
+        function nextEquation() {
+            document.getElementById('equation-feedback').innerHTML = '';
+            document.getElementById('equation-answer').value = '';
+            if (questionNumber[2] < MAX_QUESTIONS) {
+                generateEquation();
+            }
+        }
+        
+        // משחק 3: תכונות
+        function generateProperty() {
+            if (questionNumber[3] >= MAX_QUESTIONS) return;
+            
+            const question = propertyBank[questionNumber[3]];
+            propertyData = question;
+            displayProperty();
+        }
+        
+        function displayProperty() {
+            document.getElementById('property-display').innerHTML = propertyData.display;
+            document.getElementById('property-hint').innerHTML = '💡 רמז: חשבו את שני הצדדים ובדקו אם התוצאות שוות!';
+        }
+        
+        function checkProperty(userAnswer) {
+            const feedback = document.getElementById('property-feedback');
+            
+            if (userAnswer === propertyData.answer) {
+                scores[3]++;
+                playSound('correct');
+                feedback.innerHTML = `<div class="feedback correct">🏆 מעולה! ${propertyData.explanation} 🏆</div>`;
+                setTimeout(() => nextProperty(), 2000);
+            } else {
+                playSound('incorrect');
+                feedback.innerHTML = `<div class="feedback incorrect">לא נכון... ${propertyData.explanation}</div>`;
+            }
+            
+            questionNumber[3]++;
+            updateScore(3);
+            
+            if (questionNumber[3] >= MAX_QUESTIONS) {
+                setTimeout(() => showComplete(3), 2500);
+            }
+        }
+        
+        function nextProperty() {
+            document.getElementById('property-feedback').innerHTML = '';
+            if (questionNumber[3] < MAX_QUESTIONS) {
+                generateProperty();
+            }
+        }
+        
+        function updateScore(game) {
+            document.getElementById(`score${game}`).textContent = scores[game];
+            document.getElementById(`question-num${game}`).textContent = questionNumber[game] + 1;
+            const percentage = questionNumber[game] > 0 ? (questionNumber[game] / MAX_QUESTIONS * 100) : 0;
+            const progress = document.getElementById(`progress${game}`);
+            progress.style.width = percentage + '%';
+            progress.textContent = Math.round(percentage) + '%';
+        }
+        
+        function showComplete(game) {
+            const completeDiv = game === 1 ? 'pattern-complete' : 
+                               game === 2 ? 'equation-complete' : 'property-complete';
+            const percentage = Math.round((scores[game] / MAX_QUESTIONS) * 100);
+            
+            document.getElementById(completeDiv).innerHTML = `
+                <div class="game-complete">
+                    <h3>🎉 סיימת את המשחק! 🎉</h3>
+                    <p>הניקוד שלך: ${scores[game]} מתוך ${MAX_QUESTIONS}</p>
+                    <p>אחוז הצלחה: ${percentage}%</p>
+                    <button class="btn-restart" onclick="restartGame(${game})">🔄 סיבוב נוסף</button>
+                </div>
+            `;
+        }
+        
+        function restartGame(game) {
+            playSound('click');
+            scores[game] = 0;
+            questionNumber[game] = 0;
+            
+            const completeDiv = game === 1 ? 'pattern-complete' : 
+                               game === 2 ? 'equation-complete' : 'property-complete';
+            document.getElementById(completeDiv).innerHTML = '';
+            
+            const feedbackDiv = game === 1 ? 'pattern-feedback' : 
+                               game === 2 ? 'equation-feedback' : 'property-feedback';
+            document.getElementById(feedbackDiv).innerHTML = '';
+            
+            createQuestionBanks();
+            updateScore(game);
+            
+            if (game === 1) {
+                document.getElementById('pattern-answer').value = '';
+                generatePattern();
+            } else if (game === 2) {
+                document.getElementById('equation-answer').value = '';
+                generateEquation();
+            } else {
+                generateProperty();
+            }
+        }
+    </script>
+</body>
+</html>
