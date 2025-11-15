@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת נכונות תשובות - כיתה ג'</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; border-radius: 25px; padding: 40px; box-shadow: 0 25px 70px rgba(0,0,0,0.4); }
+        h1 { color: #667eea; text-align: center; margin-bottom: 15px; font-size: 3em; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .subtitle { text-align: center; color: #666; margin-bottom: 35px; font-size: 1.3em; }
+        .tabs { display: flex; gap: 12px; margin-bottom: 35px; flex-wrap: wrap; justify-content: center; }
+        .tab { padding: 16px 28px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px; cursor: pointer; font-size: 1.15em; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: white; }
+        .tab:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); background: linear-gradient(135deg, #7c8ff0 0%, #8759ab 100%); }
+        .tab.active { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); transform: scale(1.05); }
+        .content { display: none; }
+        .content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .lesson { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .lesson h2 { color: #667eea; margin-bottom: 20px; font-size: 1.8em; }
+        .lesson p { font-size: 1.2em; line-height: 1.8; margin-bottom: 15px; color: #333; }
+        .example { background: white; padding: 20px; border-right: 5px solid #667eea; margin: 20px 0; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
+        .example h3 { color: #f5576c; margin-bottom: 12px; font-size: 1.3em; }
+        .game { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .game h2 { margin-bottom: 20px; font-size: 2em; }
+        .question-counter { text-align: center; font-size: 1.3em; margin: 15px 0; color: #fff; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px; }
+        .score { text-align: center; font-size: 1.8em; margin: 25px 0; color: #fff; font-weight: bold; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; }
+        .problem-display { font-size: 1.3em; text-align: right; margin: 30px 0; padding: 25px; background: rgba(255,255,255,0.3); border-radius: 15px; line-height: 1.8; direction: rtl; }
+        .problem-display .math { direction: ltr; display: inline-block; font-family: 'Courier New', monospace; font-weight: bold; }
+        .math { direction: ltr; display: inline-block; font-family: 'Courier New', monospace; font-weight: bold; }
+        input[type="number"] { width: 250px; padding: 15px; font-size: 1.5em; border: 4px solid white; border-radius: 10px; text-align: center; margin: 10px; font-weight: bold; }
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
+        button { background: white; color: #667eea; border: none; padding: 14px 35px; font-size: 1.2em; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-weight: bold; box-shadow: 0 6px 12px rgba(0,0,0,0.2); margin: 5px; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+        .feedback { padding: 20px; border-radius: 12px; margin-top: 20px; font-size: 1.3em; text-align: center; font-weight: bold; }
+        .correct { background: #51cf66; color: white; }
+        .incorrect { background: #ff6b6b; color: white; }
+        .controls { text-align: center; margin: 25px 0; }
+        .round-complete { background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%); padding: 40px; border-radius: 20px; text-align: center; color: white; margin: 20px 0; }
+        .round-complete h3 { font-size: 2.5em; margin-bottom: 20px; }
+        .round-complete p { font-size: 1.5em; margin: 15px 0; }
+        .new-round-btn { background: white; color: #51cf66; font-size: 1.5em; padding: 20px 40px; margin-top: 20px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; box-shadow: 0 8px 16px rgba(0,0,0,0.2); transition: all 0.3s; }
+        .new-round-btn:hover { transform: scale(1.05); box-shadow: 0 12px 24px rgba(0,0,0,0.3); }
+        .steps { background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin: 20px 0; text-align: right; }
+        .steps p { margin: 10px 0; font-size: 1.1em; }
+        .formula-box { background: #fff3cd; border: 3px solid #ffc107; padding: 15px; border-radius: 10px; margin: 15px 0; text-align: center; font-size: 1.3em; font-weight: bold; color: #856404; }
+        .strategy-box { background: #e7f5ff; border: 3px solid #339af0; padding: 20px; border-radius: 10px; margin: 15px 0; text-align: right; }
+        .strategy-box h4 { color: #1971c2; margin-bottom: 10px; font-size: 1.2em; }
+        .strategy-box p { font-size: 1.1em; line-height: 1.6; margin: 8px 0; }
+        .method-box { background: linear-gradient(135deg, #d0f4de 0%, #a9def9 100%); border: 3px solid #52b788; padding: 20px; border-radius: 10px; margin: 15px 0; text-align: right; }
+        .method-box h4 { color: #2d6a4f; margin-bottom: 15px; font-size: 1.3em; }
+        .method-box p { font-size: 1.1em; line-height: 1.7; margin: 10px 0; color: #1b4332; }
+        .calc-box { direction: ltr; text-align: right; font-size: 1.4em; margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; font-family: 'Courier New', monospace; white-space: pre; display: inline-block; color: #2d3436; font-weight: bold; min-width: 150px; }
+        .tip { color: #0d5a3a; font-weight: bold; font-size: 1.05em; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>בדיקת נכונות תשובות ✔</h1>
+        <div class="subtitle">כיתה ג' - למדו לבדוק את התשובות שלכם!</div>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="lesson1">📚 שיעור: למה חשוב לבדוק?</button>
+            <button class="tab" data-tab="lesson2">📚 שיעור: פעולה הפוכה</button>
+            <button class="tab" data-tab="game1">🎮 משחק: פעולה הפוכה</button>
+            <button class="tab" data-tab="lesson3">📚 שיעור: אומדן וסבירות</button>
+            <button class="tab" data-tab="game2">🎯 משחק: בדיקת סבירות</button>
+            <button class="tab" data-tab="game3">🏆 משחק: בדיקה מקיפה</button>
+        </div>
+        
+        <!-- שיעור 1 -->
+        <div id="lesson1" class="content active">
+            <div class="lesson">
+                <h2>למה חשוב לבדוק תשובות?</h2>
+                <p>כשפוטרים תרגילים במתמטיקה, חשוב מאוד לבדוק שהתשובה נכונה!</p>
+                
+                <div class="formula-box">✔ בדיקה = ביטחון שהתשובה נכונה!</div>
+                
+                <div class="method-box">
+                    <h4>🎯 שלוש הדרכים לבדוק תשובות:</h4>
+                    <p><strong>1. פעולה הפוכה:</strong> בודקים באמצעות הפעולה ההפוכה (חיבור ↔ חיסור, כפל ↔ חילוק)</p>
+                    <p><strong>2. אומדן:</strong> מעריכים בערך מה התשובה צריכה להיות</p>
+                    <p><strong>3. בדיקת סבירות:</strong> שואלים את עצמנו - האם התשובה הגיונית?</p>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: למה צריך לבדוק?</h3>
+                    <p><strong>בעיה:</strong> דני פתר <span class="math">47 + 28</span> וקיבל <span class="math">615</span></p>
+                    <div class="steps">
+                        <p><strong>האם זה נכון? בואו נבדוק!</strong></p>
+                        <p>🤔 בדיקת סבירות: <span class="math">47</span> זה בערך <span class="math">50</span>, ו-<span class="math">28</span> זה בערך <span class="math">30</span></p>
+                        <p><span class="math">50 + 30 = 80</span> (בערך)</p>
+                        <p class="tip">✖ <span class="math">615</span> לא קרוב ל-<span class="math">80</span> בכלל! משהו לא בסדר!</p>
+                        <p><strong>התשובה הנכונה:</strong></p>
+                        <div class="calc-box"> 47
++28
+____
+ 75</div>
+                        <p class="tip">✓ <span class="math">75</span> הגיוני הרבה יותר!</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: טעות קטנה עם תוצאות גדולות</h3>
+                    <p><strong>בעיה:</strong> בחנות יש <span class="math">8</span> מדפים, בכל מדף <span class="math">6</span> ספרים. כמה ספרים יש?</p>
+                    <p>יוסי חישב: <span class="math">8 + 6 = 14</span> ספרים</p>
+                    <div class="steps">
+                        <p><strong>בדיקת סבירות:</strong></p>
+                        <p>🤔 רק על מדף אחד יש <span class="math">6</span> ספרים</p>
+                        <p>🤔 יש <span class="math">8</span> מדפים</p>
+                        <p>🤔 אז צריך להיות הרבה יותר מ-<span class="math">14</span>!</p>
+                        <p class="tip">✓ הפעולה הנכונה היא כפל, לא חיבור:</p>
+                        <div class="calc-box">8 x 6 = 48</div>
+                        <p><strong>תשובה נכונה:</strong> <span class="math">48</span> ספרים</p>
+                    </div>
+                </div>
+                
+                <div class="strategy-box">
+                    <h4>💡 טיפים חשובים:</h4>
+                    <p>✓ תמיד בדקו את התשובה לפני שממשיכים לתרגיל הבא</p>
+                    <p>✓ אם התשובה לא נראית הגיונית - כנראה יש טעות</p>
+                    <p>✓ טעות קטנה בחישוב יכולה להוביל לתשובה מאוד שגויה</p>
+                    <p>✓ בדיקה חוסכת זמן - עדיף לבדוק פעם אחת מאשר לפתור הכל מחדש</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- שיעור 2 -->
+        <div id="lesson2" class="content">
+            <div class="lesson">
+                <h2>בדיקה בפעולה הפוכה</h2>
+                <p>הדרך הכי מדויקת לבדוק תשובה היא להשתמש בפעולה ההפוכה!</p>
+                
+                <div class="formula-box">חיבור ↔ חיסור | כפל ↔ חילוק</div>
+                
+                <div class="method-box">
+                    <h4>🔄 איך זה עובד?</h4>
+                    <p><strong>חיבור:</strong> אם <span class="math">a + b = c</span>, אז <span class="math">c - b = a</span></p>
+                    <p><strong>חיסור:</strong> אם <span class="math">a - b = c</span>, אז <span class="math">c + b = a</span></p>
+                    <p><strong>כפל:</strong> אם <span class="math">a × b = c</span>, אז <span class="math">c ÷ b = a</span></p>
+                    <p><strong>חילוק:</strong> אם <span class="math">a ÷ b = c</span>, אז <span class="math">c × b = a</span></p>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: בדיקת חיבור</h3>
+                    <p><strong>תרגיל:</strong> <span class="math">248 + 167 = 415</span></p>
+                    <div class="steps">
+                        <p><strong>בדיקה בחיסור:</strong></p>
+                        <div class="calc-box">415
+-167
+____
+248</div>
+                        <p class="tip">✓ קיבלנו בחזרה את המספר הראשון - התשובה נכונה!</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: בדיקת חיסור</h3>
+                    <p><strong>תרגיל:</strong> <span class="math">532 - 278 = 254</span></p>
+                    <div class="steps">
+                        <p><strong>בדיקה בחיבור:</strong></p>
+                        <div class="calc-box">254
++278
+____
+532</div>
+                        <p class="tip">✓ קיבלנו את המספר המקורי - מעולה!</p>
+                    </div>
+                </div>
+                
+                <div class="strategy-box">
+                    <h4>🎯 שלבי הבדיקה:</h4>
+                    <p>1. זהו את הפעולה שביצעת (חיבור/חיסור/כפל/חילוק)</p>
+                    <p>2. בחרו את הפעולה ההפוכה</p>
+                    <p>3. השתמשו בתשובה ובאחד המספרים המקוריים</p>
+                    <p>4. בדקו שקיבלת את המספר השני</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 1 -->
+        <div id="game1" class="content">
+            <div class="game">
+                <h2>משחק: פעולה הפוכה</h2>
+                <div class="question-counter">שאלה <span id="q-count1">1</span> מתוך 10</div>
+                <div class="score">ניקוד: <span id="score1">0</span></div>
+                <div class="problem-display" id="problem1">טוען...</div>
+                <div class="controls">
+                    <input type="number" id="answer1" placeholder="הכנס תשובה">
+                    <br><br>
+                    <button onclick="checkAns(1);">בדוק</button>
+                </div>
+                <div id="feedback1"></div>
+                <div id="round-end1" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <!-- שיעור 3 -->
+        <div id="lesson3" class="content">
+            <div class="lesson">
+                <h2>אומדן ובדיקת סבירות</h2>
+                <p>לפעמים אפשר לראות שתשובה שגויה בלי לחשב בדיוק - רק מההיגיון!</p>
+                
+                <div class="formula-box">אומדן = הערכה של התשובה</div>
+                
+                <div class="method-box">
+                    <h4>🎯 מה זה אומדן?</h4>
+                    <p>אומדן זה לעגל מספרים ולקבל תשובה משוערת</p>
+                    <p><strong>למשל:</strong> <span class="math">48 + 33</span></p>
+                    <p><span class="math">48</span> זה בערך <span class="math">50</span></p>
+                    <p><span class="math">33</span> זה בערך <span class="math">30</span></p>
+                    <p>אז התשובה צריכה להיות בערך <span class="math">80</span></p>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: אומדן בחיבור</h3>
+                    <p><strong>תרגיל:</strong> <span class="math">287 + 412 = ?</span></p>
+                    <div class="steps">
+                        <p><strong>אומדן:</strong></p>
+                        <p><span class="math">287</span> זה בערך <span class="math">300</span></p>
+                        <p><span class="math">412</span> זה בערך <span class="math">400</span></p>
+                        <div class="calc-box">300 + 400 = 700</div>
+                        <p class="tip">💡 התשובה צריכה להיות קרובה ל-<span class="math">700</span></p>
+                        <p><strong>חישוב מדויק:</strong></p>
+                        <div class="calc-box">  287
++ 412
+_____
+  699</div>
+                        <p class="tip">✓ <span class="math">699</span> מאוד קרוב ל-<span class="math">700</span> - נראה נכון!</p>
+                    </div>
+                </div>
+                
+                <div class="strategy-box">
+                    <h4>💡 איך לבדוק סבירות:</h4>
+                    <p>✓ האם התשובה בגודל הנכון? (לא גדולה או קטנה מדי?)</p>
+                    <p>✓ השתמשו באומדן - עגלו מספרים וחשבו בקירוב</p>
+                    <p>✓ שאלו את עצמכם: האם זה הגיוני במציאות?</p>
+                    <p>✓ אם משהו לא נראה טוב - כדאי לבדוק שוב!</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 2 -->
+        <div id="game2" class="content">
+            <div class="game">
+                <h2>משחק: בדיקת סבירות</h2>
+                <div class="question-counter">שאלה <span id="q-count2">1</span> מתוך 10</div>
+                <div class="score">ניקוד: <span id="score2">0</span></div>
+                <div class="problem-display" id="problem2">טוען...</div>
+                <div class="controls">
+                    <button onclick="checkSanity(2, true);">נכון ✔</button>
+                    <button onclick="checkSanity(2, false);">שגוי ✗</button>
+                </div>
+                <div id="feedback2"></div>
+                <div id="round-end2" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <!-- משחק 3 -->
+        <div id="game3" class="content">
+            <div class="game">
+                <h2>משחק: בדיקה מקיפה</h2>
+                <div class="question-counter">שאלה <span id="q-count3">1</span> מתוך 10</div>
+                <div class="score">ניקוד: <span id="score3">0</span></div>
+                <div class="problem-display" id="problem3">טוען...</div>
+                <div class="controls">
+                    <input type="number" id="answer3" placeholder="הכנס תשובה">
+                    <br><br>
+                    <button onclick="checkAns(3);">בדוק</button>
+                </div>
+                <div id="feedback3"></div>
+                <div id="round-end3" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+var scores = {1: 0, 2: 0, 3: 0};
+var currentQuestion = {1: 0, 2: 0, 3: 0};
+var questionBank = {1: [], 2: [], 3: []};
+var gameData = {1: {}, 2: {}, 3: {}};
+var answerLocked = {1: false, 2: false, 3: false};
+
+function generateQ1(n) {
+    var qs = [
+        {t: 'פתרתי: <span class="math">145 + 238 = 383</span><br>בדקו בפעולה הפוכה: <span class="math">383 - 238 = ?</span>', a: 145},
+        {t: 'פתרתי: <span class="math">456 - 189 = 267</span><br>בדקו בפעולה הפוכה: <span class="math">267 + 189 = ?</span>', a: 456},
+        {t: 'פתרתי: <span class="math">324 + 157 = 481</span><br>בדקו בפעולה הפוכה: <span class="math">481 - 157 = ?</span>', a: 324},
+        {t: 'פתרתי: <span class="math">500 - 278 = 222</span><br>בדקו בפעולה הפוכה: <span class="math">222 + 278 = ?</span>', a: 500},
+        {t: 'פתרתי: <span class="math">15 x 6 = 90</span><br>בדקו בפעולה הפוכה: <span class="math">90 ÷ 6 = ?</span>', a: 15},
+        {t: 'פתרתי: <span class="math">245 + 368 = 613</span><br>בדקו בפעולה הפוכה: <span class="math">613 - 368 = ?</span>', a: 245},
+        {t: 'פתרתי: <span class="math">18 x 7 = 126</span><br>בדקו בפעולה הפוכה: <span class="math">126 ÷ 7 = ?</span>', a: 18},
+        {t: 'פתרתי: <span class="math">632 - 345 = 287</span><br>בדקו בפעולה הפוכה: <span class="math">287 + 345 = ?</span>', a: 632},
+        {t: 'פתרתי: <span class="math">24 x 5 = 120</span><br>בדקו בפעולה הפוכה: <span class="math">120 ÷ 5 = ?</span>', a: 24},
+        {t: 'פתרתי: <span class="math">417 + 286 = 703</span><br>בדקו בפעולה הפוכה: <span class="math">703 - 286 = ?</span>', a: 417},
+        {t: 'פתרתי: <span class="math">800 - 456 = 344</span><br>בדקו בפעולה הפוכה: <span class="math">344 + 456 = ?</span>', a: 800},
+        {t: 'פתרתי: <span class="math">35 x 4 = 140</span><br>בדקו בפעולה הפוכה: <span class="math">140 ÷ 4 = ?</span>', a: 35},
+        {t: 'פתרתי: <span class="math">289 + 433 = 722</span><br>בדקו בפעולה הפוכה: <span class="math">722 - 433 = ?</span>', a: 289},
+        {t: 'פתרתי: <span class="math">27 x 8 = 216</span><br>בדקו בפעולה הפוכה: <span class="math">216 ÷ 8 = ?</span>', a: 27},
+        {t: 'פתרתי: <span class="math">555 - 267 = 288</span><br>בדקו בפעולה הפוכה: <span class="math">288 + 267 = ?</span>', a: 555},
+        {t: 'פתרתי: <span class="math">368 + 245 = 613</span><br>בדקו בפעולה הפוכה: <span class="math">613 - 245 = ?</span>', a: 368},
+        {t: 'פתרתי: <span class="math">42 x 6 = 252</span><br>בדקו בפעולה הפוכה: <span class="math">252 ÷ 6 = ?</span>', a: 42},
+        {t: 'פתרתי: <span class="math">700 - 389 = 311</span><br>בדקו בפעולה הפוכה: <span class="math">311 + 389 = ?</span>', a: 700},
+        {t: 'פתרתי: <span class="math">19 x 9 = 171</span><br>בדקו בפעולה הפוכה: <span class="math">171 ÷ 9 = ?</span>', a: 19},
+        {t: 'פתרתי: <span class="math">456 + 378 = 834</span><br>בדקו בפעולה הפוכה: <span class="math">834 - 378 = ?</span>', a: 456}
+    ];
+    return {text: qs[n].t, answer: qs[n].a};
+}
+
+function generateQ2(n) {
+    var qs = [
+        {t: 'דני חישב: <span class="math">48 + 33 = 511</span><br>האם זה נכון או שגוי?', correct: false, exp: 'שגוי! 48 בערך 50, ו-33 בערך 30. התשובה צריכה להיות בערך 80, לא 511!'},
+        {t: 'רחל חישבה: <span class="math">297 + 412 = 709</span><br>האם זה נכון או שגוי?', correct: true, exp: 'נכון! 297 בערך 300, ו-412 בערך 400. 709 קרוב ל-700'},
+        {t: 'יוסי חישב: <span class="math">52 x 8 = 166</span><br>האם זה נכון או שגוי?', correct: false, exp: 'שגוי! 52 בערך 50, ו-50x8=400. התשובה צריכה להיות בערך 400!'},
+        {t: 'שרה חישבה: <span class="math">500 - 123 = 377</span><br>האם זה נכון או שגוי?', correct: true, exp: 'נכון! הורדנו בערך 100 מ-500, צריך להישאר בערך 400. 377 קרוב'},
+        {t: 'בכיתה 28 ילדים, כל אחד קיבל 3 עפרונות.<br>תומר חישב: <span class="math">28 + 3 = 31</span> עפרונות. נכון?', correct: false, exp: 'שגוי! צריך לכפול, לא לחבר! 28x3=84 עפרונות'},
+        {t: 'מיכל חישבה: <span class="math">387 - 198 = 189</span><br>האם זה נכון או שגוי?', correct: true, exp: 'נכון! הורדנו בערך 200 מ-387, צריך להישאר בערך 190'},
+        {t: 'אבי חישב: <span class="math">45 x 7 = 115</span><br>האם זה נכון או שגוי?', correct: false, exp: 'שגוי! 45 בערך 50, ו-50x7=350. התשובה צריכה להיות בערך 350!'},
+        {t: 'נועה חישבה: <span class="math">156 + 244 = 400</span><br>האם זה נכון או שגוי?', correct: true, exp: 'נכון! 156 בערך 160, ו-244 בערך 240. 160+240=400'},
+        {t: 'דוד קנה חפצים ב-25 שקל, 18 שקל ו-12 שקל.<br>הוא חישב: <span class="math">25x18x12</span> = סך הכל. נכון?', correct: false, exp: 'שגוי! צריך לחבר את המחירים, לא לכפול! 25+18+12=55 שקל'},
+        {t: 'תמר חישבה: <span class="math">33 x 9 = 297</span><br>האם זה נכון או שגוי?', correct: true, exp: 'נכון! 33 בערך 30, ו-30x9=270. 297 קרוב ל-270'},
+        {t: 'עומר חישב: <span class="math">624 - 387 = 337</span><br>האם זה נכון או שגוי?', correct: false, exp: 'שגוי! 624 בערך 600, הורדנו בערך 400. צריך להישאר בערך 200, לא 337!'},
+        {t: 'לאה חישבה: <span class="math">789 + 211 = 1000</span><br>האם זה נכון או שגוי?', correct: true, exp: 'נכון! 789 בערך 800, ו-211 בערך 200. 800+200=1000'},
+        {t: 'רון חישב: <span class="math">64 x 5 = 220</span><br>האם זה נכון או שגוי?', correct: false, exp: 'שגוי! 64 בערך 60, ו-60x5=300. התשובה צריכה להיות בערך 300!'},
+        {t: 'מיה חישבה: <span class="math">450 - 267 = 183</span><br>האם זה נכון או שגוי?', correct: true, exp: 'נכון! הורדנו בערך 270 מ-450, צריך להישאר בערך 180'},
+        {t: 'גיל חישב: <span class="math">52 + 48 = 910</span><br>האם זה נכון או שגוי?', correct: false, exp: 'שגוי! 52 בערך 50, ו-48 בערך 50. התשובה צריכה להיות בערך 100!'},
+        {t: 'ענת חישבה: <span class="math">27 x 6 = 162</span><br>האם זה נכון או שגוי?', correct: true, exp: 'נכון! 27 בערך 30, ו-30x6=180. 162 קרוב ל-180'},
+        {t: 'יניב קנה 8 מחברות ב-12 שקל.<br>הוא חישב: <span class="math">8+12 = 20 שקל</span>. נכון?', correct: false, exp: 'שגוי! צריך לכפול! 8x12=96 שקל'},
+        {t: 'רוני חישבה: <span class="math">555 - 278 = 277</span><br>האם זה נכון או שגוי?', correct: true, exp: 'נכון! הורדנו בערך 280 מ-555, צריך להישאר בערך 275'},
+        {t: 'אורי חישב: <span class="math">95 x 4 = 180</span><br>האם זה נכון או שגוי?', correct: false, exp: 'שגוי! 95 בערך 100, ו-100x4=400. התשובה צריכה להיות בערך 400!'},
+        {t: 'הדר חישבה: <span class="math">368 + 432 = 800</span><br>האם זה נכון או שגוי?', correct: true, exp: 'נכון! 368 בערך 370, ו-432 בערך 430. 370+430=800'}
+    ];
+    return {text: qs[n].t, correct: qs[n].correct, explanation: qs[n].exp};
+}
+
+function generateQ3(n) {
+    var qs = [
+        {t: 'פתרו ובדקו: <span class="math">234 + 167 = ?</span>', a: 401},
+        {t: 'פתרו ובדקו: <span class="math">456 - 189 = ?</span>', a: 267},
+        {t: 'פתרו ובדקו: <span class="math">18 x 7 = ?</span>', a: 126},
+        {t: 'פתרו ובדקו: <span class="math">345 + 278 = ?</span>', a: 623},
+        {t: 'פתרו ובדקו: <span class="math">500 - 234 = ?</span>', a: 266},
+        {t: 'פתרו ובדקו: <span class="math">24 x 6 = ?</span>', a: 144},
+        {t: 'פתרו ובדקו: <span class="math">567 + 245 = ?</span>', a: 812},
+        {t: 'פתרו ובדקו: <span class="math">632 - 378 = ?</span>', a: 254},
+        {t: 'פתרו ובדקו: <span class="math">35 x 8 = ?</span>', a: 280},
+        {t: 'פתרו ובדקו: <span class="math">789 + 123 = ?</span>', a: 912},
+        {t: 'פתרו ובדקו: <span class="math">700 - 456 = ?</span>', a: 244},
+        {t: 'פתרו ובדקו: <span class="math">42 x 5 = ?</span>', a: 210},
+        {t: 'פתרו ובדקו: <span class="math">445 + 367 = ?</span>', a: 812},
+        {t: 'פתרו ובדקו: <span class="math">555 - 289 = ?</span>', a: 266},
+        {t: 'פתרו ובדקו: <span class="math">27 x 9 = ?</span>', a: 243},
+        {t: 'פתרו ובדקו: <span class="math">678 + 234 = ?</span>', a: 912},
+        {t: 'פתרו ובדקו: <span class="math">800 - 467 = ?</span>', a: 333},
+        {t: 'פתרו ובדקו: <span class="math">36 x 7 = ?</span>', a: 252},
+        {t: 'פתרו ובדקו: <span class="math">489 + 345 = ?</span>', a: 834},
+        {t: 'פתרו ובדקו: <span class="math">600 - 378 = ?</span>', a: 222}
+    ];
+    return {text: qs[n].t, answer: qs[n].a};
+}
+
+function initGame(g) {
+    questionBank[g] = [];
+    var order = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
+    order.sort(function() { return Math.random() - 0.5; });
+    for (var i = 0; i < 10; i++) {
+        var q;
+        if (g === 1) q = generateQ1(order[i]);
+        else if (g === 2) q = generateQ2(order[i]);
+        else q = generateQ3(order[i]);
+        questionBank[g].push(q);
+    }
+    nextQ(g);
+}
+
+function nextQ(g) {
+    if (currentQuestion[g] >= 10) {
+        document.getElementById('feedback' + g).innerHTML = '';
+        showEnd(g);
+        return;
+    }
+    answerLocked[g] = false;
+    gameData[g] = questionBank[g][currentQuestion[g]];
+    document.getElementById('q-count' + g).textContent = currentQuestion[g] + 1;
+    document.getElementById('problem' + g).innerHTML = gameData[g].text;
+    document.getElementById('feedback' + g).innerHTML = '';
+    if (g !== 2) {
+        document.getElementById('answer' + g).value = '';
+    }
+}
+
+function checkAns(g) {
+    if (answerLocked[g]) return;
+    var ans = parseFloat(document.getElementById('answer' + g).value);
+    if (isNaN(ans)) return;
+    
+    var correct = Math.abs(ans - gameData[g].answer) < 0.01;
+    answerLocked[g] = true;
+    currentQuestion[g]++;
+    
+    if (correct) {
+        scores[g]++;
+        playSound('correct');
+        document.getElementById('feedback' + g).innerHTML = '<div class="feedback correct">נכון מעולה! ✔</div>';
+    } else {
+        playSound('incorrect');
+        document.getElementById('feedback' + g).innerHTML = '<div class="feedback incorrect">לא נכון. התשובה: ' + gameData[g].answer + '</div>';
+    }
+    document.getElementById('score' + g).textContent = scores[g];
+    
+    setTimeout(function() {
+        document.getElementById('feedback' + g).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+    
+    setTimeout(function() { nextQ(g); }, 3000);
+}
+
+function checkSanity(g, userAnswer) {
+    if (answerLocked[g]) return;
+    
+    var correct = (userAnswer === gameData[g].correct);
+    answerLocked[g] = true;
+    currentQuestion[g]++;
+    
+    if (correct) {
+        scores[g]++;
+        playSound('correct');
+        document.getElementById('feedback' + g).innerHTML = '<div class="feedback correct">מעולה! ✔<br>' + gameData[g].explanation + '</div>';
+    } else {
+        playSound('incorrect');
+        document.getElementById('feedback' + g).innerHTML = '<div class="feedback incorrect">לא נכון.<br>' + gameData[g].explanation + '</div>';
+    }
+    document.getElementById('score' + g).textContent = scores[g];
+    
+    setTimeout(function() {
+        document.getElementById('feedback' + g).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+    
+    setTimeout(function() { nextQ(g); }, 4000);
+}
+
+function showEnd(g) {
+    var roundEndEl = document.getElementById('round-end' + g);
+    var problemEl = document.getElementById('problem' + g);
+    var controlsEl = document.querySelector('#game' + g + ' .controls');
+    var feedbackEl = document.getElementById('feedback' + g);
+    
+    if (controlsEl) controlsEl.style.display = 'none';
+    if (feedbackEl) {
+        feedbackEl.innerHTML = '';
+        feedbackEl.style.display = 'none';
+    }
+    
+    var pct = Math.round((scores[g] / 10) * 100);
+    var msg = pct >= 80 ? 'מעולה! 🌟✔' : pct >= 60 ? 'יפה מאוד! 👍' : 'כל הכבוד! 💪';
+    roundEndEl.innerHTML = '<div class="round-complete"><h3>סיימת!</h3><p>' + msg + '</p><p>ציון: ' + scores[g] + '/10 (' + pct + '%)</p><button class="new-round-btn" onclick="resetGame(' + g + ')">סיבוב נוסף</button></div>';
+    roundEndEl.style.display = 'block';
+    problemEl.style.display = 'none';
+}
+
+function resetGame(g) {
+    scores[g] = 0;
+    currentQuestion[g] = 0;
+    answerLocked[g] = false;
+    questionBank[g] = [];
+    
+    document.getElementById('score' + g).textContent = '0';
+    document.getElementById('round-end' + g).style.display = 'none';
+    document.getElementById('feedback' + g).innerHTML = '';
+    document.getElementById('feedback' + g).style.display = 'block';
+    document.getElementById('problem' + g).style.display = 'block';
+    
+    var controlsEl = document.querySelector('#game' + g + ' .controls');
+    if (controlsEl) controlsEl.style.display = 'block';
+    if (g !== 2) {
+        document.getElementById('answer' + g).value = '';
+    }
+    
+    initGame(g);
+}
+
+window.onload = function() {
+    var tabs = document.querySelectorAll('.tab');
+    for (var i = 0; i < tabs.length; i++) {
+        (function(tab) {
+            tab.onclick = function() {
+                playSound('click');
+                var tabId = tab.getAttribute('data-tab');
+                var allContent = document.querySelectorAll('.content');
+                var allTabs = document.querySelectorAll('.tab');
+                for (var j = 0; j < allContent.length; j++) allContent[j].classList.remove('active');
+                for (var k = 0; k < allTabs.length; k++) allTabs[k].classList.remove('active');
+                document.getElementById(tabId).classList.add('active');
+                tab.classList.add('active');
+                
+                if (tabId === 'game1' || tabId === 'game2' || tabId === 'game3') {
+                    var gameNum = parseInt(tabId.replace('game', ''));
+                    scores[gameNum] = 0;
+                    currentQuestion[gameNum] = 0;
+                    answerLocked[gameNum] = false;
+                    questionBank[gameNum] = [];
+                    document.getElementById('score' + gameNum).textContent = '0';
+                    document.getElementById('round-end' + gameNum).style.display = 'none';
+                    document.getElementById('problem' + gameNum).style.display = 'block';
+                    document.getElementById('feedback' + gameNum).innerHTML = '';
+                    document.getElementById('feedback' + gameNum).style.display = 'block';
+                    
+                    if (gameNum !== 2) {
+                        document.getElementById('answer' + gameNum).value = '';
+                    }
+                    var controlsEl = document.querySelector('#game' + gameNum + ' .controls');
+                    if (controlsEl) controlsEl.style.display = 'block';
+                    
+                    setTimeout(function() { initGame(gameNum); }, 50);
+                }
+            };
+        })(tabs[i]);
+    }
+    
+    document.addEventListener('wheel', function(e) {
+        if (document.activeElement.type === 'number') document.activeElement.blur();
+    });
+};
+
+function playSound(type) {
+    try {
+        var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (type === 'click') {
+            var osc = audioContext.createOscillator();
+            var gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.type = 'sine';
+            osc.frequency.value = 600;
+            gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + 0.15);
+        } else if (type === 'correct') {
+            var notes = [523.25, 659.25, 783.99];
+            for (var i = 0; i < notes.length; i++) {
+                (function(index) {
+                    var osc = audioContext.createOscillator();
+                    var gain = audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    osc.type = 'sine';
+                    osc.frequency.value = notes[index];
+                    gain.gain.setValueAtTime(0.1, audioContext.currentTime + index * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + index * 0.1 + 0.3);
+                    osc.start(audioContext.currentTime + index * 0.1);
+                    osc.stop(audioContext.currentTime + index * 0.1 + 0.3);
+                })(i);
+            }
+        } else if (type === 'incorrect') {
+            var osc = audioContext.createOscillator();
+            var gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.type = 'sine';
+            osc.frequency.value = 200;
+            gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + 0.3);
+        }
+    } catch (e) {
+        console.log('Audio not supported');
+    }
+}
+    </script>
+</body>
+</html>
