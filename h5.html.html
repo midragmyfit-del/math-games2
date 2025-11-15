@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מעוף הבלון - משחק מתמטי</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-bottom: 15px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: 3px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            min-width: 130px;
+        }
+
+        .btn:hover, .btn.selected {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            font-size: 1.3em;
+            margin-top: 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        canvas {
+            display: block;
+            margin: 20px auto;
+            border: 4px solid #667eea;
+            border-radius: 15px;
+            background: #87CEEB;
+        }
+
+        .player-cards {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .player-card {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            min-width: 180px;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .player-card.active {
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .player-card.p1 {
+            background: linear-gradient(135deg, #FFE5E5, #FFC5C5);
+        }
+
+        .player-card.p2 {
+            background: linear-gradient(135deg, #E5F0FF, #C5D5FF);
+        }
+
+        .player-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .player-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .player-score {
+            font-size: 1.8em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .question-box {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .question-text {
+            font-size: 2em;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 25px;
+            direction: ltr;
+        }
+
+        .answers {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .answer-btn {
+            padding: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            border: 3px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .answer-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            background: #667eea;
+            color: white;
+        }
+
+        .answer-btn.correct {
+            background: #00cc66;
+            color: white;
+            border-color: #00cc66;
+        }
+
+        .answer-btn.wrong {
+            background: #ff4444;
+            color: white;
+            border-color: #ff4444;
+        }
+
+        .answer-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .ready-screen {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .ready-title {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .ready-text {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .game-stats {
+            text-align: center;
+            font-size: 1.3em;
+            color: #667eea;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .retry-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-retry {
+            background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            font-size: 1.2em;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 0 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-retry:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-continue {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            font-size: 1.2em;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 0 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-continue:hover {
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 50px;
+            border-radius: 25px;
+            text-align: center;
+            z-index: 1000;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-title {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .modal-score {
+            font-size: 2em;
+            color: #764ba2;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .modal-winner {
+            font-size: 2em;
+            color: #FFD700;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .turn-indicator {
+            text-align: center;
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Main Menu -->
+        <div id="menu">
+            <h1>🎈 מעוף הבלון 🎈</h1>
+            <p class="subtitle">עוף בין הצינורות וענה על שאלות!</p>
+            
+            <div class="section">
+                <div class="section-title">בחר מצב משחק:</div>
+                <div class="btn-group">
+                    <button class="btn" onclick="selectMode('single')">🎯<br>שחקן יחיד</button>
+                    <button class="btn" onclick="selectMode('teams')">👥<br>2 שחקנים</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">בחר רמת קושי:</div>
+                <div class="btn-group">
+                    <button class="btn" onclick="selectDifficulty('easy')">🟢 קל<br>(1-10)</button>
+                    <button class="btn" onclick="selectDifficulty('medium')">🟡 בינוני<br>(10-20)</button>
+                    <button class="btn" onclick="selectDifficulty('hard')">🔴 קשה<br>(20-50)</button>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn-primary" id="startBtn" onclick="startGame()" disabled>התחל משחק!</button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game" class="hidden">
+            <button class="back-btn" onclick="backToMenu()">← חזרה לתפריט</button>
+            
+            <div class="turn-indicator" id="turnIndicator"></div>
+            
+            <div class="player-cards">
+                <div class="player-card p1" id="player1Card">
+                    <div class="player-icon">🎈</div>
+                    <div class="player-name" id="player1Name">שחקן 1</div>
+                    <div class="player-score" id="player1Score">0 מ'</div>
+                </div>
+                <div class="player-card p2" id="player2Card">
+                    <div class="player-icon">🎈</div>
+                    <div class="player-name">שחקן 2</div>
+                    <div class="player-score" id="player2Score">0 מ'</div>
+                </div>
+            </div>
+
+            <!-- Question -->
+            <div id="questionScreen" class="hidden">
+                <div class="question-box">
+                    <div class="question-text" id="questionText"></div>
+                    <div class="answers" id="answersGrid"></div>
+                </div>
+            </div>
+
+            <!-- Ready to Fly -->
+            <div id="readyScreen" class="hidden">
+                <div class="ready-screen">
+                    <div class="ready-title">🎈 מוכן/ה לעוף? 🎈</div>
+                    <div class="ready-text">לחץ על המסך או על רווח כדי לקפוץ למעלה!</div>
+                    <button class="btn-primary" onclick="startFlying()">🚀 התחל לעוף! 🚀</button>
+                </div>
+            </div>
+
+            <!-- Flying Game -->
+            <div id="flyingScreen" class="hidden">
+                <canvas id="canvas" width="800" height="500"></canvas>
+                <div class="game-stats">מרחק נוכחי: <span id="distanceDisplay">0</span> מ'</div>
+                
+                <div id="retrySection" class="retry-section hidden">
+                    <button class="btn-retry" onclick="retryFlight()">🔄 ניסיון חוזר</button>
+                    <button class="btn-continue" onclick="endTurn()">➡️ המשך משחק</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div id="overlay"></div>
+    <div id="gameOverModal" class="modal">
+        <div class="modal-title" id="modalTitle">🎈 סיום תור! 🎈</div>
+        <div class="modal-score">המרחק: <span id="modalScore">0</span> מ'</div>
+        <div class="modal-winner" id="modalWinner"></div>
+        <button class="btn-primary" id="nextBtn" onclick="nextRound()">המשך</button>
+        <button class="btn-primary" id="menuBtn" onclick="backToMenu()">חזרה לתפריט</button>
+    </div>
+
+    <script>
+        // Game State
+        const game = {
+            mode: null,           // 'single' or 'teams'
+            difficulty: null,     // 'easy', 'medium', 'hard'
+            currentPlayer: 1,
+            player1Score: 0,
+            player2Score: 0,
+            currentDistance: 0,
+            roundsPlayed: 0,
+            maxRounds: 10,
+            hasRetried: false,
+            usedQuestions: [],
+            correctAnswer: 0
+        };
+
+        // Canvas & Game Loop
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d', { alpha: false });
+        let animationId = null;
+        let gameRunning = false;
+
+        // Game Objects
+        const balloon = {
+            x: 150,
+            y: 250,
+            radius: 25,
+            velocity: 0,
+            gravity: 0.4,
+            lift: -8
+        };
+
+        let pipes = [];
+        let frameCount = 0;
+        let gameSpeed = 2;
+        let pipeGap = 280;  // מרווח גדול מאוד בהתחלה - קל לילדים!
+        let pipeFrequency = 180;  // צינורות רחוקים יותר
+
+        // Difficulty Settings
+        const difficulties = {
+            easy: { min: 1, max: 10 },      // קל: 1-10
+            medium: { min: 10, max: 20 },   // בינוני: 10-20
+            hard: { min: 20, max: 50 }      // קשה: 20-50
+        };
+
+        // Menu Functions
+        function selectMode(mode) {
+            game.mode = mode;
+            document.querySelectorAll('#menu .btn').forEach(btn => {
+                if (btn.textContent.includes('שחקן') || btn.textContent.includes('2')) {
+                    btn.classList.remove('selected');
+                }
+            });
+            event.target.classList.add('selected');
+            updateStartButton();
+        }
+
+        function selectDifficulty(diff) {
+            game.difficulty = diff;
+            document.querySelectorAll('#menu .btn').forEach(btn => {
+                if (btn.textContent.includes('קל') || btn.textContent.includes('בינוני') || btn.textContent.includes('קשה')) {
+                    btn.classList.remove('selected');
+                }
+            });
+            event.target.classList.add('selected');
+            updateStartButton();
+        }
+
+        function updateStartButton() {
+            document.getElementById('startBtn').disabled = !(game.mode && game.difficulty);
+        }
+
+        function startGame() {
+            // Reset
+            game.currentPlayer = 1;
+            game.player1Score = 0;
+            game.player2Score = 0;
+            game.roundsPlayed = 0;
+            game.usedQuestions = [];
+
+            // Show game screen
+            document.getElementById('menu').classList.add('hidden');
+            document.getElementById('game').classList.remove('hidden');
+
+            // Setup UI
+            if (game.mode === 'single') {
+                document.getElementById('player2Card').classList.add('hidden');
+                document.getElementById('turnIndicator').classList.remove('hidden'); // הצג את מספר הסיבוב!
+                document.getElementById('player1Name').textContent = 'השחקן שלי';
+            } else {
+                document.getElementById('player2Card').classList.remove('hidden');
+                document.getElementById('turnIndicator').classList.remove('hidden');
+                document.getElementById('player1Name').textContent = 'שחקן 1';
+            }
+
+            updateScoreboard();
+            updateActivePlayer(); // עדכן את מספר הסיבוב
+            showQuestion();
+        }
+
+        function backToMenu() {
+            stopGame();
+            document.getElementById('game').classList.add('hidden');
+            document.getElementById('menu').classList.remove('hidden');
+            document.getElementById('gameOverModal').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+            
+            // Reset selections
+            document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('selected'));
+            game.mode = null;
+            game.difficulty = null;
+            updateStartButton();
+        }
+
+        // Question Functions
+        function showQuestion() {
+            hideAllScreens();
+            document.getElementById('questionScreen').classList.remove('hidden');
+            updateActivePlayer();
+            generateQuestion();
+        }
+
+        function generateQuestion() {
+            const settings = difficulties[game.difficulty];
+            let num1, num2, operation, question, questionKey;
+            let attempts = 0;
+
+            do {
+                if (Math.random() < 0.5) {
+                    num1 = Math.floor(Math.random() * settings.max) + settings.min;
+                    num2 = Math.floor(Math.random() * settings.max) + settings.min;
+                    game.correctAnswer = num1 + num2;
+                    question = `${num1} + ${num2} = ?`;
+                    questionKey = `${num1}+${num2}`;
+                } else {
+                    num1 = Math.floor(Math.random() * settings.max) + settings.min;
+                    num2 = Math.floor(Math.random() * num1) + 1;
+                    game.correctAnswer = num1 - num2;
+                    question = `${num1} - ${num2} = ?`;
+                    questionKey = `${num1}-${num2}`;
+                }
+                attempts++;
+                if (attempts >= 50) {
+                    game.usedQuestions = [];
+                    break;
+                }
+            } while (game.usedQuestions.includes(questionKey));
+
+            game.usedQuestions.push(questionKey);
+            document.getElementById('questionText').textContent = question;
+            generateAnswers();
+        }
+
+        function generateAnswers() {
+            const answers = [game.correctAnswer];
+            
+            while (answers.length < 4) {
+                const wrong = game.correctAnswer + Math.floor(Math.random() * 10) - 5;
+                if (wrong > 0 && !answers.includes(wrong)) {
+                    answers.push(wrong);
+                }
+            }
+            
+            answers.sort(() => Math.random() - 0.5);
+            
+            const grid = document.getElementById('answersGrid');
+            grid.innerHTML = '';
+            
+            answers.forEach(answer => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = answer;
+                btn.onclick = () => checkAnswer(answer, btn);
+                grid.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(answer, button) {
+            const buttons = document.querySelectorAll('.answer-btn');
+            buttons.forEach(btn => btn.disabled = true);
+
+            if (answer === game.correctAnswer) {
+                button.classList.add('correct');
+                playSound('correct');
+                setTimeout(showReady, 1000);
+            } else {
+                button.classList.add('wrong');
+                playSound('wrong');
+                
+                buttons.forEach(btn => {
+                    if (parseInt(btn.textContent) === game.correctAnswer) {
+                        btn.classList.add('correct');
+                    }
+                });
+
+                setTimeout(() => finishTurn(0, true), 1500); // true = תשובה שגויה
+            }
+        }
+
+        // Ready Screen
+        function showReady() {
+            hideAllScreens();
+            document.getElementById('readyScreen').classList.remove('hidden');
+            game.hasRetried = false;
+            
+            setTimeout(() => {
+                document.getElementById('readyScreen').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+
+        function startFlying() {
+            hideAllScreens();
+            document.getElementById('flyingScreen').classList.remove('hidden');
+            document.getElementById('retrySection').classList.add('hidden');
+            
+            // Reset game state
+            balloon.y = 250;
+            balloon.velocity = 0;
+            pipes = [];
+            frameCount = 0;
+            game.currentDistance = 0;
+            gameSpeed = 2;
+            pipeGap = 280;  // מרווח גדול מאוד בהתחלה
+            pipeFrequency = 180;  // צינורות רחוקים יותר
+            
+            updateDistance();
+            gameRunning = true;
+            gameLoop();
+            
+            setTimeout(() => {
+                canvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+
+        // Game Loop
+        function gameLoop() {
+            if (!gameRunning) return;
+
+            // Clear with sky
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#87CEEB');
+            gradient.addColorStop(1, '#E0F6FF');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw clouds
+            drawClouds();
+
+            // Update pipes
+            frameCount++;
+            if (frameCount % pipeFrequency === 0) {
+                pipes.push(createPipe());
+            }
+
+            // Draw pipes first
+            for (let i = pipes.length - 1; i >= 0; i--) {
+                const pipe = pipes[i];
+                pipe.x -= gameSpeed;
+                drawPipe(pipe);
+
+                // Check collision
+                if (checkCollision(pipe)) {
+                    drawBalloon(); // צייר את הבלון לפני הפסילה
+                    gameOver();
+                    return;
+                }
+
+                // Check passed
+                if (!pipe.passed && balloon.x > pipe.x + pipe.width) {
+                    pipe.passed = true;
+                    game.currentDistance += 10;
+                    updateDistance();
+                }
+
+                // Remove off-screen
+                if (pipe.x + pipe.width < 0) {
+                    pipes.splice(i, 1);
+                }
+            }
+
+            // Update balloon
+            balloon.velocity += balloon.gravity;
+            balloon.y += balloon.velocity;
+
+            // Check bounds
+            if (balloon.y - balloon.radius < 0) {
+                balloon.y = balloon.radius;
+                balloon.velocity = 0;
+            }
+            if (balloon.y + balloon.radius > canvas.height) {
+                balloon.y = canvas.height - balloon.radius; // עצור בדיוק על הקרקע
+                balloon.velocity = 0;
+                drawBalloon(); // צייר את הבלון לפני הפסילה
+                gameOver();
+                return;
+            }
+
+            // Draw balloon on top
+            drawBalloon();
+
+            // Increase difficulty - רק אחרי שעברו 30 מטר!
+            // ב-30 המטרים הראשונים = קל מאוד
+            // אחרי 30 מטר = מתקשה מהר!
+            if (game.currentDistance >= 30 && frameCount % 150 === 0) { // כל 2.5 שניות
+                if (gameSpeed < 4.5) gameSpeed += 0.2;  // מהירות עולה יותר מהר
+                if (pipeGap > 160) pipeGap -= 5;  // מרווח קטן יותר מהר
+                if (pipeFrequency > 90 && frameCount > 600) pipeFrequency -= 8;  // צינורות צפופים יותר מהר
+            }
+
+            animationId = requestAnimationFrame(gameLoop);
+        }
+
+        function createPipe() {
+            const gap = pipeGap;
+            const minTop = 50;
+            const maxTop = canvas.height - gap - 50;
+            const top = Math.random() * (maxTop - minTop) + minTop;
+            
+            return {
+                x: canvas.width,
+                width: 60,
+                top: top,
+                bottom: top + gap,
+                passed: false
+            };
+        }
+
+        function drawPipe(pipe) {
+            // Main pipes
+            ctx.fillStyle = '#2d5016';
+            ctx.fillRect(pipe.x, 0, pipe.width, pipe.top);
+            ctx.fillRect(pipe.x, pipe.bottom, pipe.width, canvas.height - pipe.bottom);
+            
+            // Caps
+            ctx.fillStyle = '#3d6b21';
+            ctx.fillRect(pipe.x - 5, pipe.top - 20, pipe.width + 10, 20);
+            ctx.fillRect(pipe.x - 5, pipe.bottom, pipe.width + 10, 20);
+            
+            // Spikes
+            ctx.fillStyle = '#FF4444';
+            for (let i = 0; i < 5; i++) {
+                // Top spikes
+                ctx.beginPath();
+                ctx.moveTo(pipe.x + i * 15, pipe.top);
+                ctx.lineTo(pipe.x + i * 15 + 7.5, pipe.top + 15);
+                ctx.lineTo(pipe.x + (i + 1) * 15, pipe.top);
+                ctx.fill();
+                
+                // Bottom spikes
+                ctx.beginPath();
+                ctx.moveTo(pipe.x + i * 15, pipe.bottom + 20);
+                ctx.lineTo(pipe.x + i * 15 + 7.5, pipe.bottom + 5);
+                ctx.lineTo(pipe.x + (i + 1) * 15, pipe.bottom + 20);
+                ctx.fill();
+            }
+        }
+
+        function drawBalloon() {
+            // Balloon body
+            ctx.fillStyle = '#FF1493';
+            ctx.beginPath();
+            ctx.ellipse(balloon.x, balloon.y - 10, balloon.radius, balloon.radius + 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Highlight
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.beginPath();
+            ctx.ellipse(balloon.x - 8, balloon.y - 20, 8, 12, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // String
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(balloon.x, balloon.y + 15);
+            ctx.lineTo(balloon.x, balloon.y + 35);
+            ctx.stroke();
+            
+            // Knot
+            ctx.fillStyle = '#333';
+            ctx.beginPath();
+            ctx.arc(balloon.x, balloon.y + 35, 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function drawClouds() {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            const offset = (frameCount * 0.3) % 200;
+            
+            for (let i = 0; i < 5; i++) {
+                const x = (i * 200 - offset) % (canvas.width + 100);
+                const y = 50 + i * 30;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, 20, 0, Math.PI * 2);
+                ctx.arc(x + 25, y - 5, 25, 0, Math.PI * 2);
+                ctx.arc(x + 50, y, 20, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function checkCollision(pipe) {
+            // הבלון הוא אליפסה: מרכז (balloon.x, balloon.y - 10), רדיוס 25x30
+            // רק הבלון עצמו - לא החוט!
+            const balloonLeft = balloon.x - balloon.radius + 2;
+            const balloonRight = balloon.x + balloon.radius - 2;
+            const balloonTop = balloon.y - 10 - 30 + 2;  // y-10 (מרכז) - 30 (רדיוס גובה)
+            const balloonBottom = balloon.y - 10 + 30 - 2;  // y-10 (מרכז) + 30 (רדיוס גובה)
+
+            if (balloonRight > pipe.x && balloonLeft < pipe.x + pipe.width) {
+                if (balloonTop < pipe.top || balloonBottom > pipe.bottom) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function gameOver() {
+            gameRunning = false;
+            stopGame();
+            
+            if (game.currentDistance < 30 && !game.hasRetried) {
+                document.getElementById('retrySection').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('retrySection').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 500);
+            } else {
+                setTimeout(() => finishTurn(game.currentDistance), 1000);
+            }
+        }
+
+        function retryFlight() {
+            game.hasRetried = true;
+            showReady();
+        }
+
+        function endTurn() {
+            finishTurn(game.currentDistance);
+        }
+
+        function finishTurn(distance, isWrongAnswer = false) {
+            stopGame();
+            
+            if (game.currentPlayer === 1) {
+                game.player1Score += distance;
+            } else {
+                game.player2Score += distance;
+            }
+            
+            updateScoreboard();
+            
+            // עדכון מספר הסיבובים (גם לשחקן יחיד!)
+            game.roundsPlayed++;
+            
+            if (game.mode === 'single') {
+                // בדיקה אם הסתיימו כל הסיבובים
+                if (game.roundsPlayed >= game.maxRounds) {
+                    // סיום המשחק - הצג תוצאה סופית
+                    document.getElementById('modalTitle').textContent = '🎈 המשחק הסתיים! 🎈';
+                    document.getElementById('modalScore').textContent = `סך הכל: ${game.player1Score} מ'`;
+                    document.getElementById('modalWinner').textContent = '🏆 כל הכבוד! 🏆';
+                    document.getElementById('nextBtn').classList.add('hidden');
+                    document.getElementById('menuBtn').classList.remove('hidden');
+                } else {
+                    // עוד יש סיבובים - המשך
+                    if (isWrongAnswer) {
+                        document.getElementById('modalTitle').textContent = '❌ תשובה שגויה!';
+                        document.getElementById('modalScore').textContent = '0';
+                    } else {
+                        document.getElementById('modalTitle').textContent = '🎈 סיום תור! 🎈';
+                        document.getElementById('modalScore').textContent = distance;
+                    }
+                    document.getElementById('modalWinner').textContent = '';
+                    document.getElementById('nextBtn').classList.remove('hidden');
+                    document.getElementById('menuBtn').classList.add('hidden');
+                }
+            } else {
+                if (game.roundsPlayed >= game.maxRounds * 2) {
+                    // סיום המשחק - הצג תוצאות סופיות
+                    document.getElementById('modalTitle').textContent = '🎈 המשחק הסתיים! 🎈';
+                    document.getElementById('modalScore').textContent = 
+                        `שחקן 1: ${game.player1Score} מ' | שחקן 2: ${game.player2Score} מ'`;
+                    
+                    if (game.player1Score > game.player2Score) {
+                        document.getElementById('modalWinner').textContent = '🏆 שחקן 1 מנצח! 🏆';
+                    } else if (game.player2Score > game.player1Score) {
+                        document.getElementById('modalWinner').textContent = '🏆 שחקן 2 מנצח! 🏆';
+                    } else {
+                        document.getElementById('modalWinner').textContent = '🤝 תיקו! 🤝';
+                    }
+                    
+                    document.getElementById('nextBtn').classList.add('hidden');
+                    document.getElementById('menuBtn').classList.remove('hidden');
+                } else {
+                    // עוד לא סיום - סיום תור רגיל
+                    if (isWrongAnswer) {
+                        document.getElementById('modalTitle').textContent = '❌ תור עובר!';
+                        document.getElementById('modalScore').textContent = '0';
+                    } else {
+                        document.getElementById('modalTitle').textContent = '🎈 סיום תור! 🎈';
+                        document.getElementById('modalScore').textContent = distance;
+                    }
+                    document.getElementById('modalWinner').textContent = '';
+                    document.getElementById('nextBtn').classList.remove('hidden');
+                    document.getElementById('menuBtn').classList.add('hidden');
+                }
+            }
+            
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('gameOverModal').style.display = 'block';
+            playSound('lose');
+        }
+
+        function nextRound() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('gameOverModal').style.display = 'none';
+            
+            game.currentPlayer = game.currentPlayer === 1 ? 2 : 1;
+            showQuestion();
+        }
+
+        function stopGame() {
+            gameRunning = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+        }
+
+        // UI Updates
+        function hideAllScreens() {
+            document.getElementById('questionScreen').classList.add('hidden');
+            document.getElementById('readyScreen').classList.add('hidden');
+            document.getElementById('flyingScreen').classList.add('hidden');
+        }
+
+        function updateScoreboard() {
+            document.getElementById('player1Score').textContent = game.player1Score + ' מ\'';
+            document.getElementById('player2Score').textContent = game.player2Score + ' מ\'';
+        }
+
+        function updateDistance() {
+            document.getElementById('distanceDisplay').textContent = game.currentDistance;
+        }
+
+        function updateActivePlayer() {
+            const p1 = document.getElementById('player1Card');
+            const p2 = document.getElementById('player2Card');
+            const indicator = document.getElementById('turnIndicator');
+            
+            p1.classList.remove('active');
+            p2.classList.remove('active');
+            
+            if (game.mode === 'single') {
+                // שחקן יחיד - הצג רק את מספר הסיבוב
+                const currentRound = game.roundsPlayed + 1;
+                const totalRounds = game.maxRounds;
+                p1.classList.add('active');
+                indicator.textContent = `סיבוב ${currentRound} מתוך ${totalRounds} 🎈`;
+            } else {
+                // שני שחקנים
+                const currentRound = Math.floor(game.roundsPlayed / 2) + 1;
+                const totalRounds = game.maxRounds;
+                
+                if (game.currentPlayer === 1) {
+                    p1.classList.add('active');
+                    indicator.textContent = `סיבוב ${currentRound} מתוך ${totalRounds} | תור שחקן 1 🎈`;
+                } else {
+                    p2.classList.add('active');
+                    indicator.textContent = `סיבוב ${currentRound} מתוך ${totalRounds} | תור שחקן 2 🎈`;
+                }
+            }
+        }
+
+        // Controls
+        canvas.addEventListener('click', () => {
+            if (gameRunning) {
+                balloon.velocity = balloon.lift;
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.code === 'Space' || e.code === 'ArrowUp') && gameRunning) {
+                e.preventDefault();
+                balloon.velocity = balloon.lift;
+            }
+        });
+
+        // Sounds
+        function playSound(type) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            const sounds = {
+                correct: [
+                    {freq: 523.25, start: 0, duration: 0.15},
+                    {freq: 659.25, start: 0.08, duration: 0.15},
+                    {freq: 783.99, start: 0.16, duration: 0.2}
+                ],
+                wrong: [
+                    {freq: 440, start: 0, duration: 0.2},
+                    {freq: 349.23, start: 0.15, duration: 0.25}
+                ],
+                lose: [
+                    {freq: 523.25, start: 0, duration: 0.2},
+                    {freq: 466.16, start: 0.18, duration: 0.2},
+                    {freq: 415.30, start: 0.36, duration: 0.2},
+                    {freq: 349.23, start: 0.54, duration: 0.3}
+                ]
+            };
+            
+            const notes = sounds[type] || [];
+            notes.forEach(note => {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                
+                osc.type = 'sine';
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                
+                osc.frequency.setValueAtTime(note.freq, audioContext.currentTime + note.start);
+                gain.gain.setValueAtTime(0, audioContext.currentTime + note.start);
+                gain.gain.linearRampToValueAtTime(0.15, audioContext.currentTime + note.start + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + note.start + note.duration);
+                
+                osc.start(audioContext.currentTime + note.start);
+                osc.stop(audioContext.currentTime + note.start + note.duration);
+            });
+        }
+    </script>
+</body>
+</html>
