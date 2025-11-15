@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מספרים זוגיים ואי-זוגיים - כיתה ד'</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; border-radius: 25px; padding: 40px; box-shadow: 0 25px 70px rgba(0,0,0,0.4); }
+        h1 { color: #667eea; text-align: center; margin-bottom: 15px; font-size: 3em; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .subtitle { text-align: center; color: #666; margin-bottom: 35px; font-size: 1.3em; }
+        .tabs { display: flex; gap: 12px; margin-bottom: 35px; flex-wrap: wrap; justify-content: center; }
+        .tab { padding: 16px 28px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px; cursor: pointer; font-size: 1.15em; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: white; }
+        .tab:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); background: linear-gradient(135deg, #7c8ff0 0%, #8759ab 100%); }
+        .tab.active { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); transform: scale(1.05); }
+        .content { display: none; }
+        .content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .lesson { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .lesson h2 { color: #667eea; margin-bottom: 20px; font-size: 1.8em; }
+        .lesson p { font-size: 1.2em; line-height: 1.8; margin-bottom: 15px; color: #333; }
+        .example { background: white; padding: 20px; border-right: 5px solid #667eea; margin: 20px 0; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
+        .example h3 { color: #f5576c; margin-bottom: 12px; font-size: 1.3em; }
+        .game { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .game h2 { margin-bottom: 20px; font-size: 2em; }
+        .question-counter { text-align: center; font-size: 1.3em; margin: 15px 0; color: #fff; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px; }
+        .score { text-align: center; font-size: 1.8em; margin: 25px 0; color: #fff; font-weight: bold; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; }
+        .problem-display { font-size: 1.5em; text-align: center; margin: 30px 0; padding: 25px; background: rgba(255,255,255,0.3); border-radius: 15px; line-height: 1.8; direction: ltr; }
+        input[type="number"] { width: 250px; padding: 15px; font-size: 1.5em; border: 4px solid white; border-radius: 10px; text-align: center; margin: 10px; font-weight: bold; }
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
+        button { background: white; color: #667eea; border: none; padding: 14px 35px; font-size: 1.2em; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-weight: bold; box-shadow: 0 6px 12px rgba(0,0,0,0.2); margin: 5px; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+        .feedback { padding: 20px; border-radius: 12px; margin-top: 20px; font-size: 1.3em; text-align: center; font-weight: bold; }
+        .correct { background: #51cf66; color: white; }
+        .incorrect { background: #ff6b6b; color: white; }
+        .controls { text-align: center; margin: 25px 0; }
+        .round-complete { background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%); padding: 40px; border-radius: 20px; text-align: center; color: white; margin: 20px 0; }
+        .round-complete h3 { font-size: 2.5em; margin-bottom: 20px; }
+        .round-complete p { font-size: 1.5em; margin: 15px 0; }
+        .new-round-btn { background: white; color: #51cf66; font-size: 1.5em; padding: 20px 40px; margin-top: 20px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; box-shadow: 0 8px 16px rgba(0,0,0,0.2); transition: all 0.3s; }
+        .new-round-btn:hover { transform: scale(1.05); box-shadow: 0 12px 24px rgba(0,0,0,0.3); }
+        .steps { background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin: 20px 0; text-align: right; }
+        .steps p { margin: 10px 0; font-size: 1.1em; }
+        .formula-box { background: #fff3cd; border: 3px solid #ffc107; padding: 15px; border-radius: 10px; margin: 15px 0; text-align: center; font-size: 1.3em; font-weight: bold; color: #856404; }
+        .strategy-box { background: #e7f5ff; border: 3px solid #339af0; padding: 20px; border-radius: 10px; margin: 15px 0; text-align: right; }
+        .strategy-box h4 { color: #1971c2; margin-bottom: 10px; font-size: 1.2em; }
+        .strategy-box p { font-size: 1.1em; line-height: 1.6; margin: 8px 0; }
+        .number-box { background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%); border: 3px solid #f39c12; padding: 20px; border-radius: 10px; margin: 15px 0; text-align: center; }
+        .number-box h4 { color: #d35400; margin-bottom: 15px; font-size: 1.3em; }
+        .number-row { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
+        .digit { background: #51cf66; color: white; border-radius: 8px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.3em; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .digit.odd { background: #ff6b6b; }
+        .calc-box { direction: ltr; text-align: left; font-size: 1.4em; margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; font-family: 'Courier New', monospace; white-space: pre; display: inline-block; color: #2d3436; font-weight: bold; }
+        .tip { color: #0d5a3a; font-weight: bold; font-size: 1.05em; margin-top: 10px; }
+        .pairs { display: flex; justify-content: center; gap: 5px; margin: 15px 0; flex-wrap: wrap; }
+        .circle { background: #667eea; color: white; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); font-size: 1.2em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>מספרים זוגיים ואי-זוגיים 🔢</h1>
+        <div class="subtitle">כיתה ד' - למדו לזהות ולהבין מספרים!</div>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="lesson1">📚 שיעור: מה זה זוגי?</button>
+            <button class="tab" data-tab="game1">🎮 משחק: זיהוי</button>
+            <button class="tab" data-tab="lesson2">📚 שיעור: חוקים</button>
+            <button class="tab" data-tab="game2">🎲 משחק: חישובים</button>
+            <button class="tab" data-tab="game3">🎯 משחק: מספרים גדולים</button>
+        </div>
+        
+        <!-- שיעור 1 -->
+        <div id="lesson1" class="content active">
+            <div class="lesson">
+                <h2>מהו מספר זוגי ומהו מספר אי-זוגי?</h2>
+                <p>מספר זוגי הוא מספר שמתחלק ב-2 בלי שארית.</p>
+                <p>מספר אי-זוגי הוא מספר שלא מתחלק ב-2 בלי שארית.</p>
+                
+                <div class="formula-box">איך מזהים? מסתכלים רק על הספרה האחרונה!</div>
+                
+                <div class="number-box">
+                    <h4>🟢 ספרות זוגיות</h4>
+                    <div class="number-row">
+                        <div class="digit">0</div>
+                        <div class="digit">2</div>
+                        <div class="digit">4</div>
+                        <div class="digit">6</div>
+                        <div class="digit">8</div>
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.1em; color: #2d3436;">אם המספר מסתיים באחת מהספרות האלה - הוא <strong>זוגי</strong></p>
+                </div>
+                
+                <div class="number-box">
+                    <h4>🔴 ספרות אי-זוגיות</h4>
+                    <div class="number-row">
+                        <div class="digit odd">1</div>
+                        <div class="digit odd">3</div>
+                        <div class="digit odd">5</div>
+                        <div class="digit odd">7</div>
+                        <div class="digit odd">9</div>
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.1em; color: #2d3436;">אם המספר מסתיים באחת מהספרות האלה - הוא <strong>אי-זוגי</strong></p>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: מספר קטן</h3>
+                    <p><strong>בעיה:</strong> האם 8 זוגי או אי-זוגי?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>נחלק ל-2 זוגות:</p>
+                        <div class="pairs">
+                            <div class="circle">••</div>
+                            <div class="circle">••</div>
+                            <div class="circle">••</div>
+                            <div class="circle">••</div>
+                        </div>
+                        <div class="calc-box">8 ÷ 2 = 4</div>
+                        <p><strong>תשובה:</strong> 8 הוא מספר זוגי ✓</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: מספר דו-ספרתי</h3>
+                    <p><strong>בעיה:</strong> האם 47 זוגי או אי-זוגי?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>מסתכלים רק על הספרה האחרונה:</p>
+                        <div class="calc-box">47</div>
+                        <p>הספרה האחרונה היא 7 - זו ספרה אי-זוגית</p>
+                        <p><strong>תשובה:</strong> 47 הוא מספר אי-זוגי ✓</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 3: מספר תלת-ספרתי</h3>
+                    <p><strong>בעיה:</strong> האם 256 זוגי או אי-זוגי?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">256</div>
+                        <p>הספרה האחרונה היא 6 - זו ספרה זוגית</p>
+                        <p><strong>תשובה:</strong> 256 הוא מספר זוגי ✓</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 4: מספר גדול</h3>
+                    <p><strong>בעיה:</strong> האם 8,743 זוגי או אי-זוגי?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">8,743</div>
+                        <p>הספרה האחרונה היא 3 - זו ספרה אי-זוגית</p>
+                        <p><strong>תשובה:</strong> 8,743 הוא מספר אי-זוגי ✓</p>
+                        <p class="tip">💡 לא משנה כמה ספרות יש במספר - רק האחרונה חשובה!</p>
+                    </div>
+                </div>
+                
+                <div class="strategy-box">
+                    <h4>💡 טיפים חשובים:</h4>
+                    <p>✓ אפס (0) הוא מספר זוגי</p>
+                    <p>✓ כל מספר הוא או זוגי או אי-זוגי</p>
+                    <p>✓ בין כל שני מספרים זוגיים יש מספר אי-זוגי</p>
+                    <p>✓ המספרים 2, 4, 6, 8, 10 הם זוגיים</p>
+                    <p>✓ המספרים 1, 3, 5, 7, 9 הם אי-זוגיים</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 1 -->
+        <div id="game1" class="content">
+            <div class="game">
+                <h2>משחק זיהוי מספרים</h2>
+                <div class="question-counter">שאלה <span id="q-count1">1</span> מתוך 10</div>
+                <div class="score">ניקוד: <span id="score1">0</span></div>
+                <div class="problem-display" id="problem1">טוען...</div>
+                <div class="controls">
+                    <button onclick="checkAns(1, 'even');">זוגי</button>
+                    <button onclick="checkAns(1, 'odd');">אי-זוגי</button>
+                </div>
+                <div id="feedback1"></div>
+                <div id="round-end1" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <!-- שיעור 2 -->
+        <div id="lesson2" class="content">
+            <div class="lesson">
+                <h2>חוקי זוגי ואי-זוגי בפעולות חשבון</h2>
+                <p>מה קורה כשמחברים או מחסרים מספרים זוגיים ואי-זוגיים?</p>
+                
+                <div class="formula-box">חוקי החיבור והחיסור</div>
+                
+                <div class="example">
+                    <h3>חוק 1: זוגי + זוגי = זוגי</h3>
+                    <p><strong>דוגמה:</strong></p>
+                    <div class="steps">
+                        <div class="calc-box">  8
++ 6
+____
+ 14</div>
+                        <p>8 (זוגי) + 6 (זוגי) = 14 (זוגי) ✓</p>
+                        <p><strong>עוד דוגמאות:</strong></p>
+                        <div class="calc-box">12 + 20 = 32</div>
+                        <div class="calc-box">46 + 54 = 100</div>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>חוק 2: אי-זוגי + אי-זוגי = זוגי</h3>
+                    <p><strong>דוגמה:</strong></p>
+                    <div class="steps">
+                        <div class="calc-box">  7
++ 9
+____
+ 16</div>
+                        <p>7 (אי-זוגי) + 9 (אי-זוגי) = 16 (זוגי) ✓</p>
+                        <p class="tip">💡 שני אי-זוגיים תמיד נותנים זוגי!</p>
+                        <p><strong>עוד דוגמאות:</strong></p>
+                        <div class="calc-box">13 + 27 = 40</div>
+                        <div class="calc-box">35 + 45 = 80</div>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>חוק 3: זוגי + אי-זוגי = אי-זוגי</h3>
+                    <p><strong>דוגמה:</strong></p>
+                    <div class="steps">
+                        <div class="calc-box"> 10
++ 7
+____
+ 17</div>
+                        <p>10 (זוגי) + 7 (אי-זוגי) = 17 (אי-זוגי) ✓</p>
+                        <p><strong>עוד דוגמאות:</strong></p>
+                        <div class="calc-box">8 + 13 = 21</div>
+                        <div class="calc-box">50 + 25 = 75</div>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>חוקי החיסור</h3>
+                    <p><strong>החוקים זהים!</strong></p>
+                    <div class="steps">
+                        <p>• זוגי - זוגי = זוגי</p>
+                        <div class="calc-box">18 - 6 = 12</div>
+                        <br>
+                        <p>• אי-זוגי - אי-זוגי = זוגי</p>
+                        <div class="calc-box">15 - 7 = 8</div>
+                        <br>
+                        <p>• זוגי - אי-זוגי = אי-זוגי</p>
+                        <div class="calc-box">20 - 7 = 13</div>
+                        <br>
+                        <p>• אי-זוגי - זוגי = אי-זוגי</p>
+                        <div class="calc-box">17 - 8 = 9</div>
+                    </div>
+                </div>
+                
+                <div class="formula-box">חוקי הכפל</div>
+                
+                <div class="example">
+                    <h3>כפל עם זוגי ואי-זוגי</h3>
+                    <div class="steps">
+                        <p><strong>חוק 1:</strong> זוגי × כל מספר = זוגי</p>
+                        <div class="calc-box">6 × 7 = 42</div>
+                        <div class="calc-box">8 × 25 = 200</div>
+                        <br>
+                        <p><strong>חוק 2:</strong> אי-זוגי × אי-זוגי = אי-זוגי</p>
+                        <div class="calc-box">5 × 7 = 35</div>
+                        <div class="calc-box">9 × 11 = 99</div>
+                        <p class="tip">💡 אם יש מספר זוגי אחד בכפל - התוצאה תמיד זוגית!</p>
+                    </div>
+                </div>
+                
+                <div class="strategy-box">
+                    <h4>🎯 סיכום החוקים:</h4>
+                    <p><strong>חיבור/חיסור:</strong></p>
+                    <p>• זוגי ± זוגי = זוגי</p>
+                    <p>• אי-זוגי ± אי-זוגי = זוגי</p>
+                    <p>• זוגי ± אי-זוגי = אי-זוגי</p>
+                    <br>
+                    <p><strong>כפל:</strong></p>
+                    <p>• זוגי × כל מספר = זוגי</p>
+                    <p>• אי-זוגי × אי-זוגי = אי-זוגי</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 2 -->
+        <div id="game2" class="content">
+            <div class="game">
+                <h2>משחק חישובים</h2>
+                <div class="question-counter">שאלה <span id="q-count2">1</span> מתוך 10</div>
+                <div class="score">ניקוד: <span id="score2">0</span></div>
+                <div class="problem-display" id="problem2">טוען...</div>
+                <div class="controls">
+                    <button onclick="checkAns(2, 'even');">זוגי</button>
+                    <button onclick="checkAns(2, 'odd');">אי-זוגי</button>
+                </div>
+                <div id="feedback2"></div>
+                <div id="round-end2" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <!-- משחק 3 -->
+        <div id="game3" class="content">
+            <div class="game">
+                <h2>משחק מספרים גדולים</h2>
+                <div class="question-counter">שאלה <span id="q-count3">1</span> מתוך 10</div>
+                <div class="score">ניקוד: <span id="score3">0</span></div>
+                <div class="problem-display" id="problem3">טוען...</div>
+                <div class="controls">
+                    <button onclick="checkAns(3, 'even');">זוגי</button>
+                    <button onclick="checkAns(3, 'odd');">אי-זוגי</button>
+                </div>
+                <div id="feedback3"></div>
+                <div id="round-end3" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+var scores = {1: 0, 2: 0, 3: 0};
+var currentQuestion = {1: 0, 2: 0, 3: 0};
+var questionBank = {1: [], 2: [], 3: []};
+var gameData = {1: {}, 2: {}, 3: {}};
+var answerLocked = {1: false, 2: false, 3: false};
+
+function generateQ1(n) {
+    var nums = [7, 12, 23, 48, 56, 89, 100, 145, 234, 567, 890, 1234, 2468, 3579, 4682, 5791, 6824, 7935, 8246, 9357];
+    var num = nums[n];
+    var isEven = num % 2 === 0;
+    return {t: '\u202B' + 'האם המספר ' + num.toLocaleString('he-IL') + ' זוגי או אי-זוגי?' + '\u202C', a: isEven ? 'even' : 'odd'};
+}
+
+function generateQ2(n) {
+    var qs = [
+        {a: 18, b: 7, op: '+', res: 25},
+        {a: 34, b: 12, op: '-', res: 22},
+        {a: 25, b: 25, op: '+', res: 50},
+        {a: 47, b: 13, op: '+', res: 60},
+        {a: 56, b: 28, op: '-', res: 28},
+        {a: 15, b: 9, op: '+', res: 24},
+        {a: 43, b: 17, op: '-', res: 26},
+        {a: 22, b: 19, op: '+', res: 41},
+        {a: 88, b: 45, op: '-', res: 43},
+        {a: 36, b: 27, op: '+', res: 63},
+        {a: 51, b: 23, op: '-', res: 28},
+        {a: 14, b: 18, op: '+', res: 32},
+        {a: 67, b: 29, op: '-', res: 38},
+        {a: 33, b: 48, op: '+', res: 81},
+        {a: 75, b: 38, op: '-', res: 37},
+        {a: 29, b: 34, op: '+', res: 63},
+        {a: 92, b: 47, op: '-', res: 45},
+        {a: 41, b: 55, op: '+', res: 96},
+        {a: 64, b: 26, op: '-', res: 38},
+        {a: 37, b: 39, op: '+', res: 76}
+    ];
+    var q = qs[n];
+    var result = q.res;
+    var isEven = result % 2 === 0;
+    return {t: '\u202B' + 'חשב והחלט:' + '\u202C' + '<br><div class="calc-box" style="font-size: 1.8em; margin: 20px auto;">' + q.a + ' ' + q.op + ' ' + q.b + ' = ?</div>' + '\u202B' + 'התוצאה זוגית או אי-זוגית?' + '\u202C', a: isEven ? 'even' : 'odd', answer: result};
+}
+
+function generateQ3(n) {
+    var nums = [12345, 23456, 34567, 45678, 56789, 67890, 78901, 89012, 90123, 11111, 22222, 33333, 44444, 55555, 66666, 77777, 88888, 99999, 10000, 87654];
+    var num = nums[n];
+    var isEven = num % 2 === 0;
+    return {t: '\u202B' + 'האם המספר ' + num.toLocaleString('he-IL') + ' זוגי או אי-זוגי?' + '\u202C', a: isEven ? 'even' : 'odd'};
+}
+
+function initGame(g) {
+    questionBank[g] = [];
+    var order = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
+    order.sort(function() { return Math.random() - 0.5; });
+    for (var i = 0; i < 10; i++) {
+        var q;
+        if (g === 1) q = generateQ1(order[i]);
+        else if (g === 2) q = generateQ2(order[i]);
+        else q = generateQ3(order[i]);
+        questionBank[g].push(q);
+    }
+    nextQ(g);
+}
+
+function nextQ(g) {
+    if (currentQuestion[g] >= 10) {
+        document.getElementById('feedback' + g).innerHTML = '';
+        showEnd(g);
+        return;
+    }
+    answerLocked[g] = false;
+    gameData[g] = questionBank[g][currentQuestion[g]];
+    document.getElementById('q-count' + g).textContent = currentQuestion[g] + 1;
+    document.getElementById('problem' + g).innerHTML = gameData[g].t;
+    document.getElementById('feedback' + g).innerHTML = '';
+}
+
+function checkAns(g, choice) {
+    if (answerLocked[g]) return;
+    
+    var correct = choice === gameData[g].a;
+    answerLocked[g] = true;
+    currentQuestion[g]++;
+    
+    if (correct) {
+        scores[g]++;
+        playSound('correct');
+        var feedbackMsg = 'נכון מעולה! ✔';
+        if (gameData[g].answer) {
+            feedbackMsg = 'נכון מעולה! ✔<br><div class="calc-box" style="margin-top: 10px;">התשובה: ' + gameData[g].answer + '</div>';
+        }
+        document.getElementById('feedback' + g).innerHTML = '<div class="feedback correct">' + feedbackMsg + '</div>';
+    } else {
+        playSound('incorrect');
+        var answerText = gameData[g].a === 'even' ? 'זוגי' : 'אי-זוגי';
+        var feedbackMsg = 'לא נכון. התשובה: ' + answerText;
+        if (gameData[g].answer) {
+            feedbackMsg += '<br><div class="calc-box" style="margin-top: 10px;">החישוב: ' + gameData[g].answer + ' (' + answerText + ')</div>';
+        }
+        document.getElementById('feedback' + g).innerHTML = '<div class="feedback incorrect">' + feedbackMsg + '</div>';
+    }
+    document.getElementById('score' + g).textContent = scores[g];
+    
+    setTimeout(function() {
+        document.getElementById('feedback' + g).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+    
+    setTimeout(function() { nextQ(g); }, 3000);
+}
+
+function showEnd(g) {
+    var roundEndEl = document.getElementById('round-end' + g);
+    var problemEl = document.getElementById('problem' + g);
+    var controlsEl = document.querySelector('#game' + g + ' .controls');
+    var feedbackEl = document.getElementById('feedback' + g);
+    
+    if (controlsEl) controlsEl.style.display = 'none';
+    if (feedbackEl) {
+        feedbackEl.innerHTML = '';
+        feedbackEl.style.display = 'none';
+    }
+    
+    var pct = Math.round((scores[g] / 10) * 100);
+    var msg = pct >= 80 ? 'מעולה! 🌟🎉' : pct >= 60 ? 'יפה מאוד! 👏' : 'כל הכבוד! 💪';
+    roundEndEl.innerHTML = '<div class="round-complete"><h3>סיימת!</h3><p>' + msg + '</p><p>ציון: ' + scores[g] + '/10 (' + pct + '%)</p><button class="new-round-btn" onclick="resetGame(' + g + ')">סיבוב נוסף</button></div>';
+    roundEndEl.style.display = 'block';
+    problemEl.style.display = 'none';
+}
+
+function resetGame(g) {
+    scores[g] = 0;
+    currentQuestion[g] = 0;
+    answerLocked[g] = false;
+    questionBank[g] = [];
+    
+    document.getElementById('score' + g).textContent = '0';
+    document.getElementById('round-end' + g).style.display = 'none';
+    document.getElementById('feedback' + g).innerHTML = '';
+    document.getElementById('feedback' + g).style.display = 'block';
+    document.getElementById('problem' + g).style.display = 'block';
+    
+    var controlsEl = document.querySelector('#game' + g + ' .controls');
+    if (controlsEl) controlsEl.style.display = 'block';
+    
+    initGame(g);
+}
+
+window.onload = function() {
+    var tabs = document.querySelectorAll('.tab');
+    for (var i = 0; i < tabs.length; i++) {
+        (function(tab) {
+            tab.onclick = function() {
+                playSound('click');
+                var tabId = tab.getAttribute('data-tab');
+                var allContent = document.querySelectorAll('.content');
+                var allTabs = document.querySelectorAll('.tab');
+                for (var j = 0; j < allContent.length; j++) allContent[j].classList.remove('active');
+                for (var k = 0; k < allTabs.length; k++) allTabs[k].classList.remove('active');
+                document.getElementById(tabId).classList.add('active');
+                tab.classList.add('active');
+                
+                if (tabId === 'game1' || tabId === 'game2' || tabId === 'game3') {
+                    var gameNum = parseInt(tabId.replace('game', ''));
+                    scores[gameNum] = 0;
+                    currentQuestion[gameNum] = 0;
+                    answerLocked[gameNum] = false;
+                    questionBank[gameNum] = [];
+                    document.getElementById('score' + gameNum).textContent = '0';
+                    document.getElementById('round-end' + gameNum).style.display = 'none';
+                    document.getElementById('problem' + gameNum).style.display = 'block';
+                    document.getElementById('feedback' + gameNum).innerHTML = '';
+                    document.getElementById('feedback' + gameNum).style.display = 'block';
+                    
+                    var controlsEl = document.querySelector('#game' + gameNum + ' .controls');
+                    if (controlsEl) controlsEl.style.display = 'block';
+                    
+                    setTimeout(function() { initGame(gameNum); }, 50);
+                }
+            };
+        })(tabs[i]);
+    }
+    
+    document.addEventListener('wheel', function(e) {
+        if (document.activeElement.type === 'number') document.activeElement.blur();
+    });
+};
+
+function playSound(type) {
+    try {
+        var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (type === 'click') {
+            var osc = audioContext.createOscillator();
+            var gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.type = 'sine';
+            osc.frequency.value = 600;
+            gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + 0.15);
+        } else if (type === 'correct') {
+            var notes = [523.25, 659.25, 783.99];
+            for (var i = 0; i < notes.length; i++) {
+                (function(index) {
+                    var osc = audioContext.createOscillator();
+                    var gain = audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    osc.type = 'sine';
+                    osc.frequency.value = notes[index];
+                    gain.gain.setValueAtTime(0.1, audioContext.currentTime + index * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + index * 0.1 + 0.3);
+                    osc.start(audioContext.currentTime + index * 0.1);
+                    osc.stop(audioContext.currentTime + index * 0.1 + 0.3);
+                })(i);
+            }
+        } else if (type === 'incorrect') {
+            var osc = audioContext.createOscillator();
+            var gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.type = 'sine';
+            osc.frequency.value = 200;
+            gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + 0.3);
+        }
+    } catch (e) {
+        console.log('Audio not supported');
+    }
+}
+    </script>
+</body>
+</html>
