@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>משחקי מתמטיקה - כיתה ג׳</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            text-align: center;
+            color: #5b21b6;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        #mainMenu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 20px;
+        }
+        
+        .game-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+            text-align: center;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        
+        .game-card .icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+        
+        .game-card h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+        
+        .game-card p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .game-screen {
+            display: none;
+        }
+        
+        .game-screen.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .back-button {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+        
+        .back-button:hover {
+            background: #991b1b;
+        }
+        
+        .question-box {
+            background: #f0f9ff;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 3px solid #3b82f6;
+            text-align: center;
+        }
+        
+        .question {
+            font-size: 3em;
+            font-weight: bold;
+            color: #1e40af;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .answer-input {
+            font-size: 2em;
+            padding: 15px;
+            border: 3px solid #8b5cf6;
+            border-radius: 10px;
+            text-align: center;
+            width: 200px;
+            margin: 20px;
+        }
+        
+        .btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3em;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #059669;
+        }
+        
+        .btn-option {
+            background: #8b5cf6;
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 20px;
+            font-size: 1.5em;
+        }
+        
+        .btn-option:hover {
+            background: #7c3aed;
+        }
+        
+        .score-board {
+            background: #fef3c7;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            border: 3px solid #f59e0b;
+        }
+        
+        .score-board h3 {
+            font-size: 1.8em;
+            color: #92400e;
+            margin-bottom: 10px;
+        }
+        
+        .score {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #059669;
+        }
+        
+        .feedback {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 1.5em;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .feedback.correct {
+            background: #dcfce7;
+            color: #059669;
+        }
+        
+        .feedback.wrong {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .timer {
+            font-size: 2em;
+            color: #dc2626;
+            font-weight: bold;
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            max-width: 500px;
+            margin: 20px auto;
+        }
+        
+        .column-display {
+            display: inline-block;
+            direction: ltr;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5em;
+            line-height: 1.4;
+            border: 2px solid #8b5cf6;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8fafc;
+            text-align: right;
+        }
+        
+        .mistake {
+            color: #dc2626;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 משחקי מתמטיקה 🎮</h1>
+            <h2>חיבור וחיסור עד 1000</h2>
+        </div>
+        
+        <div id="mainMenu">
+            <div class="game-card" onclick="startGame('speed')">
+                <div class="icon">⚡</div>
+                <h2>מהיר בחשבון</h2>
+                <p>תרגול חיבור וחיסור עם טיימר</p>
+            </div>
+            
+            <div class="game-card" onclick="startGame('estimate')">
+                <div class="icon">🎯</div>
+                <h2>מלך האומדן</h2>
+                <p>בחירת האומדן הנכון</p>
+            </div>
+            
+            <div class="game-card" onclick="startGame('carry')">
+                <div class="icon">🔢</div>
+                <h2>עבר עשר?</h2>
+                <p>זיהוי "עבר עשר" בחיבור</p>
+            </div>
+            
+            <div class="game-card" onclick="startGame('wordProblem')">
+                <div class="icon">📖</div>
+                <h2>פותר בעיות</h2>
+                <p>בעיות מילה בשני שלבים</p>
+            </div>
+            
+            <div class="game-card" onclick="startGame('detective')" style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">
+                <div class="icon">🕵️</div>
+                <h2>בלש המתמטיקה</h2>
+                <p>מציאת הטעות בפתרון</p>
+                <div style="background: #fef3c7; color: #92400e; padding: 5px 15px; border-radius: 20px; display: inline-block; margin-top: 10px; font-weight: bold;">
+                    🌟 מאתגר
+                </div>
+            </div>
+        </div>
+        
+        <div id="speedGame" class="game-screen">
+            <button class="back-button" onclick="backToMenu()">◀ חזרה לתפריט</button>
+            <div class="score-board">
+                <h3>⚡ מהיר בחשבון ⚡</h3>
+                <div>ניקוד: <span class="score" id="speedScore">0</span></div>
+                <div>שאלה <span id="questionNum">1</span> מתוך 10</div>
+                <div>זמן: <span class="timer" id="timer">90</span></div>
+                <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                    💡 פתרו בראש או על דף טיוטה<br>
+                    ⌨️ הקלידו את התשובה ולחצו Enter
+                </div>
+            </div>
+            <div class="question-box">
+                <div class="question" id="speedQuestion" style="direction: ltr;">245 + 378 = ?</div>
+                <input type="number" class="answer-input" id="speedAnswer" placeholder="?">
+                <br>
+                <button class="btn" onclick="checkSpeedAnswer()">בדוק תשובה ✓</button>
+            </div>
+            <div id="speedFeedback"></div>
+        </div>
+        
+        <div id="carryGame" class="game-screen">
+            <button class="back-button" onclick="backToMenu()">◀ חזרה לתפריט</button>
+            <div class="score-board">
+                <h3>🔢 עבר עשר? 🔢</h3>
+                <div>ניקוד: <span class="score" id="carryScore">0</span></div>
+                <div>שאלה <span id="carryQuestionNum">1</span> מתוך 10</div>
+            </div>
+            <div class="question-box">
+                <p style="font-size: 1.3em; margin-bottom: 20px;">האם בתרגיל הזה יש "עבר עשר"?</p>
+                <div class="question" id="carryQuestion" style="direction: ltr;">456 + 327 = ?</div>
+                <div style="margin-top: 30px;">
+                    <button class="btn" style="background: #10b981; font-size: 1.5em; padding: 20px 60px;" onclick="checkCarry(true)">כן, יש עבר עשר</button>
+                    <button class="btn" style="background: #dc2626; font-size: 1.5em; padding: 20px 60px;" onclick="checkCarry(false)">לא, אין עבר עשר</button>
+                </div>
+            </div>
+            <div id="carryFeedback"></div>
+        </div>
+        
+        <div id="estimateGame" class="game-screen">
+            <button class="back-button" onclick="backToMenu()">◀ חזרה לתפריט</button>
+            <div class="score-board">
+                <h3>🎯 מלך האומדן 🎯</h3>
+                <div>ניקוד: <span class="score" id="estimateScore">0</span></div>
+                <div>שאלה <span id="estimateQuestionNum">1</span> מתוך 10</div>
+            </div>
+            <div class="question-box">
+                <p style="font-size: 1.3em; margin-bottom: 20px;">מה האומדן הנכון (עיגול למאות)?</p>
+                <div class="question" id="estimateQuestion" style="direction: ltr;">378 + 245 = ?</div>
+                <div class="options-grid" id="estimateOptions"></div>
+            </div>
+            <div id="estimateFeedback"></div>
+        </div>
+        
+        <div id="detectiveGame" class="game-screen">
+            <button class="back-button" onclick="backToMenu()">◀ חזרה לתפריט</button>
+            <div class="score-board">
+                <h3>🕵️ בלש המתמטיקה 🕵️</h3>
+                <div>ניקוד: <span class="score" id="detectiveScore">0</span></div>
+                <div>שאלה <span id="detectiveQuestionNum">1</span> מתוך 10</div>
+            </div>
+            <div class="question-box">
+                <p style="font-size: 1.3em; margin-bottom: 20px;">איפה הטעות בפתרון הזה?</p>
+                <div id="detectiveQuestion" style="text-align: center; margin: 20px 0;"></div>
+                <div class="options-grid" id="detectiveOptions"></div>
+            </div>
+            <div id="detectiveFeedback"></div>
+        </div>
+        
+        <div id="wordProblemGame" class="game-screen">
+            <button class="back-button" onclick="backToMenu()">◀ חזרה לתפריט</button>
+            <div class="score-board">
+                <h3>📖 פותר בעיות 📖</h3>
+                <div>ניקוד: <span class="score" id="wordScore">0</span></div>
+                <div>שאלה <span id="wordQuestionNum">1</span> מתוך 5</div>
+            </div>
+            <div class="question-box" style="text-align: right;">
+                <div id="wordProblemText" style="font-size: 1.4em; line-height: 1.8; margin: 20px 0;"></div>
+                <input type="number" class="answer-input" id="wordAnswer" placeholder="?">
+                <br>
+                <button class="btn" onclick="checkWordAnswer()">בדוק תשובה ✓</button>
+            </div>
+            <div id="wordFeedback"></div>
+        </div>
+    </div>
+    
+    <script>
+        let audioContext = null;
+        
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        
+        function playSound(type) {
+            initAudio();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            oscillator.type = 'sine';
+            
+            if (type === 'correct') {
+                oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(783.99, audioContext.currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } else if (type === 'wrong') {
+                oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.15);
+                gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.2);
+            } else if (type === 'click') {
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.05);
+            }
+        }
+        
+        let currentGame = null;
+        let gameData = {
+            speed: { score: 0, question: 1, timer: null, timeLeft: 90 },
+            carry: { score: 0, question: 1 },
+            estimate: { score: 0, question: 1 },
+            detective: { score: 0, question: 1 },
+            wordProblem: { score: 0, question: 1 }
+        };
+        
+        function random(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        
+        function startGame(game) {
+            playSound('click');
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById(game + 'Game').classList.add('active');
+            currentGame = game;
+            gameData[game].score = 0;
+            gameData[game].question = 1;
+            
+            if (game === 'speed') startSpeedGame();
+            else if (game === 'carry') startCarryGame();
+            else if (game === 'estimate') startEstimateGame();
+            else if (game === 'detective') startDetectiveGame();
+            else if (game === 'wordProblem') startWordProblemGame();
+        }
+        
+        function backToMenu() {
+            document.querySelectorAll('.game-screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById('mainMenu').style.display = 'grid';
+            if (gameData.speed.timer) {
+                clearInterval(gameData.speed.timer);
+            }
+        }
+        
+        function startSpeedGame() {
+            gameData.speed.timeLeft = 90;
+            generateSpeedQuestion();
+            updateSpeedDisplay();
+            gameData.speed.timer = setInterval(() => {
+                gameData.speed.timeLeft--;
+                document.getElementById('timer').textContent = gameData.speed.timeLeft;
+                if (gameData.speed.timeLeft <= 0) {
+                    clearInterval(gameData.speed.timer);
+                    endSpeedGame();
+                }
+            }, 1000);
+        }
+        
+        function generateSpeedQuestion() {
+            const isAddition = Math.random() > 0.5;
+            const num1 = random(100, 900);
+            const num2 = random(100, 900);
+            
+            if (isAddition) {
+                gameData.speed.currentQuestion = `${num1} + ${num2}`;
+                gameData.speed.currentAnswer = num1 + num2;
+            } else {
+                const larger = Math.max(num1, num2);
+                const smaller = Math.min(num1, num2);
+                gameData.speed.currentQuestion = `${larger} - ${smaller}`;
+                gameData.speed.currentAnswer = larger - smaller;
+            }
+            
+            document.getElementById('speedQuestion').textContent = gameData.speed.currentQuestion + ' = ?';
+            document.getElementById('speedAnswer').value = '';
+            document.getElementById('speedFeedback').innerHTML = '';
+        }
+        
+        function checkSpeedAnswer() {
+            const userAnswer = parseInt(document.getElementById('speedAnswer').value);
+            const feedback = document.getElementById('speedFeedback');
+            
+            if (userAnswer === gameData.speed.currentAnswer) {
+                playSound('correct');
+                gameData.speed.score += 10;
+                feedback.className = 'feedback correct';
+                feedback.textContent = '🎉 נכון! כל הכבוד!';
+            } else {
+                playSound('wrong');
+                feedback.className = 'feedback wrong';
+                feedback.textContent = `❌ לא נכון. התשובה הנכונה: ${gameData.speed.currentAnswer}`;
+            }
+            
+            feedback.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            updateSpeedDisplay();
+            setTimeout(() => {
+                if (gameData.speed.question < 10) {
+                    gameData.speed.question++;
+                    generateSpeedQuestion();
+                } else {
+                    clearInterval(gameData.speed.timer);
+                    endSpeedGame();
+                }
+            }, 1500);
+        }
+        
+        function updateSpeedDisplay() {
+            document.getElementById('speedScore').textContent = gameData.speed.score;
+            document.getElementById('questionNum').textContent = gameData.speed.question;
+        }
+        
+        function endSpeedGame() {
+            const feedback = document.getElementById('speedFeedback');
+            feedback.className = 'feedback correct';
+            feedback.innerHTML = `<h2>🎮 המשחק הסתיים! 🎮</h2><p>הניקוד הסופי שלך: ${gameData.speed.score} נקודות</p><button class="btn" style="font-size: 1.3em; margin-top: 20px;" onclick="startGame('speed')">🔄 שחק שוב</button>`;
+        }
+        
+        function startCarryGame() {
+            generateCarryQuestion();
+            updateCarryDisplay();
+        }
+        
+        function generateCarryQuestion() {
+            const num1 = random(100, 900);
+            const num2 = random(100, 900);
+            gameData.carry.currentQuestion = `${num1} + ${num2}`;
+            const digits1 = num1.toString().split('').reverse();
+            const digits2 = num2.toString().split('').reverse();
+            let hasCarry = false;
+            for (let i = 0; i < 3; i++) {
+                const d1 = parseInt(digits1[i] || 0);
+                const d2 = parseInt(digits2[i] || 0);
+                if (d1 + d2 >= 10) {
+                    hasCarry = true;
+                    break;
+                }
+            }
+            gameData.carry.hasCarry = hasCarry;
+            document.getElementById('carryQuestion').textContent = gameData.carry.currentQuestion;
+            document.getElementById('carryFeedback').innerHTML = '';
+        }
+        
+        function checkCarry(userAnswer) {
+            const feedback = document.getElementById('carryFeedback');
+            const correct = userAnswer === gameData.carry.hasCarry;
+            if (correct) {
+                playSound('correct');
+                gameData.carry.score += 10;
+                feedback.className = 'feedback correct';
+                feedback.textContent = '🎉 נכון מאוד!';
+            } else {
+                playSound('wrong');
+                feedback.className = 'feedback wrong';
+                feedback.textContent = gameData.carry.hasCarry ? '❌ לא נכון. יש עבר עשר בתרגיל הזה!' : '❌ לא נכון. אין עבר עשר בתרגיל הזה.';
+            }
+            feedback.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            updateCarryDisplay();
+            setTimeout(() => {
+                if (gameData.carry.question < 10) {
+                    gameData.carry.question++;
+                    generateCarryQuestion();
+                } else {
+                    endCarryGame();
+                }
+            }, 2000);
+        }
+        
+        function updateCarryDisplay() {
+            document.getElementById('carryScore').textContent = gameData.carry.score;
+            document.getElementById('carryQuestionNum').textContent = gameData.carry.question;
+        }
+        
+        function endCarryGame() {
+            const feedback = document.getElementById('carryFeedback');
+            feedback.className = 'feedback correct';
+            feedback.innerHTML = `<h2>🎮 המשחק הסתיים! 🎮</h2><p>הניקוד הסופי שלך: ${gameData.carry.score} נקודות</p><button class="btn" style="font-size: 1.3em; margin-top: 20px;" onclick="startGame('carry')">🔄 שחק שוב</button>`;
+        }
+        
+        function startEstimateGame() {
+            generateEstimateQuestion();
+            updateEstimateDisplay();
+        }
+        
+        function roundToHundreds(num) {
+            return Math.round(num / 100) * 100;
+        }
+        
+        function generateEstimateQuestion() {
+            const isAddition = Math.random() > 0.5;
+            const num1 = random(150, 950);
+            const num2 = random(150, 950);
+            let question, correctEstimate;
+            if (isAddition) {
+                question = `${num1} + ${num2}`;
+                correctEstimate = roundToHundreds(num1) + roundToHundreds(num2);
+            } else {
+                const larger = Math.max(num1, num2);
+                const smaller = Math.min(num1, num2);
+                question = `${larger} - ${smaller}`;
+                correctEstimate = roundToHundreds(larger) - roundToHundreds(smaller);
+            }
+            gameData.estimate.correctEstimate = correctEstimate;
+            document.getElementById('estimateQuestion').textContent = question;
+            
+            const options = [correctEstimate];
+            let attempts = 0;
+            while (options.length < 3 && attempts < 100) {
+                const offset = random(-2, 2);
+                if (offset !== 0) {
+                    const wrongEstimate = correctEstimate + (offset * 100);
+                    if (wrongEstimate > 0 && !options.includes(wrongEstimate)) {
+                        options.push(wrongEstimate);
+                    }
+                }
+                attempts++;
+            }
+            while (options.length < 3) {
+                const fallback = correctEstimate + ((options.length - 1) * 200);
+                if (fallback > 0 && !options.includes(fallback)) {
+                    options.push(fallback);
+                }
+            }
+            options.sort(() => Math.random() - 0.5);
+            
+            const optionsContainer = document.getElementById('estimateOptions');
+            optionsContainer.innerHTML = '';
+            options.forEach(option => {
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-option';
+                btn.textContent = option;
+                btn.onclick = () => checkEstimate(option);
+                optionsContainer.appendChild(btn);
+            });
+            document.getElementById('estimateFeedback').innerHTML = '';
+        }
+        
+        function checkEstimate(userAnswer) {
+            const feedback = document.getElementById('estimateFeedback');
+            if (userAnswer === gameData.estimate.correctEstimate) {
+                playSound('correct');
+                gameData.estimate.score += 10;
+                feedback.className = 'feedback correct';
+                feedback.textContent = '🎉 מצוין! האומדן נכון!';
+            } else {
+                playSound('wrong');
+                feedback.className = 'feedback wrong';
+                feedback.textContent = `❌ לא נכון. האומדן הנכון: ${gameData.estimate.correctEstimate}`;
+            }
+            feedback.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            updateEstimateDisplay();
+            setTimeout(() => {
+                if (gameData.estimate.question < 10) {
+                    gameData.estimate.question++;
+                    generateEstimateQuestion();
+                } else {
+                    endEstimateGame();
+                }
+            }, 2000);
+        }
+        
+        function updateEstimateDisplay() {
+            document.getElementById('estimateScore').textContent = gameData.estimate.score;
+            document.getElementById('estimateQuestionNum').textContent = gameData.estimate.question;
+        }
+        
+        function endEstimateGame() {
+            const feedback = document.getElementById('estimateFeedback');
+            feedback.className = 'feedback correct';
+            feedback.innerHTML = `<h2>🎮 המשחק הסתיים! 🎮</h2><p>הניקוד הסופי שלך: ${gameData.estimate.score} נקודות</p><button class="btn" style="font-size: 1.3em; margin-top: 20px;" onclick="startGame('estimate')">🔄 שחק שוב</button>`;
+        }
+        
+        function startDetectiveGame() {
+            generateDetectiveQuestion();
+            updateDetectiveDisplay();
+        }
+        
+        function generateDetectiveQuestion() {
+            const num1 = random(200, 800);
+            const num2 = random(100, 500);
+            const isAddition = Math.random() > 0.5;
+            let correctAnswer, wrongAnswer, mistakeLocation;
+            if (isAddition) {
+                correctAnswer = num1 + num2;
+                const mistakeType = random(1, 2);
+                if (mistakeType === 1) {
+                    wrongAnswer = correctAnswer - 10;
+                    mistakeLocation = 'שכחו "עבר עשר"';
+                } else {
+                    wrongAnswer = correctAnswer + random(1, 9);
+                    mistakeLocation = 'טעות בחישוב ספרה';
+                }
+            } else {
+                correctAnswer = num1 - num2;
+                wrongAnswer = correctAnswer + random(1, 20);
+                mistakeLocation = 'טעות ב"לקיחה בהשאלה"';
+            }
+            gameData.detective.correctMistake = mistakeLocation;
+            const questionContainer = document.getElementById('detectiveQuestion');
+            questionContainer.innerHTML = `
+                <div class="column-display">
+                    <div style="text-align: right; font-size: 1.2em; direction: ltr;">
+                        <div style="text-align: center;">${num1}</div>
+                        <div style="text-align: center;">${isAddition ? '+' : '-'} ${num2}</div>
+                        <div style="text-align: center;">─────</div>
+                        <div style="text-align: center;"><span class="mistake">${wrongAnswer}</span></div>
+                    </div>
+                </div>
+            `;
+            const options = ['שכחו "עבר עשר"', 'טעות בחישוב ספרה', 'טעות ב"לקיחה בהשאלה"', 'אין טעות - הפתרון נכון'];
+            const optionsContainer = document.getElementById('detectiveOptions');
+            optionsContainer.innerHTML = '';
+            options.forEach(option => {
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-option';
+                btn.textContent = option;
+                btn.onclick = () => checkDetective(option);
+                optionsContainer.appendChild(btn);
+            });
+            document.getElementById('detectiveFeedback').innerHTML = '';
+        }
+        
+        function checkDetective(userAnswer) {
+            const feedback = document.getElementById('detectiveFeedback');
+            if (userAnswer === gameData.detective.correctMistake) {
+                playSound('correct');
+                gameData.detective.score += 10;
+                feedback.className = 'feedback correct';
+                feedback.textContent = '🕵️ מצוין! מצאת את הטעות!';
+            } else {
+                playSound('wrong');
+                feedback.className = 'feedback wrong';
+                feedback.textContent = `❌ לא נכון. הטעות היא: ${gameData.detective.correctMistake}`;
+            }
+            feedback.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            updateDetectiveDisplay();
+            setTimeout(() => {
+                if (gameData.detective.question < 10) {
+                    gameData.detective.question++;
+                    generateDetectiveQuestion();
+                } else {
+                    endDetectiveGame();
+                }
+            }, 2000);
+        }
+        
+        function updateDetectiveDisplay() {
+            document.getElementById('detectiveScore').textContent = gameData.detective.score;
+            document.getElementById('detectiveQuestionNum').textContent = gameData.detective.question;
+        }
+        
+        function endDetectiveGame() {
+            const feedback = document.getElementById('detectiveFeedback');
+            feedback.className = 'feedback correct';
+            feedback.innerHTML = `<h2>🎮 המשחק הסתיים! 🎮</h2><p>הניקוד הסופי שלך: ${gameData.detective.score} נקודות</p><button class="btn" style="font-size: 1.3em; margin-top: 20px;" onclick="startGame('detective')">🔄 שחק שוב</button>`;
+        }
+        
+        function startWordProblemGame() {
+            generateWordProblem();
+            updateWordDisplay();
+        }
+        
+        function generateWordProblem() {
+            const problems = [
+                { text: 'בחנות היו 456 צעצועים. ביום ראשון נמכרו 178 צעצועים, וביום שני הגיעו 250 צעצועים חדשים. כמה צעצועים יש בחנות עכשיו?', answer: 456 - 178 + 250 },
+                { text: 'בספרייה היו 723 ספרים. השאילו 234 ספרים ביום שני, ו-156 ספרים נוספים ביום שלישי. כמה ספרים נשארו בספרייה?', answer: 723 - 234 - 156 },
+                { text: 'בבית הספר למדו 582 תלמידים. הצטרפו 127 תלמידים חדשים, ואז עזבו 89 תלמידים. כמה תלמידים לומדים בבית הספר עכשיו?', answer: 582 + 127 - 89 },
+                { text: 'בגן החיות היו 345 מבקרים בבוקר. הצטרפו 289 מבקרים בצהריים, ואז יצאו 167 מבקרים. כמה מבקרים נשארו בגן?', answer: 345 + 289 - 167 },
+                { text: 'חנות מכרה 456 גלידות ביום ראשון, 378 גלידות ביום שני. ביום שלישי החזירו 94 גלידות שנפגמו. כמה גלידות נמכרו בסך הכל?', answer: 456 + 378 - 94 },
+                { text: 'במגרש חניה היו 234 מכוניות. נכנסו 156 מכוניות נוספות, ואז יצאו 178 מכוניות. כמה מכוניות נשארו במגרש?', answer: 234 + 156 - 178 },
+                { text: 'בבריכה היו 567 לטר מים. הוסיפו 245 לטר, ואז דלפו 123 לטר. כמה מים נשארו בבריכה?', answer: 567 + 245 - 123 },
+                { text: 'איש עסקים היה לו 834 שקלים. קנה דברים ב-378 שקלים, ואז הרוויח 265 שקלים. כמה כסף יש לו עכשיו?', answer: 834 - 378 + 265 }
+            ];
+            const problem = problems[random(0, problems.length - 1)];
+            gameData.wordProblem.currentAnswer = problem.answer;
+            document.getElementById('wordProblemText').textContent = problem.text;
+            document.getElementById('wordAnswer').value = '';
+            document.getElementById('wordFeedback').innerHTML = '';
+        }
+        
+        function checkWordAnswer() {
+            const userAnswer = parseInt(document.getElementById('wordAnswer').value);
+            const feedback = document.getElementById('wordFeedback');
+            if (userAnswer === gameData.wordProblem.currentAnswer) {
+                playSound('correct');
+                gameData.wordProblem.score += 20;
+                feedback.className = 'feedback correct';
+                feedback.textContent = '🎉 מעולה! פתרת את הבעיה נכון!';
+            } else {
+                playSound('wrong');
+                feedback.className = 'feedback wrong';
+                feedback.textContent = `❌ לא נכון. התשובה הנכונה: ${gameData.wordProblem.currentAnswer}`;
+            }
+            feedback.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            updateWordDisplay();
+            setTimeout(() => {
+                if (gameData.wordProblem.question < 5) {
+                    gameData.wordProblem.question++;
+                    generateWordProblem();
+                } else {
+                    endWordProblemGame();
+                }
+            }, 2500);
+        }
+        
+        function updateWordDisplay() {
+            document.getElementById('wordScore').textContent = gameData.wordProblem.score;
+            document.getElementById('wordQuestionNum').textContent = gameData.wordProblem.question;
+        }
+        
+        function endWordProblemGame() {
+            const feedback = document.getElementById('wordFeedback');
+            feedback.className = 'feedback correct';
+            feedback.innerHTML = `<h2>🎮 המשחק הסתיים! 🎮</h2><p>הניקוד הסופי שלך: ${gameData.wordProblem.score} נקודות</p><button class="btn" style="font-size: 1.3em; margin-top: 20px;" onclick="startGame('wordProblem')">🔄 שחק שוב</button>`;
+        }
+        
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if (currentGame === 'speed' && document.getElementById('speedAnswer') === document.activeElement) {
+                    checkSpeedAnswer();
+                } else if (currentGame === 'wordProblem' && document.getElementById('wordAnswer') === document.activeElement) {
+                    checkWordAnswer();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
