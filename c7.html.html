@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>משחקי מתמטיקה לכיתה ג'</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .menu-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 30px 20px;
+            border-radius: 15px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: transform 0.2s;
+            text-align: center;
+            line-height: 1.6;
+        }
+        .menu-btn small {
+            font-size: 0.7em;
+            opacity: 0.9;
+            display: block;
+            margin-top: 8px;
+        }
+        .menu-btn:hover {
+            transform: translateY(-5px);
+        }
+        .game-screen {
+            display: none;
+        }
+        .game-screen.active {
+            display: block;
+        }
+        .back-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-size: 1em;
+        }
+        .back-btn:hover {
+            background: #ee5a52;
+        }
+        .score {
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        /* Balloon Game */
+        .balloon-container {
+            position: relative;
+            height: 500px;
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 100%);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .balloon {
+            position: absolute;
+            width: 80px;
+            height: 100px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .balloon:hover {
+            transform: scale(1.1);
+        }
+        .balloon-body {
+            width: 80px;
+            height: 100px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            direction: ltr;
+        }
+        .balloon-string {
+            position: absolute;
+            width: 2px;
+            height: 30px;
+            background: #333;
+            left: 50%;
+            bottom: -30px;
+        }
+        .question {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #333;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            direction: ltr;
+            unicode-bidi: bidi-override;
+        }
+        
+        /* Memory Game */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .memory-card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s;
+            font-weight: bold;
+            direction: ltr;
+        }
+        .memory-card.flipped {
+            background: white;
+            color: #667eea;
+            border: 3px solid #667eea;
+        }
+        .memory-card.matched {
+            background: #51cf66;
+            color: white;
+            cursor: default;
+        }
+        .memory-card:hover:not(.matched) {
+            transform: scale(1.05);
+        }
+        
+        /* Spaceship Game */
+        .spaceship-container {
+            position: relative;
+            height: 500px;
+            background: linear-gradient(to bottom, #000428 0%, #004e92 100%);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .spaceship {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            font-size: 2em;
+        }
+        .asteroid {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: #8b4513;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border: 3px solid #654321;
+            direction: ltr;
+        }
+        .asteroid:hover {
+            transform: scale(1.1);
+        }
+        .laser {
+            position: absolute;
+            width: 3px;
+            height: 20px;
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .control-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .control-btn:hover {
+            background: #5568d3;
+        }
+        .game-over {
+            text-align: center;
+            font-size: 2em;
+            color: #51cf66;
+            margin-top: 20px;
+            display: none;
+            padding: 40px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="menu" class="menu-screen active">
+            <h1>🎓 משחקי מתמטיקה לכיתה ג' 🎓</h1>
+            <div class="menu">
+                <button class="menu-btn" onclick="startGame('balloon')">
+                    🎈<br>משחק הבלונים<br><small>פוצצו בלונים עם התשובות הנכונות</small>
+                </button>
+                <button class="menu-btn" onclick="startGame('memory')">
+                    🧠<br>משחק הזיכרון<br><small>מצאו זוגות של תרגילים ותשובות</small>
+                </button>
+                <button class="menu-btn" onclick="startGame('spaceship')">
+                    🚀<br>משחק החללית<br><small>ירו באסטרואידים עם התשובות הנכונות</small>
+                </button>
+            </div>
+        </div>
+
+        <!-- Balloon Game -->
+        <div id="balloon-game" class="game-screen">
+            <button class="back-btn" onclick="backToMenu()">← חזרה לתפריט</button>
+            <div class="score">ניקוד: <span id="balloon-score">0</span></div>
+            <div class="question" id="balloon-question"></div>
+            <div class="balloon-container" id="balloon-container"></div>
+        </div>
+
+        <!-- Memory Game -->
+        <div id="memory-game" class="game-screen">
+            <button class="back-btn" onclick="backToMenu()">← חזרה לתפריט</button>
+            <div class="score">זוגות: <span id="memory-score">0</span> / 8</div>
+            <div class="memory-grid" id="memory-grid"></div>
+            <div class="game-over" id="memory-over">🎉 כל הכבוד! סיימת את המשחק! 🎉</div>
+        </div>
+
+        <!-- Spaceship Game -->
+        <div id="spaceship-game" class="game-screen">
+            <button class="back-btn" onclick="backToMenu()">← חזרה לתפריט</button>
+            <div class="score">ניקוד: <span id="spaceship-score">0</span> | תרגיל: <span id="spaceship-rounds">0/20</span></div>
+            <div class="question" id="spaceship-question"></div>
+            <div class="spaceship-container" id="spaceship-container">
+                <div class="spaceship" id="spaceship">🚀</div>
+            </div>
+            <div class="controls">
+                <button class="control-btn" onclick="moveSpaceship('left')">←</button>
+                <button class="control-btn" onclick="shootLaser()">🔥 ירה</button>
+                <button class="control-btn" onclick="moveSpaceship('right')">→</button>
+            </div>
+            <div class="game-over" id="spaceship-game-over">
+                🎉 כל הכבוד! סיימת את המשחק! 🎉<br>
+                <span style="font-size: 0.7em; margin-top: 10px; display: block;">הניקוד הסופי שלך: <span id="final-spaceship-score">0</span></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentGame = null;
+        let balloonScore = 0;
+        let memoryScore = 0;
+        let spaceshipScore = 0;
+        let currentAnswer = 0;
+        let spaceshipPos = 50;
+        let memoryFlipped = [];
+        let memoryMatched = [];
+        let spaceshipRounds = 0;
+        let maxSpaceshipRounds = 20;
+        
+        // Sound effects using Web Audio API
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(type) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.type = 'sine';
+            
+            if (type === 'correct') {
+                oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(783.99, audioContext.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.4);
+            } else if (type === 'wrong') {
+                oscillator.frequency.setValueAtTime(392, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(196, audioContext.currentTime + 0.15);
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.2);
+            } else if (type === 'click') {
+                oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.08);
+            } else if (type === 'shoot') {
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.12, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.12);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.12);
+            }
+        }
+
+        function startGame(game) {
+            playSound('click');
+            
+            document.getElementById('menu').classList.remove('active');
+            document.querySelectorAll('.game-screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            currentGame = game;
+            
+            if (game === 'balloon') {
+                document.getElementById('balloon-game').classList.add('active');
+                balloonScore = 0;
+                document.getElementById('balloon-score').textContent = balloonScore;
+                createBalloonRound();
+            } else if (game === 'memory') {
+                document.getElementById('memory-game').classList.add('active');
+                memoryScore = 0;
+                memoryFlipped = [];
+                memoryMatched = [];
+                document.getElementById('memory-score').textContent = memoryScore;
+                document.getElementById('memory-over').style.display = 'none';
+                createMemoryGame();
+            } else if (game === 'spaceship') {
+                document.getElementById('spaceship-game').classList.add('active');
+                spaceshipScore = 0;
+                spaceshipPos = 50;
+                spaceshipRounds = 0;
+                
+                const questionElement = document.getElementById('spaceship-question');
+                const containerElement = document.getElementById('spaceship-container');
+                const controlsElement = document.querySelector('#spaceship-game .controls');
+                
+                if (questionElement) {
+                    questionElement.style.display = 'block';
+                }
+                if (containerElement) {
+                    containerElement.style.display = 'block';
+                }
+                if (controlsElement) {
+                    controlsElement.style.display = 'flex';
+                }
+                
+                const scoreElement = document.getElementById('spaceship-score');
+                const roundsElement = document.getElementById('spaceship-rounds');
+                if (scoreElement) {
+                    scoreElement.textContent = spaceshipScore;
+                }
+                if (roundsElement) {
+                    roundsElement.textContent = `${spaceshipRounds}/${maxSpaceshipRounds}`;
+                }
+                
+                const gameOverElement = document.getElementById('spaceship-game-over');
+                if (gameOverElement) {
+                    gameOverElement.style.display = 'none';
+                }
+                
+                createSpaceshipRound();
+            }
+        }
+
+        function backToMenu() {
+            playSound('click');
+            document.querySelectorAll('.game-screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById('menu').classList.add('active');
+            currentGame = null;
+            
+            spaceshipRounds = 0;
+            const gameOverElement = document.getElementById('spaceship-game-over');
+            if (gameOverElement) {
+                gameOverElement.style.display = 'none';
+            }
+        }
+
+        // Balloon Game
+        function createBalloonRound() {
+            const num1 = Math.floor(Math.random() * 9) + 2;
+            const num2 = Math.floor(Math.random() * 9) + 2;
+            currentAnswer = num1 * num2;
+            
+            const questionText = `${num1} × ${num2} = ?`;
+            document.getElementById('balloon-question').innerHTML = `<span style="display: inline-block; direction: ltr;">${questionText}</span>`;
+            
+            const container = document.getElementById('balloon-container');
+            container.innerHTML = '';
+            
+            const answers = [currentAnswer];
+            let attempts = 0;
+            while (answers.length < 6 && attempts < 100) {
+                const wrong = Math.floor(Math.random() * 81) + 4;
+                if (!answers.includes(wrong)) {
+                    answers.push(wrong);
+                }
+                attempts++;
+            }
+            
+            answers.sort(() => Math.random() - 0.5);
+            
+            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F'];
+            
+            answers.forEach((answer, i) => {
+                const balloon = document.createElement('div');
+                balloon.className = 'balloon';
+                balloon.style.left = `${(i % 3) * 33 + 10}%`;
+                balloon.style.bottom = `${Math.floor(i / 3) * 45 + 10}%`;
+                balloon.onclick = () => checkBalloon(answer, balloon.querySelector('.balloon-body'));
+                
+                balloon.innerHTML = `
+                    <div class="balloon-body" style="background: ${colors[i]}">${answer}</div>
+                    <div class="balloon-string"></div>
+                `;
+                
+                container.appendChild(balloon);
+            });
+        }
+
+        function checkBalloon(answer, balloon) {
+            if (answer === currentAnswer) {
+                playSound('correct');
+                balloon.style.backgroundColor = '#51cf66';
+                balloon.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    balloonScore += 10;
+                    document.getElementById('balloon-score').textContent = balloonScore;
+                    createBalloonRound();
+                }, 300);
+            } else {
+                playSound('wrong');
+                balloon.style.backgroundColor = '#ff6b6b';
+                balloon.style.animation = 'shake 0.3s';
+                setTimeout(() => {
+                    balloon.style.animation = '';
+                    balloon.style.backgroundColor = '';
+                }, 300);
+                balloonScore = Math.max(0, balloonScore - 5);
+                document.getElementById('balloon-score').textContent = balloonScore;
+            }
+        }
+
+        // Memory Game - תוקן!
+        function createMemoryGame() {
+            const pairs = [
+                ['3 × 4', '12'],
+                ['5 × 6', '30'],
+                ['7 × 8', '56'],
+                ['4 × 9', '36'],
+                ['6 × 7', '42'],
+                ['8 × 5', '40'],
+                ['9 × 3', '27'],
+                ['8 × 9', '72']  // ← תוקן! היה 7 × 6 = 42
+            ];
+            
+            const cards = [];
+            pairs.forEach(pair => {
+                cards.push({ value: pair[0], id: pair.join('') });
+                cards.push({ value: pair[1], id: pair.join('') });
+            });
+            
+            cards.sort(() => Math.random() - 0.5);
+            
+            const grid = document.getElementById('memory-grid');
+            grid.innerHTML = '';
+            
+            cards.forEach((card, index) => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'memory-card';
+                cardEl.textContent = '?';
+                cardEl.dataset.value = card.value;
+                cardEl.dataset.id = card.id;
+                cardEl.dataset.index = index;
+                cardEl.onclick = () => flipCard(cardEl);
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function flipCard(card) {
+            if (memoryFlipped.length >= 2 || card.classList.contains('flipped') || card.classList.contains('matched')) {
+                return;
+            }
+            
+            playSound('click');
+            card.classList.add('flipped');
+            card.textContent = card.dataset.value;
+            memoryFlipped.push(card);
+            
+            if (memoryFlipped.length === 2) {
+                setTimeout(checkMemoryMatch, 800);
+            }
+        }
+
+        function checkMemoryMatch() {
+            const [card1, card2] = memoryFlipped;
+            
+            if (card1.dataset.id === card2.dataset.id) {
+                playSound('correct');
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                memoryScore++;
+                document.getElementById('memory-score').textContent = memoryScore;
+                
+                if (memoryScore === 8) {
+                    document.getElementById('memory-over').style.display = 'block';
+                }
+            } else {
+                playSound('wrong');
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                card1.textContent = '?';
+                card2.textContent = '?';
+            }
+            
+            memoryFlipped = [];
+        }
+
+        // Spaceship Game
+        function createSpaceshipRound() {
+            if (spaceshipRounds >= maxSpaceshipRounds) {
+                showSpaceshipGameOver();
+                return;
+            }
+            
+            const num1 = Math.floor(Math.random() * 9) + 2;
+            const num2 = Math.floor(Math.random() * 9) + 2;
+            currentAnswer = num1 * num2;
+            
+            const questionText = `${num1} × ${num2} = ?`;
+            const questionElement = document.getElementById('spaceship-question');
+            if (questionElement) {
+                questionElement.innerHTML = `<span style="display: inline-block; direction: ltr;">${questionText}</span>`;
+            }
+            
+            const container = document.getElementById('spaceship-container');
+            if (!container) return;
+            
+            const existingAsteroids = container.querySelectorAll('.asteroid');
+            existingAsteroids.forEach(a => a.remove());
+            
+            const answers = [currentAnswer];
+            let attempts = 0;
+            while (answers.length < 5 && attempts < 100) {
+                const wrong = Math.floor(Math.random() * 81) + 4;
+                if (!answers.includes(wrong)) {
+                    answers.push(wrong);
+                }
+                attempts++;
+            }
+            
+            answers.sort(() => Math.random() - 0.5);
+            
+            answers.forEach((answer, i) => {
+                const asteroid = document.createElement('div');
+                asteroid.className = 'asteroid';
+                asteroid.textContent = answer;
+                asteroid.dataset.answer = answer;
+                asteroid.style.left = `${i * 18 + 8}%`;
+                asteroid.style.top = `${Math.random() * 50 + 10}%`;
+                container.appendChild(asteroid);
+            });
+        }
+        
+        function showSpaceshipGameOver() {
+            const questionElement = document.getElementById('spaceship-question');
+            const containerElement = document.getElementById('spaceship-container');
+            const controlsElement = document.querySelector('#spaceship-game .controls');
+            
+            if (questionElement) {
+                questionElement.style.display = 'none';
+            }
+            if (containerElement) {
+                containerElement.style.display = 'none';
+            }
+            if (controlsElement) {
+                controlsElement.style.display = 'none';
+            }
+            
+            const gameOverElement = document.getElementById('spaceship-game-over');
+            const finalScoreElement = document.getElementById('final-spaceship-score');
+            if (gameOverElement) {
+                gameOverElement.style.display = 'block';
+            }
+            if (finalScoreElement) {
+                finalScoreElement.textContent = spaceshipScore;
+            }
+        }
+
+        function moveSpaceship(direction) {
+            if (direction === 'left') {
+                spaceshipPos = Math.max(5, spaceshipPos - 10);
+            } else {
+                spaceshipPos = Math.min(95, spaceshipPos + 10);
+            }
+            document.getElementById('spaceship').style.left = spaceshipPos + '%';
+        }
+
+        function shootLaser() {
+            playSound('shoot');
+            const container = document.getElementById('spaceship-container');
+            const spaceship = document.getElementById('spaceship');
+            const spaceshipRect = spaceship.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
+            
+            const laser = document.createElement('div');
+            laser.className = 'laser';
+            const laserLeft = spaceshipRect.left - containerRect.left + spaceshipRect.width / 2;
+            laser.style.left = laserLeft + 'px';
+            laser.style.bottom = '70px';
+            container.appendChild(laser);
+            
+            let pos = 70;
+            let hit = false;
+            
+            const interval = setInterval(() => {
+                if (hit) {
+                    clearInterval(interval);
+                    laser.remove();
+                    return;
+                }
+                
+                pos += 15;
+                laser.style.bottom = pos + 'px';
+                
+                const laserRect = laser.getBoundingClientRect();
+                const asteroids = container.querySelectorAll('.asteroid');
+                
+                asteroids.forEach(asteroid => {
+                    if (hit) return;
+                    
+                    const asteroidRect = asteroid.getBoundingClientRect();
+                    
+                    if (laserRect.left < asteroidRect.right &&
+                        laserRect.right > asteroidRect.left &&
+                        laserRect.top < asteroidRect.bottom &&
+                        laserRect.bottom > asteroidRect.top) {
+                        hit = true;
+                        const answer = parseInt(asteroid.dataset.answer);
+                        checkAsteroid(answer, asteroid);
+                        clearInterval(interval);
+                        laser.remove();
+                    }
+                });
+                
+                if (pos > 500) {
+                    clearInterval(interval);
+                    laser.remove();
+                }
+            }, 30);
+        }
+
+        function checkAsteroid(answer, asteroid) {
+            if (answer === currentAnswer) {
+                playSound('correct');
+                spaceshipScore += 10;
+                spaceshipRounds++;
+                const scoreElement = document.getElementById('spaceship-score');
+                const roundsElement = document.getElementById('spaceship-rounds');
+                if (scoreElement) {
+                    scoreElement.textContent = spaceshipScore;
+                }
+                if (roundsElement) {
+                    roundsElement.textContent = `${spaceshipRounds}/${maxSpaceshipRounds}`;
+                }
+                asteroid.style.background = '#51cf66';
+                asteroid.style.transition = 'transform 0.3s, opacity 0.3s';
+                asteroid.style.transform = 'scale(0)';
+                asteroid.style.opacity = '0';
+                setTimeout(() => {
+                    asteroid.remove();
+                    createSpaceshipRound();
+                }, 300);
+            } else {
+                playSound('wrong');
+                spaceshipScore = Math.max(0, spaceshipScore - 5);
+                const scoreElement = document.getElementById('spaceship-score');
+                if (scoreElement) {
+                    scoreElement.textContent = spaceshipScore;
+                }
+                asteroid.style.background = '#ff6b6b';
+                asteroid.style.animation = 'shake 0.3s';
+                setTimeout(() => {
+                    asteroid.style.animation = '';
+                    asteroid.style.background = '#8b4513';
+                }, 300);
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (currentGame === 'spaceship') {
+                if (e.key === 'ArrowLeft') {
+                    moveSpaceship('left');
+                } else if (e.key === 'ArrowRight') {
+                    moveSpaceship('right');
+                } else if (e.key === ' ' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    shootLaser();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
