@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>היכרות עם שברים - כיתה ב'</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        
+        .lesson-section {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 3px solid #667eea;
+        }
+        
+        .lesson-section h2 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+        
+        .fraction-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .fraction-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .fraction-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .fraction-card h3 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .game-section {
+            background: #fff5e6;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 3px solid #ff9800;
+        }
+        
+        .game-section h2 {
+            color: #ff6f00;
+            margin-bottom: 20px;
+        }
+        
+        .instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-right: 5px solid #2196F3;
+            font-size: 1.1em;
+        }
+        
+        .game-area {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        
+        .circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 5px solid #2c3e50;
+            position: relative;
+            margin: 20px auto;
+            background: #ffd700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        
+        .circle:hover {
+            transform: scale(1.05);
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .quiz-area {
+            text-align: center;
+        }
+        
+        .quiz-question {
+            font-size: 1.5em;
+            margin: 20px 0;
+            color: #333;
+        }
+        
+        .quiz-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .quiz-options button {
+            background: #4CAF50;
+            min-width: 100px;
+        }
+        
+        .quiz-options button:hover {
+            background: #45a049;
+        }
+        
+        .quiz-options button:disabled {
+            background: #ccc;
+        }
+        
+        .result {
+            font-size: 1.8em;
+            margin-top: 20px;
+            font-weight: bold;
+            min-height: 40px;
+        }
+        
+        .correct {
+            color: #4CAF50;
+        }
+        
+        .wrong {
+            color: #ff4757;
+        }
+        
+        .score {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.3em;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .matching-game {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .matching-item {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+            text-align: center;
+            font-size: 1.3em;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .matching-item:hover:not(.matched) {
+            transform: scale(1.05);
+            background: #bbdefb;
+        }
+        
+        .matching-item.selected {
+            border-color: #2196F3;
+            background: #90caf9;
+            box-shadow: 0 0 20px rgba(33, 150, 243, 0.5);
+        }
+        
+        .matching-item.matched {
+            background: #c8e6c9;
+            border-color: #4CAF50;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        
+        .final-message {
+            background: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .final-message h3 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .compare-container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .compare-item {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 היכרות עם שברים - כיתה ב' 🎓</h1>
+        
+        <!-- חלק הלימוד -->
+        <div class="lesson-section">
+            <h2>📚 מהו שבר?</h2>
+            <p style="font-size: 1.2em; line-height: 1.8;">
+                <strong>שבר</strong> זה חלק משלם. כשאנחנו חותכים משהו לחלקים שווים, כל חלק נקרא שבר.
+            </p>
+            
+            <div class="fraction-examples">
+                <div class="fraction-card">
+                    <h3>חצי - ½</h3>
+                    <p>חותכים ל-2 חלקים שווים<br>לוקחים 1 חלק</p>
+                    <div class="circle" style="background: linear-gradient(90deg, #e74c3c 50%, #f39c12 50%); border: 5px solid #2c3e50;"></div>
+                </div>
+                
+                <div class="fraction-card">
+                    <h3>שליש - ⅓</h3>
+                    <p>חותכים ל-3 חלקים שווים<br>לוקחים 1 חלק</p>
+                    <div class="circle" style="background: conic-gradient(#e74c3c 0deg 120deg, #f39c12 120deg 360deg); border: 5px solid #2c3e50;"></div>
+                </div>
+                
+                <div class="fraction-card">
+                    <h3>רבע - ¼</h3>
+                    <p>חותכים ל-4 חלקים שווים<br>לוקחים 1 חלק</p>
+                    <div class="circle" style="background: conic-gradient(#e74c3c 0deg 90deg, #f39c12 90deg 360deg); border: 5px solid #2c3e50;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 1: חידון שברים -->
+        <div class="game-section">
+            <h2>🎮 משחק 1: חידון שברים</h2>
+            <div class="instructions">
+                💡 <strong>איך משחקים?</strong> תראה עיגול צבעוני. בחר איזה שבר מוצג בעיגול!
+            </div>
+            <div class="game-area quiz-area">
+                <div class="quiz-question" id="question">לחץ על "שאלה חדשה" כדי להתחיל!</div>
+                <div class="circle" id="quizCircle" style="background: #ffd700;"></div>
+                <div class="quiz-options" id="options"></div>
+                <div class="result" id="result"></div>
+                <button onclick="newQuestion()" id="quizNextBtn">שאלה חדשה</button>
+                <div class="score">ניקוד: <span id="score">0</span> | שאלות: <span id="quizProgress">0/15</span></div>
+            </div>
+        </div>
+        
+        <!-- משחק 2: התאמת שברים -->
+        <div class="game-section">
+            <h2>🎯 משחק 2: התאם בין השבר לתמונה</h2>
+            <div class="instructions">
+                💡 <strong>איך משחקים?</strong> לחץ על שם שבר (למשל "חצי - ½") ואז לחץ על התמונה שמתאימה לו. צריך למצוא את כל 3 הזוגות!
+            </div>
+            <div class="game-area">
+                <div class="matching-game" id="matchingGame"></div>
+                <button onclick="resetMatching()" style="display: block; margin: 20px auto;">התחל מחדש</button>
+                <div class="score">התאמות נכונות: <span id="matchScore">0</span>/3</div>
+            </div>
+        </div>
+        
+        <!-- משחק 3: השוואת שברים -->
+        <div class="game-section">
+            <h2>⚖️ משחק 3: איזה שבר יותר גדול?</h2>
+            <div class="instructions">
+                💡 <strong>איך משחקים?</strong> תראה שני עיגולים. לחץ על הכפתור מתחת לעיגול שמראה את השבר הגדול יותר!
+            </div>
+            <div class="game-area">
+                <div id="compareQuestion" style="font-size: 1.5em; text-align: center; margin: 20px 0;">לחץ על "שאלה חדשה" כדי להתחיל!</div>
+                <div class="compare-container">
+                    <div class="compare-item">
+                        <div class="circle" id="compare1" style="background: #ffd700;"></div>
+                        <button id="btn1" onclick="checkCompareAnswer(1)" style="display: none;">בחר אותי</button>
+                    </div>
+                    <div class="compare-item">
+                        <div class="circle" id="compare2" style="background: #ffd700;"></div>
+                        <button id="btn2" onclick="checkCompareAnswer(2)" style="display: none;">בחר אותי</button>
+                    </div>
+                </div>
+                <div class="result" id="compareResult"></div>
+                <button onclick="newCompareQuestion()" id="compareNextBtn">שאלה חדשה</button>
+                <div class="score">ניקוד: <span id="compareScore">0</span> | שאלות: <span id="compareProgress">0/15</span></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // יצירת אפקטי סאונד - רק אחרי אינטראקציה ראשונה
+        let audioContext = null;
+        let audioInitialized = false;
+        
+        function initAudio() {
+            if (!audioInitialized) {
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    audioInitialized = true;
+                } catch (e) {
+                    console.log('Audio not supported');
+                }
+            }
+        }
+        
+        function playSound(frequency, duration, type = 'correct') {
+            initAudio();
+            if (!audioContext) return;
+            
+            try {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                if (type === 'correct') {
+                    oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
+                    setTimeout(() => {
+                        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime);
+                    }, 100);
+                    setTimeout(() => {
+                        oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime);
+                    }, 200);
+                } else if (type === 'wrong') {
+                    oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+                    setTimeout(() => {
+                        oscillator.frequency.setValueAtTime(250, audioContext.currentTime);
+                    }, 100);
+                } else if (type === 'click') {
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                }
+                
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + duration);
+            } catch (e) {
+                console.log('Error playing sound');
+            }
+        }
+        
+        // משתנים גלובליים
+        let score = 0;
+        let matchScore = 0;
+        let compareScore = 0;
+        let currentAnswer = '';
+        let selectedMatch = null;
+        let matchedPairs = [];
+        let compareAnswer = null;
+        let quizRounds = 0;
+        let compareRounds = 0;
+        const MAX_ROUNDS = 15;
+        let quizAnswered = false;
+        let compareAnswered = false;
+        
+        // משחק 1: חידון שברים
+        const fractions = {
+            'חצי': { value: 0.5, color: 'linear-gradient(90deg, #e74c3c 50%, #f39c12 50%)' },
+            'שליש': { value: 0.33, color: 'conic-gradient(#e74c3c 0deg 120deg, #f39c12 120deg 360deg)' },
+            'רבע': { value: 0.25, color: 'conic-gradient(#e74c3c 0deg 90deg, #f39c12 90deg 360deg)' }
+        };
+        
+        function newQuestion() {
+            playSound(800, 0.1, 'click');
+            
+            if (quizAnswered && quizRounds >= MAX_ROUNDS) {
+                document.getElementById('question').textContent = '🎉 סיימת את כל השאלות!';
+                document.getElementById('quizCircle').style.display = 'none';
+                document.getElementById('options').innerHTML = '';
+                document.getElementById('result').innerHTML = `<div class="final-message">
+                    <h3>הציון הסופי שלך: ${score} נקודות! 🏆</h3>
+                    <p style="font-size: 1.2em; margin-top: 10px;">כל הכבוד! אתה מכיר מצוין את השברים!</p>
+                </div>`;
+                document.getElementById('quizNextBtn').textContent = 'התחל סיבוב חדש';
+                document.getElementById('quizNextBtn').onclick = resetQuiz;
+                return;
+            }
+            
+            if (!quizAnswered && quizRounds > 0) return;
+            
+            quizRounds++;
+            quizAnswered = false;
+            const fractionNames = Object.keys(fractions);
+            currentAnswer = fractionNames[Math.floor(Math.random() * fractionNames.length)];
+            
+            document.getElementById('question').textContent = 'איזה שבר מוצג בעיגול?';
+            document.getElementById('quizCircle').style.display = 'block';
+            document.getElementById('quizCircle').style.background = fractions[currentAnswer].color;
+            document.getElementById('result').textContent = '';
+            document.getElementById('quizProgress').textContent = `${quizRounds}/${MAX_ROUNDS}`;
+            
+            const shuffled = [...fractionNames].sort(() => Math.random() - 0.5);
+            const optionsHTML = shuffled.map(name => 
+                `<button onclick="checkAnswer('${name}')">${name}</button>`
+            ).join('');
+            document.getElementById('options').innerHTML = optionsHTML;
+            
+            document.getElementById('quizNextBtn').disabled = true;
+        }
+        
+        function resetQuiz() {
+            playSound(800, 0.1, 'click');
+            score = 0;
+            quizRounds = 0;
+            quizAnswered = false;
+            document.getElementById('score').textContent = score;
+            document.getElementById('quizProgress').textContent = '0/15';
+            document.getElementById('question').textContent = 'לחץ על "שאלה חדשה" כדי להתחיל!';
+            document.getElementById('quizCircle').style.display = 'block';
+            document.getElementById('quizCircle').style.background = '#ffd700';
+            document.getElementById('options').innerHTML = '';
+            document.getElementById('result').textContent = '';
+            document.getElementById('quizNextBtn').textContent = 'שאלה חדשה';
+            document.getElementById('quizNextBtn').onclick = newQuestion;
+            document.getElementById('quizNextBtn').disabled = false;
+        }
+        
+        function checkAnswer(answer) {
+            if (quizAnswered) return;
+            
+            quizAnswered = true;
+            const resultDiv = document.getElementById('result');
+            const buttons = document.querySelectorAll('#options button');
+            buttons.forEach(btn => btn.disabled = true);
+            
+            if (answer === currentAnswer) {
+                playSound(523.25, 0.4, 'correct');
+                resultDiv.textContent = '🎉 כל הכבוד! תשובה נכונה!';
+                resultDiv.className = 'result correct';
+                score += 10;
+                document.getElementById('score').textContent = score;
+            } else {
+                playSound(300, 0.3, 'wrong');
+                resultDiv.textContent = `❌ לא נכון. התשובה הנכונה היא: ${currentAnswer}`;
+                resultDiv.className = 'result wrong';
+            }
+            
+            document.getElementById('quizNextBtn').disabled = false;
+        }
+        
+        // משחק 2: התאמת שברים
+        function createMatchingGame() {
+            const pairs = [
+                { text: 'חצי - ½', visual: 'linear-gradient(90deg, #e74c3c 50%, #f39c12 50%)', id: 1 },
+                { text: 'שליש - ⅓', visual: 'conic-gradient(#e74c3c 0deg 120deg, #f39c12 120deg 360deg)', id: 2 },
+                { text: 'רבע - ¼', visual: 'conic-gradient(#e74c3c 0deg 90deg, #f39c12 90deg 360deg)', id: 3 }
+            ];
+            
+            const gameArea = document.getElementById('matchingGame');
+            const texts = pairs.map(p => ({ type: 'text', content: p.text, id: p.id }));
+            const visuals = pairs.map(p => ({ type: 'visual', content: p.visual, id: p.id }));
+            
+            const shuffled = [...texts, ...visuals].sort(() => Math.random() - 0.5);
+            
+            gameArea.innerHTML = shuffled.map((item, idx) => {
+                if (item.type === 'text') {
+                    return `<div class="matching-item" onclick="selectMatch(${idx}, ${item.id}, 'text')">${item.content}</div>`;
+                } else {
+                    return `<div class="matching-item" onclick="selectMatch(${idx}, ${item.id}, 'visual')">
+                        <div class="circle" style="background: ${item.content}; margin: 0 auto; border: 5px solid #2c3e50; width: 120px; height: 120px;"></div>
+                    </div>`;
+                }
+            }).join('');
+        }
+        
+        function selectMatch(idx, id, type) {
+            if (matchedPairs.includes(id)) return;
+            
+            playSound(800, 0.1, 'click');
+            const items = document.querySelectorAll('.matching-item');
+            
+            if (selectedMatch === null) {
+                selectedMatch = { idx, id, type };
+                items[idx].classList.add('selected');
+            } else {
+                if (selectedMatch.idx === idx) {
+                    items[idx].classList.remove('selected');
+                    selectedMatch = null;
+                    return;
+                }
+                
+                if (selectedMatch.id === id && selectedMatch.type !== type) {
+                    playSound(523.25, 0.4, 'correct');
+                    items[selectedMatch.idx].classList.add('matched');
+                    items[selectedMatch.idx].classList.remove('selected');
+                    items[idx].classList.add('matched');
+                    matchedPairs.push(id);
+                    matchScore++;
+                    document.getElementById('matchScore').textContent = matchScore;
+                    
+                    if (matchedPairs.length === 3) {
+                        setTimeout(() => {
+                            playSound(523.25, 0.6, 'correct');
+                            alert('🎉 מעולה! השלמת את כל ההתאמות בהצלחה!');
+                        }, 300);
+                    }
+                } else {
+                    playSound(300, 0.3, 'wrong');
+                    items[selectedMatch.idx].classList.remove('selected');
+                }
+                selectedMatch = null;
+            }
+        }
+        
+        function resetMatching() {
+            playSound(800, 0.1, 'click');
+            matchedPairs = [];
+            selectedMatch = null;
+            matchScore = 0;
+            document.getElementById('matchScore').textContent = matchScore;
+            createMatchingGame();
+        }
+        
+        // משחק 3: השוואת שברים
+        function newCompareQuestion() {
+            playSound(800, 0.1, 'click');
+            
+            if (compareAnswered && compareRounds >= MAX_ROUNDS) {
+                document.getElementById('compareQuestion').textContent = '🎉 סיימת את כל השאלות!';
+                document.getElementById('compare1').style.display = 'none';
+                document.getElementById('compare2').style.display = 'none';
+                document.getElementById('btn1').style.display = 'none';
+                document.getElementById('btn2').style.display = 'none';
+                document.getElementById('compareResult').innerHTML = `<div class="final-message">
+                    <h3>הציון הסופי שלך: ${compareScore} נקודות! 🏆</h3>
+                    <p style="font-size: 1.2em; margin-top: 10px;">מצוין! אתה יודע להשוות שברים!</p>
+                </div>`;
+                document.getElementById('compareNextBtn').textContent = 'התחל סיבוב חדש';
+                document.getElementById('compareNextBtn').onclick = resetCompare;
+                return;
+            }
+            
+            if (!compareAnswered && compareRounds > 0) return;
+            
+            compareRounds++;
+            compareAnswered = false;
+            const fractionNames = Object.keys(fractions);
+            const frac1 = fractionNames[Math.floor(Math.random() * fractionNames.length)];
+            let frac2 = fractionNames[Math.floor(Math.random() * fractionNames.length)];
+            while (frac1 === frac2) {
+                frac2 = fractionNames[Math.floor(Math.random() * fractionNames.length)];
+            }
+            
+            document.getElementById('compareQuestion').textContent = 'איזה שבר יותר גדול? בחר את העיגול הנכון!';
+            document.getElementById('compare1').style.display = 'block';
+            document.getElementById('compare2').style.display = 'block';
+            document.getElementById('compare1').style.background = fractions[frac1].color;
+            document.getElementById('compare2').style.background = fractions[frac2].color;
+            document.getElementById('btn1').style.display = 'block';
+            document.getElementById('btn2').style.display = 'block';
+            document.getElementById('btn1').disabled = false;
+            document.getElementById('btn2').disabled = false;
+            document.getElementById('compareResult').textContent = '';
+            document.getElementById('compareProgress').textContent = `${compareRounds}/${MAX_ROUNDS}`;
+            
+            compareAnswer = fractions[frac1].value > fractions[frac2].value ? 1 : 2;
+            
+            window.currentFrac1 = frac1;
+            window.currentFrac2 = frac2;
+            
+            document.getElementById('compareNextBtn').disabled = true;
+        }
+        
+        function resetCompare() {
+            playSound(800, 0.1, 'click');
+            compareScore = 0;
+            compareRounds = 0;
+            compareAnswered = false;
+            document.getElementById('compareScore').textContent = compareScore;
+            document.getElementById('compareProgress').textContent = '0/15';
+            document.getElementById('compareQuestion').textContent = 'לחץ על "שאלה חדשה" כדי להתחיל!';
+            document.getElementById('compare1').style.display = 'block';
+            document.getElementById('compare2').style.display = 'block';
+            document.getElementById('compare1').style.background = '#ffd700';
+            document.getElementById('compare2').style.background = '#ffd700';
+            document.getElementById('btn1').style.display = 'none';
+            document.getElementById('btn2').style.display = 'none';
+            document.getElementById('compareResult').textContent = '';
+            document.getElementById('compareNextBtn').textContent = 'שאלה חדשה';
+            document.getElementById('compareNextBtn').onclick = newCompareQuestion;
+            document.getElementById('compareNextBtn').disabled = false;
+        }
+        
+        function checkCompareAnswer(choice) {
+            if (compareAnswered) return;
+            
+            compareAnswered = true;
+            const resultDiv = document.getElementById('compareResult');
+            document.getElementById('btn1').disabled = true;
+            document.getElementById('btn2').disabled = true;
+            
+            if (choice === compareAnswer) {
+                playSound(523.25, 0.4, 'correct');
+                resultDiv.textContent = '🎉 מצוין! זיהית נכון!';
+                resultDiv.className = 'result correct';
+                compareScore += 10;
+                document.getElementById('compareScore').textContent = compareScore;
+            } else {
+                playSound(300, 0.3, 'wrong');
+                const correctName = compareAnswer === 1 ? window.currentFrac1 : window.currentFrac2;
+                resultDiv.textContent = `❌ לא נכון. ${correctName} גדול יותר!`;
+                resultDiv.className = 'result wrong';
+            }
+            
+            document.getElementById('compareNextBtn').disabled = false;
+        }
+        
+        // אתחול משחק ההתאמות
+        createMatchingGame();
+    </script>
+</body>
+</html>
