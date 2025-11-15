@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>שיעור מתמטיקה לכיתה ג'</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .menu {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .menu-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .menu-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .game-area {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 20px;
+            border: 4px solid #f39c12;
+        }
+        
+        .challenge-area {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 20px;
+            border: 4px solid #f39c12;
+        }
+        
+        .score-area {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        
+        .points {
+            color: #27ae60;
+        }
+        
+        .wrong {
+            color: #e74c3c;
+        }
+        
+        .timer {
+            color: #e67e22;
+        }
+        
+        .question {
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 30px 0;
+            direction: ltr;
+        }
+        
+        .answer-input {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        input[type="number"] {
+            font-size: 2em;
+            padding: 15px;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            width: 200px;
+            text-align: center;
+        }
+        
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.3em;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.4);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.6);
+        }
+        
+        .lesson-content {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            margin-top: 20px;
+            font-size: 1.2em;
+            line-height: 1.8;
+        }
+        
+        .example {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 15px 0;
+            font-size: 1.3em;
+        }
+        
+        .ltr-text {
+            direction: ltr;
+            display: inline-block;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .feedback {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 15px;
+        }
+        
+        .correct {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .incorrect {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 שיעור מתמטיקה מתקדם לכיתה ג' 🎓</h1>
+            <p class="subtitle">כפל וחילוק עד 100, חיבור וחיסור דו-ספרתי, בעיות מילוליות ועוד!</p>
+        </div>
+        
+        <div class="menu" id="menu">
+            <button class="menu-btn" onclick="showLesson('multiplication')">לימוד כפל ✖️</button>
+            <button class="menu-btn" onclick="showLesson('division')">לימוד חילוק ➗</button>
+            <button class="menu-btn" onclick="startGame('multiplication')">תרגול כפל 🎯</button>
+            <button class="menu-btn" onclick="startGame('division')">תרגול חילוק 🎲</button>
+            <button class="menu-btn" onclick="startGame('mixed')">אתגר מעורב 🔥</button>
+            <button class="menu-btn" onclick="showLesson('word')">הסבר על בעיות מילוליות 💡</button>
+        </div>
+        
+        <div id="content"></div>
+    </div>
+
+    <script>
+        let score = 0;
+        let wrong = 0;
+        let timeLeft = 60;
+        let timer;
+        let currentAnswer;
+        let gameType;
+        let audioContext;
+        let isChecking = false;
+        
+        // Initialize audio context on first user interaction
+        function initAudio() {
+            if (!audioContext) {
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    console.log('Audio not supported');
+                }
+            }
+        }
+        
+        function playClickSound() {
+            initAudio();
+            if (!audioContext) return;
+            
+            try {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 600;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.08);
+            } catch (e) {
+                console.log('Sound error');
+            }
+        }
+        
+        function playCorrectSound() {
+            initAudio();
+            if (!audioContext) return;
+            
+            try {
+                const times = [0, 0.1, 0.2];
+                const frequencies = [523.25, 659.25, 783.99];
+                
+                for (let i = 0; i < times.length; i++) {
+                    (function(time, freq) {
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.value = freq;
+                        oscillator.type = 'sine';
+                        
+                        gainNode.gain.setValueAtTime(0, audioContext.currentTime + time);
+                        gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + time + 0.01);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + time + 0.15);
+                        
+                        oscillator.start(audioContext.currentTime + time);
+                        oscillator.stop(audioContext.currentTime + time + 0.15);
+                    })(times[i], frequencies[i]);
+                }
+            } catch (e) {
+                console.log('Sound error');
+            }
+        }
+        
+        function playWrongSound() {
+            initAudio();
+            if (!audioContext) return;
+            
+            try {
+                const times = [0, 0.08];
+                const frequencies = [400, 300];
+                
+                for (let i = 0; i < times.length; i++) {
+                    (function(time, freq) {
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.value = freq;
+                        oscillator.type = 'sine';
+                        
+                        gainNode.gain.setValueAtTime(0, audioContext.currentTime + time);
+                        gainNode.gain.linearRampToValueAtTime(0.12, audioContext.currentTime + time + 0.01);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + time + 0.12);
+                        
+                        oscillator.start(audioContext.currentTime + time);
+                        oscillator.stop(audioContext.currentTime + time + 0.12);
+                    })(times[i], frequencies[i]);
+                }
+            } catch (e) {
+                console.log('Sound error');
+            }
+        }
+
+        function showLesson(type) {
+            playClickSound();
+            const content = document.getElementById('content');
+            let lessonHTML = '<div class="lesson-content">';
+            
+            if (type === 'multiplication') {
+                lessonHTML += `
+                    <h2 style="text-align: center; margin-bottom: 20px;">לימוד כפל - לוח הכפל! 📊</h2>
+                    <p><strong>כפל</strong> זה חיבור חוזר של אותו מספר!</p>
+                    <div class="example">
+                        <p>לדוגמה: <span class="ltr-text">3 × 4 = ?</span></p>
+                        <p>זה אומר: <span class="ltr-text">4 + 4 + 4 = 12</span></p>
+                        <p>או: <span class="ltr-text">3 + 3 + 3 + 3 = 12</span></p>
+                    </div>
+                    <div class="example">
+                        <p><strong>טיפ חשוב:</strong> 🌟</p>
+                        <p><span class="ltr-text">6 × 5</span> זה אותו דבר כמו <span class="ltr-text">5 × 6</span></p>
+                        <p>התוצאה היא תמיד <span class="ltr-text">30</span>!</p>
+                    </div>
+                    <div class="example">
+                        <p><strong>טריק לכפל ב-9:</strong></p>
+                        <p><span class="ltr-text">6 × 9 = ?</span></p>
+                        <p>הספרה הראשונה: <span class="ltr-text">6-1 = 5</span></p>
+                        <p>הספרה השנייה: <span class="ltr-text">9-5 = 4</span></p>
+                        <p>התשובה: <span class="ltr-text">54</span>! ✨</p>
+                    </div>
+                    <button class="submit-btn" onclick="startGame('multiplication')">בוא נתרגל! 🎯</button>
+                `;
+            } else if (type === 'division') {
+                lessonHTML += `
+                    <h2 style="text-align: center; margin-bottom: 20px;">לימוד חילוק - חלוקה שווה! ➗</h2>
+                    <p><strong>חילוק</strong> זה לחלק מספר לחלקים שווים!</p>
+                    <div class="example">
+                        <p>לדוגמה: <span class="ltr-text">12 ÷ 3 = ?</span></p>
+                        <p>כמה פעמים <span class="ltr-text">3</span> נכנס ב-<span class="ltr-text">12</span>?</p>
+                        <p><span class="ltr-text">3 + 3 + 3 + 3 = 12</span></p>
+                        <p>התשובה: <span class="ltr-text">4</span> פעמים! ✅</p>
+                    </div>
+                    <div class="example">
+                        <p><strong>טיפ חשוב:</strong> 🌟</p>
+                        <p>חילוק הוא ההפך מכפל!</p>
+                        <p>אם <span class="ltr-text">4 × 6 = 24</span></p>
+                        <p>אז <span class="ltr-text">24 ÷ 4 = 6</span></p>
+                        <p>ו- <span class="ltr-text">24 ÷ 6 = 4</span></p>
+                    </div>
+                    <div class="example">
+                        <p><strong>זכור:</strong></p>
+                        <p>כל מספר חלקי עצמו = <span class="ltr-text">1</span></p>
+                        <p>כל מספר חלקי <span class="ltr-text">1</span> = המספר עצמו</p>
+                    </div>
+                    <button class="submit-btn" onclick="startGame('division')">בוא נתרגל! 🎯</button>
+                `;
+            } else if (type === 'word') {
+                lessonHTML += `
+                    <h2 style="text-align: center; margin-bottom: 20px;">בעיות מילוליות 📖</h2>
+                    <p><strong>איך פותרים בעיות מילוליות?</strong></p>
+                    <div class="example">
+                        <p><strong>שלב 1:</strong> קרא את השאלה בעיון 👀</p>
+                        <p><strong>שלב 2:</strong> מצא את המספרים החשובים 🔢</p>
+                        <p><strong>שלב 3:</strong> בחר פעולה <span class="ltr-text">(+ - × ÷)</span> ✏️</p>
+                        <p><strong>שלב 4:</strong> פתור ובדוק! ✅</p>
+                    </div>
+                    <div class="example">
+                        <p><strong>דוגמה:</strong></p>
+                        <p>"לשרה יש <span class="ltr-text">4</span> קופסאות עפרונות. בכל קופסה <span class="ltr-text">6</span> עפרונות. כמה עפרונות יש לה?"</p>
+                        <p>📝 המספרים: <span class="ltr-text">4</span> ו-<span class="ltr-text">6</span></p>
+                        <p>🤔 הפעולה: כפל (כי יש כמה קופסאות של אותה כמות)</p>
+                        <p>✨ הפתרון: <span class="ltr-text">4 × 6 = 24</span> עפרונות</p>
+                    </div>
+                    <button class="submit-btn" onclick="startGame('word')">אתגר בעיות! 🔥</button>
+                `;
+            }
+            
+            lessonHTML += '</div>';
+            content.innerHTML = lessonHTML;
+        }
+
+        function startGame(type) {
+            playClickSound();
+            gameType = type;
+            score = 0;
+            wrong = 0;
+            timeLeft = 60;
+            isChecking = false;
+            
+            const content = document.getElementById('content');
+            const areaClass = type === 'mixed' ? 'challenge-area' : 'game-area';
+            content.innerHTML = `
+                <div class="${areaClass}">
+                    <div class="score-area">
+                        <div>נקודות: <span class="points" id="score">0</span></div>
+                        <div>טעויות: <span class="wrong" id="wrong">0</span></div>
+                        <div class="timer">⏰ זמן נותר: <span id="timer">60</span> שניות</div>
+                    </div>
+                    <div class="question" id="question"></div>
+                    <div class="answer-input">
+                        <input type="number" id="answer" placeholder="?" />
+                    </div>
+                    <div style="text-align: center;">
+                        <button class="submit-btn" onclick="checkAnswer()">✓ בדוק</button>
+                    </div>
+                    <div id="feedback"></div>
+                </div>
+            `;
+            
+            nextQuestion();
+            startTimer();
+            
+            const answerInput = document.getElementById('answer');
+            if (answerInput) {
+                answerInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') checkAnswer();
+                });
+            }
+        }
+
+        function nextQuestion() {
+            const questionEl = document.getElementById('question');
+            if (!questionEl) return;
+            
+            let num1, num2, operation;
+            
+            if (gameType === 'multiplication') {
+                num1 = Math.floor(Math.random() * 10) + 1;
+                num2 = Math.floor(Math.random() * 10) + 1;
+                currentAnswer = num1 * num2;
+                questionEl.innerHTML = `${num1} × ${num2} = ?`;
+            } else if (gameType === 'division') {
+                num2 = Math.floor(Math.random() * 9) + 2;
+                currentAnswer = Math.floor(Math.random() * 9) + 1;
+                num1 = num2 * currentAnswer;
+                questionEl.innerHTML = `${num1} ÷ ${num2} = ?`;
+            } else if (gameType === 'word') {
+                const wordProblems = [
+                    {
+                        text: 'בכיתה יש {0} תלמידים. כל תלמיד קיבל {1} עפרונות. כמה עפרונות חולקו בסך הכל?',
+                        type: '×'
+                    },
+                    {
+                        text: 'למורה יש {0} מדבקות. היא רוצה לחלק אותן שווה בשווה ל-{1} ילדים. כמה מדבקות יקבל כל ילד?',
+                        type: '÷'
+                    },
+                    {
+                        text: 'בספרייה היו {0} ספרים. הוסיפו עוד {1} ספרים חדשים. כמה ספרים יש כעת?',
+                        type: '+'
+                    },
+                    {
+                        text: 'לדני היו {0} שקלים. הוא קנה צעצוע ב-{1} שקלים. כמה כסף נשאר לו?',
+                        type: '-'
+                    },
+                    {
+                        text: 'בגינה יש {0} שורות של פרחים. בכל שורה {1} פרחים. כמה פרחים יש בגינה?',
+                        type: '×'
+                    },
+                    {
+                        text: 'במשחק אספו {0} נקודות. צריך לחלק אותן בין {1} שחקנים. כמה נקודות יקבל כל שחקן?',
+                        type: '÷'
+                    },
+                    {
+                        text: 'בחנות היו {0} בלונים אדומים ו-{1} בלונים כחולים. כמה בלונים יש בסך הכל?',
+                        type: '+'
+                    },
+                    {
+                        text: 'אמא קנתה {0} עוגיות. האחים אכלו {1} עוגיות. כמה עוגיות נשארו?',
+                        type: '-'
+                    },
+                    {
+                        text: 'בכל קופסה יש {0} סוכריות. יש {1} קופסאות. כמה סוכריות יש בסך הכל?',
+                        type: '×'
+                    },
+                    {
+                        text: 'חילקו {0} תפוחים בין {1} ילדים באופן שווה. כמה תפוחים קיבל כל ילד?',
+                        type: '÷'
+                    }
+                ];
+                
+                const problem = wordProblems[Math.floor(Math.random() * wordProblems.length)];
+                
+                if (problem.type === '×') {
+                    num1 = Math.floor(Math.random() * 8) + 2;
+                    num2 = Math.floor(Math.random() * 8) + 2;
+                    currentAnswer = num1 * num2;
+                } else if (problem.type === '÷') {
+                    num2 = Math.floor(Math.random() * 7) + 2;
+                    currentAnswer = Math.floor(Math.random() * 8) + 2;
+                    num1 = num2 * currentAnswer;
+                } else if (problem.type === '+') {
+                    num1 = Math.floor(Math.random() * 40) + 10;
+                    num2 = Math.floor(Math.random() * 40) + 10;
+                    currentAnswer = num1 + num2;
+                } else {
+                    num1 = Math.floor(Math.random() * 50) + 30;
+                    num2 = Math.floor(Math.random() * 25) + 5;
+                    currentAnswer = num1 - num2;
+                }
+                
+                const questionText = problem.text.replace('{0}', `<span class="ltr-text">${num1}</span>`).replace('{1}', `<span class="ltr-text">${num2}</span>`);
+                questionEl.style.fontSize = '1.8em';
+                questionEl.style.direction = 'rtl';
+                questionEl.innerHTML = questionText;
+            } else {
+                const ops = ['+', '-', '×', '÷'];
+                operation = ops[Math.floor(Math.random() * ops.length)];
+                
+                if (operation === '+') {
+                    num1 = Math.floor(Math.random() * 50) + 10;
+                    num2 = Math.floor(Math.random() * 50) + 10;
+                    currentAnswer = num1 + num2;
+                } else if (operation === '-') {
+                    num1 = Math.floor(Math.random() * 50) + 30;
+                    num2 = Math.floor(Math.random() * 30) + 1;
+                    currentAnswer = num1 - num2;
+                } else if (operation === '×') {
+                    num1 = Math.floor(Math.random() * 10) + 1;
+                    num2 = Math.floor(Math.random() * 10) + 1;
+                    currentAnswer = num1 * num2;
+                } else {
+                    num2 = Math.floor(Math.random() * 9) + 2;
+                    currentAnswer = Math.floor(Math.random() * 9) + 1;
+                    num1 = num2 * currentAnswer;
+                }
+                
+                questionEl.style.fontSize = '2.5em';
+                questionEl.style.direction = 'ltr';
+                questionEl.innerHTML = `${num1} ${operation} ${num2} = ?`;
+            }
+            
+            const answerInput = document.getElementById('answer');
+            const feedbackEl = document.getElementById('feedback');
+            
+            if (answerInput) {
+                answerInput.value = '';
+                answerInput.focus();
+            }
+            if (feedbackEl) {
+                feedbackEl.innerHTML = '';
+            }
+        }
+
+        function checkAnswer() {
+            if (isChecking) return;
+            
+            playClickSound();
+            const answerInput = document.getElementById('answer');
+            const feedback = document.getElementById('feedback');
+            const scoreEl = document.getElementById('score');
+            const wrongEl = document.getElementById('wrong');
+            
+            if (!answerInput || !feedback) return;
+            
+            const userAnswer = parseInt(answerInput.value);
+            
+            if (isNaN(userAnswer)) {
+                feedback.innerHTML = '<div class="feedback incorrect">אנא הכנס תשובה!</div>';
+                playWrongSound();
+                return;
+            }
+            
+            isChecking = true;
+            
+            if (userAnswer === currentAnswer) {
+                playCorrectSound();
+                score += 2;
+                if (scoreEl) scoreEl.textContent = score;
+                feedback.innerHTML = '<div class="feedback correct">🎉 מצוין! תשובה נכונה!</div>';
+                setTimeout(function() {
+                    isChecking = false;
+                    nextQuestion();
+                }, 1000);
+            } else {
+                playWrongSound();
+                wrong++;
+                if (wrongEl) wrongEl.textContent = wrong;
+                feedback.innerHTML = `<div class="feedback incorrect">❌ לא נכון. התשובה הנכונה היא <span class="ltr-text">${currentAnswer}</span></div>`;
+                setTimeout(function() {
+                    isChecking = false;
+                    nextQuestion();
+                }, 2000);
+            }
+        }
+
+        function startTimer() {
+            if (timer) clearInterval(timer);
+            
+            timer = setInterval(function() {
+                timeLeft--;
+                const timerEl = document.getElementById('timer');
+                if (timerEl) {
+                    timerEl.textContent = timeLeft;
+                }
+                
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function endGame() {
+            clearInterval(timer);
+            const content = document.getElementById('content');
+            let message = '';
+            let bgColor = '';
+            let borderColor = '';
+            
+            if (score >= 20) {
+                message = '🏆 מדהים! אתה אלוף מתמטיקה!';
+                bgColor = 'background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);';
+                borderColor = 'border: 4px solid #27ae60;';
+            } else if (score >= 10) {
+                message = '⭐ כל הכבוד! עבודה טובה!';
+                bgColor = 'background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);';
+                borderColor = 'border: 4px solid #74b9ff;';
+            } else {
+                message = '💪 המשך להתאמן, אתה משתפר!';
+                bgColor = 'background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);';
+                borderColor = 'border: 4px solid #f39c12;';
+            }
+            
+            content.innerHTML = `
+                <div style="border-radius: 20px; padding: 30px; margin-top: 20px; ${bgColor} ${borderColor}">
+                    <h2 style="text-align: center; font-size: 2.5em; margin-bottom: 20px; color: #2c3e50;">המשחק הסתיים!</h2>
+                    <div style="text-align: center; font-size: 2em; margin: 30px 0;">
+                        <p style="color: #27ae60; margin: 10px 0;">נקודות: <span class="ltr-text">${score}</span> 🎯</p>
+                        <p style="color: #e74c3c; margin: 10px 0;">טעויות: <span class="ltr-text">${wrong}</span> ❌</p>
+                        <p style="font-size: 1.5em; margin: 30px 0; color: #2c3e50;">${message}</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <button class="submit-btn" onclick="startGame('${gameType}')">שחק שוב! 🔄</button>
+                        <button class="submit-btn" onclick="location.reload()">חזור לתפריט 🏠</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        document.addEventListener('wheel', function(e) {
+            if (document.activeElement && document.activeElement.type === 'number') {
+                document.activeElement.blur();
+            }
+        });
+    </script>
+</body>
+</html>
