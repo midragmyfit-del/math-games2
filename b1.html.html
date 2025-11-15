@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מתמטיקה כיתה ב׳</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin: 0; padding: 20px; min-height: 100vh; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 20px; padding: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+        .header { text-align: center; color: #5b21b6; margin-bottom: 30px; }
+        .game-button { background: linear-gradient(45deg, #8b5cf6, #7c3aed); color: white; border: none; padding: 18px 35px; font-size: 18px; border-radius: 25px; cursor: pointer; margin: 10px; transition: all 0.3s; font-weight: bold; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
+        .game-button:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(139, 92, 246, 0.6); }
+        .nav-buttons { display: flex; justify-content: center; gap: 15px; margin: 30px 0; flex-wrap: wrap; }
+        .section { display: none; }
+        .section.active { display: block; }
+        .score { background: linear-gradient(135deg, #fef3c7, #fde68a); padding: 20px; border-radius: 12px; text-align: center; font-size: 24px; font-weight: bold; color: #92400e; margin: 20px 0; border: 2px solid #d97706; }
+        .question { font-size: 32px; text-align: center; margin: 25px 0; color: #374151; font-weight: bold; }
+        .answer-input { font-size: 28px; padding: 15px; border: 3px solid #d1d5db; border-radius: 12px; text-align: center; width: 150px; margin: 0 15px; direction: ltr; }
+        .feedback { text-align: center; font-size: 28px; margin: 25px 0; font-weight: bold; min-height: 35px; }
+        .correct { color: #059669; }
+        .incorrect { color: #dc2626; }
+        .celebration { display: none; text-align: center; font-size: 80px; animation: bounce 1s infinite; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-40px); } 60% { transform: translateY(-20px); } }
+        .place-box { display: inline-block; padding: 15px 20px; margin: 5px; border-radius: 10px; font-size: 24px; font-weight: bold; min-width: 80px; text-align: center; }
+        .hundreds { background: #fee2e2; color: #991b1b; border: 3px solid #dc2626; }
+        .tens { background: #dbeafe; color: #1e40af; border: 3px solid #3b82f6; }
+        .ones { background: #dcfce7; color: #166534; border: 3px solid #22c55e; }
+        .number-display { background: linear-gradient(135deg, #ddd6fe, #c7d2fe); padding: 20px 30px; border-radius: 15px; color: #5b21b6; border: 3px solid #7c3aed; direction: ltr; }
+        .symbol-button { padding: 15px 25px; font-size: 32px; margin: 0 10px; border: 3px solid #d1d5db; background: white; border-radius: 12px; cursor: pointer; transition: all 0.3s; }
+        .symbol-button:hover { background: #f3f4f6; transform: scale(1.1); }
+        .symbol-button.selected { background: #8b5cf6; color: white; border-color: #7c3aed; }
+        .even-odd-btn { padding: 20px 40px; font-size: 24px; margin: 15px; border: 3px solid #d1d5db; background: white; border-radius: 12px; cursor: pointer; transition: all 0.3s; font-weight: bold; }
+        .even-odd-btn:hover { background: #f3f4f6; transform: scale(1.05); }
+        .even-odd-btn.selected { background: #8b5cf6; color: white; border-color: #7c3aed; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 שיעור מתמטיקה לכיתה ב׳ 🎓</h1>
+            <p>מספרים עד 1000!</p>
+        </div>
+        
+        <div class="nav-buttons">
+            <button class="game-button" onclick="showSection('lesson')">📚 שיעור</button>
+            <button class="game-button" onclick="showSection('pv')">🎮 משחק ערך מקומי</button>
+            <button class="game-button" onclick="showSection('comp')">🎮 משחק השוואה</button>
+            <button class="game-button" onclick="showSection('order')">🎮 משחק סידור</button>
+            <button class="game-button" onclick="showSection('evenodd')">🎮 משחק זוגי/אי-זוגי</button>
+        </div>
+        
+        <div id="lesson" class="section active">
+            <h2 style="text-align: center;">📖 מספרים עד 1000</h2>
+            
+            <div style="background: #f0f9ff; padding: 25px; border-radius: 15px; margin: 20px 0; border-right: 6px solid #3730a3;">
+                <h3>🎯 ערך מקומי - 3 מקומות!</h3>
+                <div style="text-align: center; margin: 20px 0;">
+                    <div class="place-box hundreds">מאות</div>
+                    <div class="place-box tens">עשרות</div>
+                    <div class="place-box ones">אחדות</div>
+                </div>
+                <p style="text-align: center; font-size: 18px;">כל ספרה יושבת במקום שלה ויש לה ערך משלה!</p>
+            </div>
+            
+            <div style="background: white; padding: 25px; border-radius: 15px; margin: 20px 0; border: 3px solid #8b5cf6;">
+                <div style="direction: ltr; font-size: 48px; font-weight: bold; color: #5b21b6; text-align: center; margin-bottom: 20px;">456</div>
+                <h4 style="text-align: center;">ארבע מאות חמישים ושישה</h4>
+                <div style="text-align: center; margin: 20px 0;">
+                    <div style="margin: 10px 0;"><span class="place-box hundreds">4</span> <span style="margin: 0 10px;">מאות =</span> <span style="direction: ltr; display: inline-block; font-size: 20px; font-weight: bold;">400</span></div>
+                    <div style="margin: 10px 0;"><span class="place-box tens">5</span> <span style="margin: 0 10px;">עשרות =</span> <span style="direction: ltr; display: inline-block; font-size: 20px; font-weight: bold;">50</span></div>
+                    <div style="margin: 10px 0;"><span class="place-box ones">6</span> <span style="margin: 0 10px;">אחדות =</span> <span style="direction: ltr; display: inline-block; font-size: 20px; font-weight: bold;">6</span></div>
+                </div>
+                <div style="text-align: center; font-size: 20px; color: #6b7280; margin-top: 20px; direction: ltr;">400 + 50 + 6 = 456</div>
+            </div>
+            
+            <div style="background: #fef3c7; padding: 25px; border-radius: 15px; margin: 20px 0; border: 3px solid #f59e0b;">
+                <h3 style="text-align: center; color: #92400e;">💡 השוואת מספרים</h3>
+                <ol style="font-size: 18px; line-height: 2;">
+                    <li><strong>נסתכל על המאות</strong> - מי שיש לו יותר מאות, הוא הגדול!</li>
+                    <li><strong>אם המאות שוות</strong> - נסתכל על העשרות</li>
+                    <li><strong>אם העשרות שוות</strong> - נסתכל על האחדות</li>
+                </ol>
+                <div style="background: white; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                    <p style="text-align: center; font-size: 20px;"><strong>דוגמה:</strong></p>
+                    <p style="direction: ltr; text-align: center; font-size: 28px; color: #5b21b6; font-weight: bold;">543 > 529</p>
+                    <p style="text-align: center; font-size: 18px;">המאות שוות (5), אבל העשרות: 4 > 2</p>
+                </div>
+            </div>
+            
+            <div style="background: #e0e7ff; padding: 25px; border-radius: 15px; margin: 20px 0; border: 3px solid #4338ca;">
+                <h3 style="text-align: center; color: #3730a3;">🔢 מספרים זוגיים ואי-זוגיים</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+                    <div style="background: #dcfce7; padding: 20px; border-radius: 10px; border: 2px solid #22c55e;">
+                        <h4 style="text-align: center; color: #166534;">✅ מספרים זוגיים</h4>
+                        <p style="text-align: center; font-size: 18px;">מסתיימים ב: 0, 2, 4, 6, 8</p>
+                        <p style="text-align: center; direction: ltr; font-size: 24px; font-weight: bold; color: #059669;">124, 236, 458, 670, 892</p>
+                        <p style="text-align: center;">ניתן לחלק ל-2 קבוצות שוות!</p>
+                    </div>
+                    <div style="background: #fee2e2; padding: 20px; border-radius: 10px; border: 2px solid #dc2626;">
+                        <h4 style="text-align: center; color: #991b1b;">❌ מספרים אי-זוגיים</h4>
+                        <p style="text-align: center; font-size: 18px;">מסתיימים ב: 1, 3, 5, 7, 9</p>
+                        <p style="text-align: center; direction: ltr; font-size: 24px; font-weight: bold; color: #dc2626;">135, 247, 369, 571, 893</p>
+                        <p style="text-align: center;">נשאר 1 כשמחלקים ל-2!</p>
+                    </div>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                    <p style="text-align: center; font-size: 20px; font-weight: bold;">💡 טיפ: תסתכלו רק על הספרה האחרונה!</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="pv" class="section">
+            <h2 style="text-align: center;">🔢 משחק ערך מקומי</h2>
+            <div class="score">נקודות: <span id="sPV">0</span> | שאלה: <span id="qPV">0</span>/12</div>
+            <div id="QPV" class="question"></div>
+            <div style="text-align: center;">
+                <input type="number" id="aPV" class="answer-input" placeholder="?">
+                <button class="game-button" onclick="check('pv')">✓ בדוק</button>
+            </div>
+            <div id="fPV" class="feedback"></div>
+            <div id="cPV" class="celebration">🎉</div>
+            <button class="game-button" onclick="next('pv')" style="display: block; margin: 20px auto;" id="nPV">❓ שאלה חדשה</button>
+            <button class="game-button" onclick="restart('pv')" style="display: none; margin: 20px auto; background: linear-gradient(45deg, #10b981, #059669);" id="rPV">🔄 סיבוב נוסף</button>
+            <div id="ePV" style="display: none; background: #fef3c7; padding: 30px; border-radius: 15px; text-align: center;">
+                <h3 style="color: #92400e; font-size: 28px;">🎉 כל הכבוד! סיימת!</h3>
+                <p style="font-size: 24px;">קיבלת <strong id="fsPV">0</strong> נקודות מתוך 12!</p>
+            </div>
+        </div>
+        
+        <div id="comp" class="section">
+            <h2 style="text-align: center;">⚖️ משחק השוואה</h2>
+            <div class="score">נקודות: <span id="sComp">0</span> | שאלה: <span id="qComp">0</span>/12</div>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 30px; margin: 30px 0; font-size: 36px; font-weight: bold;">
+                <div class="number-display" id="n1"></div>
+                <div id="sym">?</div>
+                <div class="number-display" id="n2"></div>
+            </div>
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="symbol-button" onclick="selectSym('<', this)">&lt;</button>
+                <button class="symbol-button" onclick="selectSym('=', this)">=</button>
+                <button class="symbol-button" onclick="selectSym('>', this)">></button>
+            </div>
+            <div style="text-align: center;">
+                <button class="game-button" onclick="check('comp')">✓ בדוק</button>
+            </div>
+            <div id="fComp" class="feedback"></div>
+            <div id="cComp" class="celebration">🎉</div>
+            <button class="game-button" onclick="next('comp')" style="display: block; margin: 20px auto;" id="nComp">❓ שאלה חדשה</button>
+            <button class="game-button" onclick="restart('comp')" style="display: none; margin: 20px auto; background: linear-gradient(45deg, #10b981, #059669);" id="rComp">🔄 סיבוב נוסף</button>
+            <div id="eComp" style="display: none; background: #fef3c7; padding: 30px; border-radius: 15px; text-align: center;">
+                <h3 style="color: #92400e; font-size: 28px;">🎉 כל הכבוד! סיימת!</h3>
+                <p style="font-size: 24px;">קיבלת <strong id="fsComp">0</strong> נקודות מתוך 12!</p>
+            </div>
+        </div>
+        
+        <div id="order" class="section">
+            <h2 style="text-align: center;">📊 משחק סידור מספרים</h2>
+            <div class="score">נקודות: <span id="sOrd">0</span> | שאלה: <span id="qOrd">0</span>/12</div>
+            <p style="text-align: center; font-size: 20px; margin: 20px 0;">סדרו את המספרים מהקטן לגדול!</p>
+            <div id="nums" style="display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin: 30px 0;"></div>
+            <div style="text-align: center; margin: 20px 0;">
+                <p style="font-size: 18px; margin-bottom: 15px;">הקלידו את המספרים בסדר (מופרדים ברווח או פסיק):</p>
+                <input type="text" id="aOrd" style="width: 400px; font-size: 20px; padding: 15px; border: 3px solid #d1d5db; border-radius: 12px; text-align: center; direction: ltr;">
+            </div>
+            <div style="text-align: center;">
+                <button class="game-button" onclick="check('order')">✓ בדוק</button>
+            </div>
+            <div id="fOrd" class="feedback"></div>
+            <div id="cOrd" class="celebration">🎉</div>
+            <button class="game-button" onclick="next('order')" style="display: block; margin: 20px auto;" id="nOrd">❓ שאלה חדשה</button>
+            <button class="game-button" onclick="restart('order')" style="display: none; margin: 20px auto; background: linear-gradient(45deg, #10b981, #059669);" id="rOrd">🔄 סיבוב נוסף</button>
+            <div id="eOrd" style="display: none; background: #fef3c7; padding: 30px; border-radius: 15px; text-align: center;">
+                <h3 style="color: #92400e; font-size: 28px;">🎉 כל הכבוד! סיימת!</h3>
+                <p style="font-size: 24px;">קיבלת <strong id="fsOrd">0</strong> נקודות מתוך 12!</p>
+            </div>
+        </div>
+        
+        <div id="evenodd" class="section">
+            <h2 style="text-align: center;">🔢 משחק זוגי/אי-זוגי</h2>
+            <div class="score">נקודות: <span id="sEO">0</span> | שאלה: <span id="qEO">0</span>/12</div>
+            <div id="QEO" class="question"></div>
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="even-odd-btn" onclick="selectEO('even', this)">זוגי</button>
+                <button class="even-odd-btn" onclick="selectEO('odd', this)">אי-זוגי</button>
+            </div>
+            <div style="text-align: center;">
+                <button class="game-button" onclick="check('evenodd')">✓ בדוק</button>
+            </div>
+            <div id="fEO" class="feedback"></div>
+            <div id="cEO" class="celebration">🎉</div>
+            <button class="game-button" onclick="next('evenodd')" style="display: block; margin: 20px auto;" id="nEO">❓ שאלה חדשה</button>
+            <button class="game-button" onclick="restart('evenodd')" style="display: none; margin: 20px auto; background: linear-gradient(45deg, #10b981, #059669);" id="rEO">🔄 סיבוב נוסף</button>
+            <div id="eEO" style="display: none; background: #fef3c7; padding: 30px; border-radius: 15px; text-align: center;">
+                <h3 style="color: #92400e; font-size: 28px;">🎉 כל הכבוד! סיימת!</h3>
+                <p style="font-size: 24px;">קיבלת <strong id="fsEO">0</strong> נקודות מתוך 12!</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        var s={pv:0,comp:0,order:0,evenodd:0},q={pv:0,comp:0,order:0,evenodd:0},ans={},sel='',selEO='',ctx,max=12,checking=false;
+        
+        function initAudio(){if(!ctx)ctx=new(window.AudioContext||window.webkitAudioContext)();}
+        function playC(){initAudio();var o=ctx.createOscillator(),g=ctx.createGain(),f=ctx.createBiquadFilter();o.connect(f);f.connect(g);g.connect(ctx.destination);o.frequency.value=523;o.type='triangle';f.type='lowpass';f.frequency.value=2000;g.gain.setValueAtTime(0.12,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.2);o.start();o.stop(ctx.currentTime+0.2);}
+        function playS(){initAudio();[523,659,784,1047].forEach((f,i)=>{setTimeout(()=>{var o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=f;g.gain.setValueAtTime(0.2,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.3);o.start();o.stop(ctx.currentTime+0.3);},i*100);});}
+        
+        function showSection(id){playC();document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');if(id!=='lesson'&&q[id]===0&&q[id]<max)next(id);}
+        
+        function next(t){
+            checking=false;
+            if(q[t]>=max){end(t);return;}
+            q[t]++;
+            var suf=t==='pv'?'PV':t==='comp'?'Comp':t==='order'?'Ord':'EO';
+            document.getElementById('q'+suf).textContent=q[t];
+            
+            if(t==='pv'){
+                var n,d,ok=false;
+                while(!ok){
+                    n=Math.floor(Math.random()*900)+100;
+                    d={h:Math.floor(n/100),t:Math.floor((n%100)/10),o:n%10};
+                    ok=new Set([d.h,d.t,d.o]).size===3;
+                }
+                var p=['h','t','o'][Math.floor(Math.random()*3)],m=[100,10,1],idx=['h','t','o'].indexOf(p);
+                ans.pv=d[p]*m[idx];
+                document.getElementById('QPV').innerHTML='<div style="direction:ltr;font-size:48px;">'+n+'</div><div>מה הערך של הספרה '+d[p]+' במספר?</div>';
+                document.getElementById('aPV').value='';document.getElementById('fPV').textContent='';document.getElementById('cPV').style.display='none';
+            }else if(t==='comp'){
+                var n1=Math.floor(Math.random()*900)+100,n2;do{n2=Math.floor(Math.random()*900)+100;}while(n1===n2);
+                ans.comp={n1,n2};
+                document.getElementById('n1').textContent=n1;document.getElementById('n2').textContent=n2;document.getElementById('sym').textContent='?';
+                document.querySelectorAll('.symbol-button').forEach(b=>b.classList.remove('selected'));sel='';
+                document.getElementById('fComp').textContent='';document.getElementById('cComp').style.display='none';
+            }else if(t==='order'){
+                var nums=[];for(var i=0;i<4;i++){var nu;do{nu=Math.floor(Math.random()*900)+100;}while(nums.includes(nu));nums.push(nu);}
+                ans.order=[...nums].sort((a,b)=>a-b);
+                var sh=[...nums].sort(()=>Math.random()-0.5),c=document.getElementById('nums');c.innerHTML='';
+                sh.forEach(n=>{var d=document.createElement('div');d.className='number-display';d.textContent=n;d.style.padding='20px 30px';d.style.fontSize='32px';c.appendChild(d);});
+                document.getElementById('aOrd').value='';document.getElementById('fOrd').textContent='';document.getElementById('cOrd').style.display='none';
+            }else if(t==='evenodd'){
+                var n=Math.floor(Math.random()*900)+100;
+                ans.evenodd={n,isEven:n%2===0};
+                document.getElementById('QEO').innerHTML='<div style="direction:ltr;font-size:48px;">'+n+'</div><div>האם המספר זוגי או אי-זוגי?</div>';
+                document.querySelectorAll('.even-odd-btn').forEach(b=>b.classList.remove('selected'));selEO='';
+                document.getElementById('fEO').textContent='';document.getElementById('cEO').style.display='none';
+            }
+        }
+        
+        function selectSym(sy, btn){playC();sel=sy;document.querySelectorAll('.symbol-button').forEach(b=>b.classList.remove('selected'));if(btn)btn.classList.add('selected');document.getElementById('sym').textContent=sy;}
+        function selectEO(type, btn){playC();selEO=type;document.querySelectorAll('.even-odd-btn').forEach(b=>b.classList.remove('selected'));if(btn)btn.classList.add('selected');}
+        
+        function check(t){
+            if(checking)return;
+            checking=true;
+            var fb,ce,cor=false;
+            if(t==='pv'){
+                var u=parseInt(document.getElementById('aPV').value);fb=document.getElementById('fPV');ce=document.getElementById('cPV');
+                cor=u===ans.pv;if(!cor)fb.textContent='התשובה הנכונה: '+ans.pv;
+            }else if(t==='comp'){
+                if(!sel){document.getElementById('fComp').textContent='בחרו סימן!';document.getElementById('fComp').className='feedback incorrect';checking=false;return;}
+                var cs;if(ans.comp.n1<ans.comp.n2)cs='<';else if(ans.comp.n1>ans.comp.n2)cs='>';else cs='=';
+                fb=document.getElementById('fComp');ce=document.getElementById('cComp');
+                cor=sel===cs;if(!cor)fb.textContent='הסימן הנכון: '+cs;
+            }else if(t==='order'){
+                var ui=document.getElementById('aOrd').value,un=ui.split(/[\s,]+/).map(x=>parseInt(x)).filter(x=>!isNaN(x));
+                fb=document.getElementById('fOrd');ce=document.getElementById('cOrd');
+                if(un.length!==ans.order.length){fb.textContent='הזינו את כל המספרים!';fb.className='feedback incorrect';checking=false;return;}
+                cor=un.every((x,i)=>x===ans.order[i]);if(!cor)fb.innerHTML='הסדר הנכון:<br><span style="direction:ltr;">'+ans.order.join(', ')+'</span>';
+            }else if(t==='evenodd'){
+                if(!selEO){document.getElementById('fEO').textContent='בחרו תשובה!';document.getElementById('fEO').className='feedback incorrect';checking=false;return;}
+                fb=document.getElementById('fEO');ce=document.getElementById('cEO');
+                cor=(selEO==='even'&&ans.evenodd.isEven)||(selEO==='odd'&&!ans.evenodd.isEven);
+                if(!cor)fb.textContent='התשובה: המספר '+(ans.evenodd.isEven?'זוגי':'אי-זוגי');
+            }
+            if(cor){fb.textContent='🎉 מצוין! התשובה נכונה!';fb.className='feedback correct';s[t]++;var suf=t==='pv'?'PV':t==='comp'?'Comp':t==='order'?'Ord':'EO';document.getElementById('s'+suf).textContent=s[t];ce.style.display='block';playS();setTimeout(()=>ce.style.display='none',2000);if(q[t]>=max)setTimeout(()=>end(t),2500);}else{fb.className='feedback incorrect';checking=false;}
+        }
+        
+        function end(t){
+            var suf=t==='pv'?'PV':t==='comp'?'Comp':t==='order'?'Ord':'EO';
+            document.getElementById('e'+suf).style.display='block';
+            document.getElementById('fs'+suf).textContent=s[t];
+            document.getElementById('Q'+suf).style.display='none';
+            document.getElementById('n'+suf).style.display='none';
+            document.getElementById('r'+suf).style.display='block';
+            if(t==='pv')document.getElementById('aPV').style.display='none';
+            else if(t==='comp')document.querySelectorAll('.symbol-button').forEach(b=>b.style.display='none');
+            else if(t==='order'){document.getElementById('nums').style.display='none';document.getElementById('aOrd').style.display='none';document.querySelector('#order p').style.display='none';}
+            else if(t==='evenodd')document.querySelectorAll('.even-odd-btn').forEach(b=>b.style.display='none');
+        }
+        
+        function restart(t){
+            playC();s[t]=0;q[t]=0;
+            var suf=t==='pv'?'PV':t==='comp'?'Comp':t==='order'?'Ord':'EO';
+            document.getElementById('s'+suf).textContent='0';
+            document.getElementById('q'+suf).textContent='0';
+            document.getElementById('e'+suf).style.display='none';
+            document.getElementById('Q'+suf).style.display='block';
+            document.getElementById('n'+suf).style.display='block';
+            document.getElementById('r'+suf).style.display='none';
+            if(t==='pv')document.getElementById('aPV').style.display='inline-block';
+            else if(t==='comp')document.querySelectorAll('.symbol-button').forEach(b=>b.style.display='inline-block');
+            else if(t==='order'){document.getElementById('nums').style.display='flex';document.getElementById('aOrd').style.display='inline-block';document.querySelector('#order p').style.display='block';}
+            else if(t==='evenodd')document.querySelectorAll('.even-odd-btn').forEach(b=>b.style.display='inline-block');
+            next(t);
+        }
+        
+        document.addEventListener('keypress',e=>{if(e.key==='Enter'){var a=document.querySelector('.section.active');if(a.id==='pv')check('pv');else if(a.id==='order')check('order');}});
+    </script>
+</body>
+</html>
