@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סימטריה - כיתה ב'</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; border-radius: 25px; padding: 40px; box-shadow: 0 25px 70px rgba(0,0,0,0.4); }
+        h1 { color: #667eea; text-align: center; margin-bottom: 15px; font-size: 3em; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .subtitle { text-align: center; color: #666; margin-bottom: 35px; font-size: 1.3em; }
+        .tabs { display: flex; gap: 12px; margin-bottom: 35px; flex-wrap: wrap; justify-content: center; }
+        .tab { padding: 16px 28px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px; cursor: pointer; font-size: 1.15em; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: white; }
+        .tab:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); background: linear-gradient(135deg, #7c8ff0 0%, #8759ab 100%); }
+        .tab.active { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); transform: scale(1.05); }
+        .content { display: none; }
+        .content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .lesson { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .lesson h2 { color: #667eea; margin-bottom: 20px; font-size: 1.8em; }
+        .lesson p { font-size: 1.2em; line-height: 1.8; margin-bottom: 15px; color: #333; }
+        .example { background: white; padding: 20px; border-right: 5px solid #667eea; margin: 20px 0; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
+        .example h3 { color: #f5576c; margin-bottom: 12px; font-size: 1.3em; }
+        .game { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .game h2 { margin-bottom: 20px; font-size: 2em; }
+        .question-counter { text-align: center; font-size: 1.3em; margin: 15px 0; color: #fff; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px; }
+        .score { text-align: center; font-size: 1.8em; margin: 25px 0; color: #fff; font-weight: bold; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; }
+        .problem-display { font-size: 1.3em; text-align: center; margin: 30px 0; padding: 25px; background: rgba(255,255,255,0.95); border-radius: 15px; line-height: 1.8; color: #333; }
+        button { background: white; color: #667eea; border: none; padding: 14px 35px; font-size: 1.2em; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-weight: bold; box-shadow: 0 6px 12px rgba(0,0,0,0.2); margin: 5px; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+        .feedback { padding: 20px; border-radius: 12px; margin-top: 20px; font-size: 1.3em; text-align: center; font-weight: bold; }
+        .correct { background: #51cf66; color: white; }
+        .incorrect { background: #ff6b6b; color: white; }
+        .controls { text-align: center; margin: 25px 0; }
+        .round-complete { background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%); padding: 40px; border-radius: 20px; text-align: center; color: white; margin: 20px 0; }
+        .round-complete h3 { font-size: 2.5em; margin-bottom: 20px; }
+        .round-complete p { font-size: 1.5em; margin: 15px 0; }
+        .new-round-btn { background: white; color: #51cf66; font-size: 1.5em; padding: 20px 40px; margin-top: 20px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; box-shadow: 0 8px 16px rgba(0,0,0,0.2); transition: all 0.3s; }
+        .new-round-btn:hover { transform: scale(1.05); box-shadow: 0 12px 24px rgba(0,0,0,0.3); }
+        .formula-box { background: #fff3cd; border: 3px solid #ffc107; padding: 15px; border-radius: 10px; margin: 15px 0; text-align: center; font-size: 1.3em; font-weight: bold; color: #856404; }
+        .strategy-box { background: #e7f5ff; border: 3px solid #339af0; padding: 20px; border-radius: 10px; margin: 15px 0; text-align: right; }
+        .strategy-box h4 { color: #1971c2; margin-bottom: 10px; font-size: 1.2em; }
+        .strategy-box p { font-size: 1.1em; line-height: 1.6; margin: 8px 0; }
+        .symmetry-demo { background: white; padding: 30px; border-radius: 15px; margin: 20px 0; text-align: center; }
+        .grid-container { display: inline-block; background: white; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .grid { display: grid; grid-template-columns: repeat(8, 40px); grid-template-rows: repeat(8, 40px); gap: 2px; background: #ddd; padding: 2px; border-radius: 8px; margin: 0 auto; }
+        .cell { background: white; width: 40px; height: 40px; cursor: pointer; transition: all 0.2s; border: 1px solid #ccc; }
+        .cell.filled { background: #667eea; }
+        .cell.mirror { background: #f093fb; }
+        .cell.line { background: #f5576c; cursor: default; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>סימטריה 🦋</h1>
+        <div class="subtitle">כיתה ב' - למדו על צירי סימטריה וצורות סימטריות!</div>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="lesson1">📚 שיעור: מהי סימטריה?</button>
+            <button class="tab" data-tab="game1">🎮 משחק: זיהוי סימטריה</button>
+            <button class="tab" data-tab="lesson2">📚 שיעור: צירי סימטריה</button>
+            <button class="tab" data-tab="game2">🎨 משחק: השלמת צורה</button>
+        </div>
+        
+        <!-- שיעור 1 -->
+        <div id="lesson1" class="content active">
+            <div class="lesson">
+                <h2>מהי סימטריה?</h2>
+                <p>סימטריה זה כשחצי אחד של צורה זהה לחצי השני - כמו מראה! 🪞</p>
+                
+                <div class="formula-box">צורה סימטרית = שני חצאים זהים</div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: הפרפר הסימטרי</h3>
+                    <p><strong>הסבר:</strong> פרפר הוא דוגמה מושלמת לסימטריה - הכנף השמאלית זהה לכנף הימנית!</p>
+                    <div class="symmetry-demo">
+                        <svg width="300" height="200">
+                            <ellipse cx="150" cy="100" rx="40" ry="60" fill="#f093fb" opacity="0.8"/>
+                            <ellipse cx="90" cy="80" rx="35" ry="45" fill="#667eea"/>
+                            <ellipse cx="210" cy="80" rx="35" ry="45" fill="#667eea"/>
+                            <ellipse cx="75" cy="130" rx="25" ry="35" fill="#764ba2"/>
+                            <ellipse cx="225" cy="130" rx="25" ry="35" fill="#764ba2"/>
+                            <line x1="150" y1="40" x2="150" y2="160" stroke="#f5576c" stroke-width="3" stroke-dasharray="5,5"/>
+                            <circle cx="150" cy="60" r="8" fill="#333"/>
+                            <line x1="145" y1="50" x2="140" y2="40" stroke="#333" stroke-width="2"/>
+                            <line x1="155" y1="50" x2="160" y2="40" stroke="#333" stroke-width="2"/>
+                        </svg>
+                        <p style="color: #f5576c; font-weight: bold; margin-top: 10px;">← ציר הסימטריה (הקו האדום)</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: האותיות הסימטריות</h3>
+                    <p><strong>שאלה:</strong> אילו אותיות בעברית סימטריות?</p>
+                    <div class="symmetry-demo">
+                        <div style="font-size: 4em; color: #667eea; display: flex; gap: 30px; justify-content: center;">
+                            <span>ח</span>
+                            <span>נ</span>
+                            <span>ס</span>
+                        </div>
+                        <p style="margin-top: 15px;"><strong>תשובה:</strong> האות ח, האות נ והאות ס הן סימטריות!</p>
+                        <p style="font-size: 0.9em; color: #666; margin-top: 10px;">💡 שימו לב: יש עוד אותיות שכמעט סימטריות, כמו ש, ו, ן</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 3: הלב הסימטרי</h3>
+                    <p><strong>הסבר:</strong> צורת לב היא סימטרית - החלק השמאלי זהה לחלק הימני!</p>
+                    <div class="symmetry-demo">
+                        <svg width="250" height="220">
+                            <path d="M 125,200 C 125,200 50,150 50,100 C 50,70 70,50 95,50 C 110,50 120,60 125,70 C 130,60 140,50 155,50 C 180,50 200,70 200,100 C 200,150 125,200 125,200 Z" fill="#f093fb" stroke="#764ba2" stroke-width="2"/>
+                            <line x1="125" y1="50" x2="125" y2="200" stroke="#f5576c" stroke-width="3" stroke-dasharray="5,5"/>
+                        </svg>
+                        <p style="color: #f5576c; font-weight: bold; margin-top: 10px;">← הקו האדום הוא ציר הסימטריה</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 4: המשולש השווה צלעות</h3>
+                    <p><strong>הסבר:</strong> למשולש שווה צלעות יש 3 צירי סימטריה!</p>
+                    <div class="symmetry-demo">
+                        <svg width="250" height="250">
+                            <polygon points="125,50 50,200 200,200" fill="#667eea" opacity="0.7" stroke="#764ba2" stroke-width="2"/>
+                            <line x1="125" y1="50" x2="125" y2="200" stroke="#f5576c" stroke-width="2"/>
+                            <line x1="50" y1="200" x2="162" y2="125" stroke="#51cf66" stroke-width="2"/>
+                            <line x1="200" y1="200" x2="88" y2="125" stroke="#ffc107" stroke-width="2"/>
+                        </svg>
+                        <p style="font-weight: bold; margin-top: 10px;">3 צירי סימטריה שונים!</p>
+                    </div>
+                </div>
+                
+                <div class="strategy-box">
+                    <h4>💡 טיפים:</h4>
+                    <p>✓ ציר סימטריה הוא הקו שמחלק את הצורה לשני חצאים זהים</p>
+                    <p>✓ אם נקפל את הצורה על ציר הסימטריה - שני החצאים יתלכדו בדיוק</p>
+                    <p>✓ לצורה יכולים להיות כמה צירי סימטריה (כמו למעגל - אין סוף!)</p>
+                    <p>✓ יש צירים אנכיים (מלמעלה למטה) ואופקיים (מצד לצד)</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 1 -->
+        <div id="game1" class="content">
+            <div class="game">
+                <h2>משחק זיהוי סימטריה</h2>
+                <div class="question-counter">שאלה <span id="q-count1">1</span> מתוך 10</div>
+                <div class="score">ניקוד: <span id="score1">0</span></div>
+                <div class="problem-display" id="problem1">טוען...</div>
+                <div class="controls" id="controls1">
+                    <button onclick="checkAnswer(1, true)">כן - סימטרי ✓</button>
+                    <button onclick="checkAnswer(1, false)">לא - לא סימטרי ✗</button>
+                </div>
+                <div id="feedback1"></div>
+                <div id="round-end1" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <!-- שיעור 2 -->
+        <div id="lesson2" class="content">
+            <div class="lesson">
+                <h2>צירי סימטריה</h2>
+                <p>ציר סימטריה הוא הקו שמחלק צורה לשני חצאים זהים בדיוק!</p>
+                
+                <div class="formula-box">ציר סימטריה = קו שמחלק לשני חצאים זהים</div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: ציר אנכי</h3>
+                    <p><strong>הסבר:</strong> ציר אנכי הוא קו שיורד מלמעלה למטה</p>
+                    <div class="symmetry-demo">
+                        <svg width="250" height="200">
+                            <rect x="75" y="50" width="100" height="120" fill="#667eea" opacity="0.7" stroke="#764ba2" stroke-width="2" rx="10"/>
+                            <line x1="125" y1="30" x2="125" y2="190" stroke="#f5576c" stroke-width="4" stroke-dasharray="5,5"/>
+                            <text x="125" y="20" text-anchor="middle" fill="#f5576c" font-size="16" font-weight="bold">↕</text>
+                        </svg>
+                        <p style="color: #f5576c; font-weight: bold;">ציר אנכי - מלמעלה למטה</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: ציר אופקי</h3>
+                    <p><strong>הסבר:</strong> ציר אופקי הוא קו שעובר משמאל לימין</p>
+                    <div class="symmetry-demo">
+                        <svg width="250" height="200">
+                            <rect x="75" y="60" width="100" height="80" fill="#f093fb" opacity="0.7" stroke="#764ba2" stroke-width="2" rx="10"/>
+                            <line x1="50" y1="100" x2="200" y2="100" stroke="#f5576c" stroke-width="4" stroke-dasharray="5,5"/>
+                            <text x="30" y="105" text-anchor="middle" fill="#f5576c" font-size="16" font-weight="bold">↔</text>
+                        </svg>
+                        <p style="color: #f5576c; font-weight: bold;">ציר אופקי - משמאל לימין</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 3: מספר צירים</h3>
+                    <p><strong>הסבר:</strong> לריבוע יש 2 צירי סימטריה - אנכי ואופקי!</p>
+                    <div class="symmetry-demo">
+                        <svg width="300" height="200">
+                            <rect x="100" y="50" width="100" height="100" fill="#51cf66" opacity="0.6" stroke="#37b24d" stroke-width="2"/>
+                            <line x1="150" y1="30" x2="150" y2="170" stroke="#f5576c" stroke-width="3"/>
+                            <line x1="80" y1="100" x2="220" y2="100" stroke="#667eea" stroke-width="3"/>
+                            <text x="150" y="25" text-anchor="middle" fill="#f5576c" font-size="14" font-weight="bold">ציר 1</text>
+                            <text x="240" y="105" text-anchor="start" fill="#667eea" font-size="14" font-weight="bold">ציר 2</text>
+                        </svg>
+                        <p style="font-weight: bold;">שני צירי סימטריה!</p>
+                        <p style="font-size: 0.9em; color: #666; margin-top: 5px;">💡 לריבוע יש גם עוד 2 צירים באלכסון!</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 4: המעגל המיוחד</h3>
+                    <p><strong>שאלה:</strong> כמה צירי סימטריה יש למעגל?</p>
+                    <div class="symmetry-demo">
+                        <svg width="250" height="250">
+                            <circle cx="125" cy="125" r="80" fill="#ffc107" opacity="0.6" stroke="#f39c12" stroke-width="2"/>
+                            <line x1="125" y1="45" x2="125" y2="205" stroke="#f5576c" stroke-width="2"/>
+                            <line x1="45" y1="125" x2="205" y2="125" stroke="#667eea" stroke-width="2"/>
+                            <line x1="70" y1="70" x2="180" y2="180" stroke="#51cf66" stroke-width="2"/>
+                            <line x1="180" y1="70" x2="70" y2="180" stroke="#764ba2" stroke-width="2"/>
+                            <text x="125" y="30" text-anchor="middle" font-size="18" font-weight="bold">...</text>
+                        </svg>
+                        <p style="font-weight: bold; margin-top: 10px;"><strong>תשובה:</strong> אין סוף צירי סימטריה! כל קו שעובר דרך המרכז!</p>
+                    </div>
+                </div>
+                
+                <div class="strategy-box">
+                    <h4>🎯 שלבים למציאת ציר סימטריה:</h4>
+                    <p>1. מחפשים קו שיכול לחלק את הצורה לשניים</p>
+                    <p>2. בודקים אם החצי השמאלי זהה לחצי הימני (או העליון לתחתון)</p>
+                    <p>3. אם זהים בדיוק - מצאנו ציר סימטריה! ✓</p>
+                    <p>4. ממשיכים לחפש צירים נוספים</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 2 -->
+        <div id="game2" class="content">
+            <div class="game">
+                <h2>משחק השלמת צורה סימטרית</h2>
+                <div class="question-counter">שאלה <span id="q-count2">1</span> מתוך 10</div>
+                <div class="score">ניקוד: <span id="score2">0</span></div>
+                <div class="problem-display" id="problem2">
+                    <p style="margin-bottom: 15px;">השלימו את הצורה כך שתהיה סימטרית!</p>
+                    <p style="font-size: 0.9em; color: #666;">הקו האדום הוא ציר הסימטריה</p>
+                </div>
+                <div class="grid-container">
+                    <div class="grid" id="game-grid"></div>
+                </div>
+                <div class="controls">
+                    <button onclick="checkGrid()">בדוק תשובה</button>
+                    <button onclick="clearGrid()">נקה</button>
+                </div>
+                <div id="feedback2"></div>
+                <div id="round-end2" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+var scores = {1: 0, 2: 0};
+var currentQuestion = {1: 0, 2: 0};
+var answerLocked = {1: false, 2: false};
+var currentShape = [];
+var correctPattern = [];
+var axisPosition = 4;
+var selectedQuestions = {1: [], 2: []};
+
+// משחק 1 - זיהוי סימטריה
+var symmetryShapes = [
+    {symmetric: true, shape: 'butterfly'},
+    {symmetric: false, shape: 'asymmetric1'},
+    {symmetric: true, shape: 'heart'},
+    {symmetric: false, shape: 'asymmetric2'},
+    {symmetric: true, shape: 'square'},
+    {symmetric: false, shape: 'asymmetric3'},
+    {symmetric: true, shape: 'triangle'},
+    {symmetric: false, shape: 'asymmetric4'},
+    {symmetric: true, shape: 'star'},
+    {symmetric: false, shape: 'asymmetric5'},
+    {symmetric: true, shape: 'circle'},
+    {symmetric: false, shape: 'asymmetric6'},
+    {symmetric: true, shape: 'diamond'},
+    {symmetric: false, shape: 'asymmetric7'},
+    {symmetric: true, shape: 'hexagon'},
+    {symmetric: false, shape: 'asymmetric8'},
+    {symmetric: true, shape: 'flower'},
+    {symmetric: false, shape: 'asymmetric9'},
+    {symmetric: true, shape: 'cross'},
+    {symmetric: false, shape: 'asymmetric10'}
+];
+
+function drawShape(shapeType, isSymmetric) {
+    var svg = '';
+    if (shapeType === 'butterfly') {
+        svg = '<svg width="250" height="200"><ellipse cx="125" cy="100" rx="40" ry="60" fill="#f093fb" opacity="0.8"/><ellipse cx="75" cy="80" rx="35" ry="45" fill="#667eea"/><ellipse cx="175" cy="80" rx="35" ry="45" fill="#667eea"/><ellipse cx="60" cy="130" rx="25" ry="35" fill="#764ba2"/><ellipse cx="190" cy="130" rx="25" ry="35" fill="#764ba2"/><circle cx="125" cy="60" r="8" fill="#333"/></svg>';
+    } else if (shapeType === 'heart') {
+        svg = '<svg width="200" height="180"><path d="M 100,160 C 100,160 40,120 40,80 C 40,55 55,40 75,40 C 87,40 95,48 100,58 C 105,48 113,40 125,40 C 145,40 160,55 160,80 C 160,120 100,160 100,160 Z" fill="#f093fb" stroke="#764ba2" stroke-width="2"/></svg>';
+    } else if (shapeType === 'square') {
+        svg = '<svg width="200" height="200"><rect x="50" y="50" width="100" height="100" fill="#667eea" opacity="0.7" stroke="#764ba2" stroke-width="2" rx="5"/></svg>';
+    } else if (shapeType === 'triangle') {
+        svg = '<svg width="200" height="200"><polygon points="100,40 40,160 160,160" fill="#51cf66" opacity="0.7" stroke="#37b24d" stroke-width="2"/></svg>';
+    } else if (shapeType === 'star') {
+        svg = '<svg width="200" height="200"><polygon points="100,30 115,75 165,75 125,105 140,150 100,120 60,150 75,105 35,75 85,75" fill="#ffc107" opacity="0.8" stroke="#f39c12" stroke-width="2"/></svg>';
+    } else if (shapeType === 'circle') {
+        svg = '<svg width="200" height="200"><circle cx="100" cy="100" r="70" fill="#0984e3" opacity="0.7" stroke="#0652DD" stroke-width="2"/></svg>';
+    } else if (shapeType === 'diamond') {
+        svg = '<svg width="200" height="200"><polygon points="100,30 170,100 100,170 30,100" fill="#e84393" opacity="0.7" stroke="#d63031" stroke-width="2"/></svg>';
+    } else if (shapeType === 'hexagon') {
+        svg = '<svg width="200" height="200"><polygon points="100,30 150,60 150,120 100,150 50,120 50,60" fill="#00b894" opacity="0.7" stroke="#00a383" stroke-width="2"/></svg>';
+    } else if (shapeType === 'flower') {
+        svg = '<svg width="200" height="200"><circle cx="100" cy="100" r="20" fill="#ffc107"/><circle cx="100" cy="60" r="25" fill="#f093fb" opacity="0.8"/><circle cx="100" cy="140" r="25" fill="#f093fb" opacity="0.8"/><circle cx="60" cy="100" r="25" fill="#f093fb" opacity="0.8"/><circle cx="140" cy="100" r="25" fill="#f093fb" opacity="0.8"/></svg>';
+    } else if (shapeType === 'cross') {
+        svg = '<svg width="200" height="200"><rect x="80" y="40" width="40" height="120" fill="#667eea" opacity="0.7"/><rect x="40" y="80" width="120" height="40" fill="#667eea" opacity="0.7"/></svg>';
+    } else if (shapeType === 'asymmetric1') {
+        svg = '<svg width="200" height="200"><polygon points="50,50 150,60 140,150 60,140" fill="#764ba2" opacity="0.7" stroke="#333" stroke-width="2"/></svg>';
+    } else if (shapeType === 'asymmetric2') {
+        svg = '<svg width="200" height="200"><ellipse cx="80" cy="100" rx="50" ry="70" fill="#f093fb" opacity="0.7" stroke="#764ba2" stroke-width="2"/><circle cx="140" cy="80" r="20" fill="#667eea"/></svg>';
+    } else if (shapeType === 'asymmetric3') {
+        svg = '<svg width="200" height="200"><rect x="40" y="60" width="80" height="90" fill="#667eea" opacity="0.7" stroke="#333" stroke-width="2"/><rect x="130" y="80" width="40" height="60" fill="#f5576c" opacity="0.7" stroke="#333" stroke-width="2"/></svg>';
+    } else if (shapeType === 'asymmetric4') {
+        svg = '<svg width="200" height="200"><polygon points="60,50 120,70 140,130 80,150" fill="#51cf66" opacity="0.7" stroke="#333" stroke-width="2"/></svg>';
+    } else if (shapeType === 'asymmetric5') {
+        svg = '<svg width="200" height="200"><circle cx="70" cy="100" r="40" fill="#ffc107" opacity="0.7" stroke="#333" stroke-width="2"/><rect x="120" y="70" width="50" height="60" fill="#764ba2" opacity="0.7" stroke="#333" stroke-width="2"/></svg>';
+    } else if (shapeType === 'asymmetric6') {
+        svg = '<svg width="200" height="200"><polygon points="50,80 90,50 140,90 130,140 70,130" fill="#e84393" opacity="0.7" stroke="#333" stroke-width="2"/></svg>';
+    } else if (shapeType === 'asymmetric7') {
+        svg = '<svg width="200" height="200"><ellipse cx="100" cy="100" rx="60" ry="40" fill="#00b894" opacity="0.7"/><circle cx="130" cy="85" r="15" fill="#0984e3"/><rect x="50" y="120" width="30" height="40" fill="#fdcb6e" opacity="0.8"/></svg>';
+    } else if (shapeType === 'asymmetric8') {
+        svg = '<svg width="200" height="200"><polygon points="60,60 120,50 150,100 110,150 50,120" fill="#6c5ce7" opacity="0.7" stroke="#333" stroke-width="2"/></svg>';
+    } else if (shapeType === 'asymmetric9') {
+        svg = '<svg width="200" height="200"><rect x="50" y="70" width="60" height="80" fill="#ff7675" opacity="0.7"/><circle cx="140" cy="110" r="35" fill="#74b9ff" opacity="0.7"/><polygon points="120,50 140,50 130,70" fill="#55efc4"/></svg>';
+    } else if (shapeType === 'asymmetric10') {
+        svg = '<svg width="200" height="200"><ellipse cx="90" cy="90" rx="45" ry="60" fill="#a29bfe" opacity="0.7"/><rect x="120" y="110" width="50" height="40" fill="#fd79a8" opacity="0.7"/><circle cx="140" cy="70" r="12" fill="#ffeaa7"/></svg>';
+    }
+    return svg;
+}
+
+function selectRandomQuestions(game) {
+    var allQuestions = game === 1 ? symmetryShapes : gridPatterns;
+    var shuffled = allQuestions.slice().sort(() => Math.random() - 0.5);
+    selectedQuestions[game] = shuffled.slice(0, 10);
+}
+
+function initGame1() {
+    currentQuestion[1] = 0;
+    scores[1] = 0;
+    answerLocked[1] = false;
+    document.getElementById('score1').textContent = '0';
+    selectRandomQuestions(1);
+    nextQuestion1();
+}
+
+function nextQuestion1() {
+    if (currentQuestion[1] >= 10) {
+        showEnd(1);
+        return;
+    }
+    answerLocked[1] = false;
+    var q = selectedQuestions[1][currentQuestion[1]];
+    document.getElementById('q-count1').textContent = currentQuestion[1] + 1;
+    document.getElementById('problem1').innerHTML = '<p style="margin-bottom: 20px; font-size: 1.1em;">האם הצורה הזו סימטרית?</p>' + drawShape(q.shape, q.symmetric);
+    document.getElementById('feedback1').innerHTML = '';
+    document.getElementById('controls1').style.display = 'block';
+}
+
+function checkAnswer(game, answer) {
+    if (answerLocked[1]) return;
+    answerLocked[1] = true;
+    
+    var correct = selectedQuestions[1][currentQuestion[1]].symmetric === answer;
+    currentQuestion[1]++;
+    
+    if (correct) {
+        scores[1]++;
+        playSound('correct');
+        document.getElementById('feedback1').innerHTML = '<div class="feedback correct">נכון מעולה! ✓</div>';
+    } else {
+        playSound('incorrect');
+        var correctAnswer = selectedQuestions[1][currentQuestion[1]-1].symmetric ? 'כן - הצורה סימטרית' : 'לא - הצורה לא סימטרית';
+        document.getElementById('feedback1').innerHTML = '<div class="feedback incorrect">לא נכון. התשובה הנכונה: ' + correctAnswer + '</div>';
+    }
+    document.getElementById('score1').textContent = scores[1];
+    document.getElementById('controls1').style.display = 'none';
+    
+    setTimeout(function() {
+        document.getElementById('feedback1').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+    
+    setTimeout(() => nextQuestion1(), 2500);
+}
+
+// משחק 2 - השלמת צורה (תבניות ממורכזות)
+var gridPatterns = [
+    [[2,1],[2,2],[3,2],[3,3]],
+    [[2,1],[2,2],[2,3],[3,2]],
+    [[2,2],[3,1],[3,2],[4,2]],
+    [[2,1],[3,1],[3,2],[4,1]],
+    [[3,1],[3,2],[3,3],[4,2]],
+    [[2,2],[3,1],[3,2],[3,3]],
+    [[3,2],[4,1],[4,2],[4,3]],
+    [[2,1],[2,2],[3,1],[4,1]],
+    [[3,1],[3,2],[4,2],[5,2]],
+    [[2,2],[2,3],[3,2],[4,2]],
+    [[3,2],[4,1],[4,2],[5,1]],
+    [[2,1],[3,1],[3,2],[3,3]],
+    [[3,1],[3,2],[4,1],[5,1]],
+    [[2,2],[3,2],[3,3],[4,3]],
+    [[3,1],[3,2],[4,2],[4,3]]
+];
+
+function initGame2() {
+    currentQuestion[2] = 0;
+    scores[2] = 0;
+    answerLocked[2] = false;
+    document.getElementById('score2').textContent = '0';
+    selectRandomQuestions(2);
+    nextQuestion2();
+}
+
+function createGrid() {
+    var grid = document.getElementById('game-grid');
+    grid.innerHTML = '';
+    currentShape = [];
+    
+    for (var row = 0; row < 8; row++) {
+        for (var col = 0; col < 8; col++) {
+            var cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.dataset.row = row;
+            cell.dataset.col = col;
+            
+            if (col === axisPosition) {
+                cell.classList.add('line');
+            } else if (col < axisPosition) {
+                var pattern = selectedQuestions[2][currentQuestion[2]];
+                for (var i = 0; i < pattern.length; i++) {
+                    if (pattern[i][0] === row && pattern[i][1] === col) {
+                        cell.classList.add('filled');
+                        currentShape.push([row, col]);
+                    }
+                }
+            } else {
+                cell.onclick = function() {
+                    if (!answerLocked[2] && this.dataset.col > axisPosition) {
+                        this.classList.toggle('mirror');
+                    }
+                };
+            }
+            
+            grid.appendChild(cell);
+        }
+    }
+    
+    correctPattern = [];
+    for (var i = 0; i < currentShape.length; i++) {
+        var row = currentShape[i][0];
+        var col = currentShape[i][1];
+        var mirrorCol = 2 * axisPosition - col;
+        correctPattern.push([row, mirrorCol]);
+    }
+}
+
+function nextQuestion2() {
+    if (currentQuestion[2] >= 10) {
+        showEnd(2);
+        return;
+    }
+    answerLocked[2] = false;
+    document.getElementById('q-count2').textContent = currentQuestion[2] + 1;
+    document.getElementById('feedback2').innerHTML = '';
+    createGrid();
+}
+
+function clearGrid() {
+    if (answerLocked[2]) return;
+    var cells = document.querySelectorAll('.cell.mirror');
+    cells.forEach(cell => cell.classList.remove('mirror'));
+}
+
+function checkGrid() {
+    if (answerLocked[2]) return;
+    answerLocked[2] = true;
+    
+    var userPattern = [];
+    var cells = document.querySelectorAll('.cell.mirror');
+    cells.forEach(cell => {
+        userPattern.push([parseInt(cell.dataset.row), parseInt(cell.dataset.col)]);
+    });
+    
+    var correct = userPattern.length === correctPattern.length && 
+        userPattern.every(pos => correctPattern.some(cp => cp[0] === pos[0] && cp[1] === pos[1]));
+    
+    currentQuestion[2]++;
+    
+    if (correct) {
+        scores[2]++;
+        playSound('correct');
+        document.getElementById('feedback2').innerHTML = '<div class="feedback correct">מושלם! הצורה סימטרית! 🎉</div>';
+    } else {
+        playSound('incorrect');
+        document.getElementById('feedback2').innerHTML = '<div class="feedback incorrect">לא נכון. נסו שוב בשאלה הבאה!</div>';
+        correctPattern.forEach(pos => {
+            var cell = document.querySelector(`[data-row="${pos[0]}"][data-col="${pos[1]}"]`);
+            if (cell && !cell.classList.contains('mirror')) {
+                cell.style.background = '#51cf66';
+                cell.style.opacity = '0.5';
+            }
+        });
+    }
+    document.getElementById('score2').textContent = scores[2];
+    
+    setTimeout(function() {
+        document.getElementById('feedback2').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+    
+    setTimeout(() => nextQuestion2(), 3000);
+}
+
+function showEnd(g) {
+    var roundEndEl = document.getElementById('round-end' + g);
+    var problemEl = document.getElementById('problem' + g);
+    var controlsEl = document.querySelector('#game' + g + ' .controls') || document.getElementById('controls' + g);
+    var feedbackEl = document.getElementById('feedback' + g);
+    
+    if (controlsEl) controlsEl.style.display = 'none';
+    if (feedbackEl) {
+        feedbackEl.innerHTML = '';
+        feedbackEl.style.display = 'none';
+    }
+    if (g === 2) {
+        var gridContainer = document.querySelector('.grid-container');
+        if (gridContainer) gridContainer.style.display = 'none';
+    }
+    
+    var totalQ = 10;
+    var pct = Math.round((scores[g] / totalQ) * 100);
+    var msg = pct >= 80 ? 'מעולה! 🌟🦋' : pct >= 60 ? 'יפה מאוד! 👏' : 'כל הכבוד! 💪';
+    roundEndEl.innerHTML = '<div class="round-complete"><h3>סיימת!</h3><p>' + msg + '</p><p>ציון: ' + scores[g] + '/' + totalQ + ' (' + pct + '%)</p><button class="new-round-btn" onclick="resetGame(' + g + ')">סיבוב נוסף</button></div>';
+    roundEndEl.style.display = 'block';
+    if (problemEl) problemEl.style.display = 'none';
+}
+
+function resetGame(g) {
+    scores[g] = 0;
+    currentQuestion[g] = 0;
+    answerLocked[g] = false;
+    
+    document.getElementById('score' + g).textContent = '0';
+    document.getElementById('round-end' + g).style.display = 'none';
+    document.getElementById('feedback' + g).innerHTML = '';
+    document.getElementById('feedback' + g).style.display = 'block';
+    document.getElementById('problem' + g).style.display = 'block';
+    
+    if (g === 2) {
+        var gridContainer = document.querySelector('.grid-container');
+        if (gridContainer) gridContainer.style.display = 'inline-block';
+        initGame2();
+    } else {
+        initGame1();
+    }
+}
+
+window.onload = function() {
+    var tabs = document.querySelectorAll('.tab');
+    tabs.forEach(tab => {
+        tab.onclick = function() {
+            playSound('click');
+            var tabId = tab.getAttribute('data-tab');
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            tab.classList.add('active');
+            
+            if (tabId === 'game1') {
+                setTimeout(() => initGame1(), 50);
+            } else if (tabId === 'game2') {
+                setTimeout(() => initGame2(), 50);
+            }
+        };
+    });
+};
+
+function playSound(type) {
+    try {
+        var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (type === 'click') {
+            var osc = audioContext.createOscillator();
+            var gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.type = 'sine';
+            osc.frequency.value = 600;
+            gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + 0.15);
+        } else if (type === 'correct') {
+            var notes = [523.25, 659.25, 783.99];
+            for (var i = 0; i < notes.length; i++) {
+                (function(index) {
+                    var osc = audioContext.createOscillator();
+                    var gain = audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    osc.type = 'sine';
+                    osc.frequency.value = notes[index];
+                    gain.gain.setValueAtTime(0.1, audioContext.currentTime + index * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + index * 0.1 + 0.3);
+                    osc.start(audioContext.currentTime + index * 0.1);
+                    osc.stop(audioContext.currentTime + index * 0.1 + 0.3);
+                })(i);
+            }
+        } else if (type === 'incorrect') {
+            var osc = audioContext.createOscillator();
+            var gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.type = 'sine';
+            osc.frequency.value = 200;
+            gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + 0.3);
+        }
+    } catch (e) {}
+}
+    </script>
+</body>
+</html>
