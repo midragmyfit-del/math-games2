@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מספרים עד 100,000 - כיתה ד'</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.4);
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 3em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 35px;
+            font-size: 1.3em;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .tab {
+            padding: 16px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.15em;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            color: white;
+        }
+        
+        .tab:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background: linear-gradient(135deg, #7c8ef5 0%, #8a5eb8 100%);
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            transform: scale(1.05);
+        }
+        
+        .content {
+            display: none;
+        }
+        
+        .content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .lesson {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        
+        .lesson h2 {
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .lesson p {
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .example {
+            background: white;
+            padding: 20px;
+            border-right: 5px solid #667eea;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+        }
+        
+        .example h3 {
+            color: #f093fb;
+            margin-bottom: 12px;
+            font-size: 1.3em;
+        }
+        
+        .place-value-box {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
+            direction: ltr;
+        }
+        
+        .place-value-item {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: #667eea;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .place-value-item .digit {
+            font-size: 2em;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .place-value-item .label {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .place-highlight {
+            color: #ffffff;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+        
+        .game {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            color: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .game h2 {
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        
+        .number-display {
+            font-size: 3em;
+            text-align: center;
+            margin: 30px 0;
+            padding: 25px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 15px;
+            font-weight: bold;
+            direction: rtl;
+            position: relative;
+        }
+        
+        .number-label {
+            font-size: 1.2em;
+            position: absolute;
+            top: -50px;
+            right: 50%;
+            transform: translateX(50%);
+            background: white;
+            color: #667eea;
+            padding: 10px 25px;
+            border-radius: 12px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            border: 3px solid #667eea;
+        }
+        
+        input[type="number"] {
+            width: 150px;
+            padding: 12px;
+            font-size: 1.5em;
+            border: 4px solid #667eea;
+            border-radius: 10px;
+            text-align: right;
+            margin: 10px;
+            font-weight: bold;
+            -moz-appearance: textfield;
+        }
+        
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        input[type="number"]::placeholder {
+            text-align: center;
+            font-size: 0.7em;
+            color: #999;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            margin: 5px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .feedback {
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 1.3em;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .correct {
+            background: #51cf66;
+            color: white;
+        }
+        
+        .incorrect {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .score {
+            text-align: center;
+            font-size: 1.8em;
+            margin: 25px 0;
+            color: #fff;
+            font-weight: bold;
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 12px;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .round-complete {
+            background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+            margin: 20px 0;
+        }
+        
+        .round-complete h3 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        
+        .round-complete p {
+            font-size: 1.5em;
+            margin: 15px 0;
+        }
+        
+        .new-round-btn {
+            background: white;
+            color: #51cf66;
+            font-size: 1.5em;
+            padding: 20px 40px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        
+        .new-round-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+        }
+        
+        .question-counter {
+            text-align: center;
+            font-size: 1.3em;
+            margin: 15px 0;
+            color: #fff;
+            background: rgba(255,255,255,0.2);
+            padding: 10px;
+            border-radius: 10px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #51cf66 0%, #37b24d 100%);
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .hint {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-size: 1.1em;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .option-btn {
+            background: white;
+            color: #667eea;
+            padding: 20px;
+            font-size: 1.3em;
+            border-radius: 12px;
+            border: 3px solid white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>מספרים עד 100,000</h1>
+        <div class="subtitle">כיתה ד' - בואו ללמוד מספרים גדולים!</div>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="lesson1">📚 ערך מקומי</button>
+            <button class="tab" data-tab="game1">🎮 משחק ערך מקומי</button>
+            <button class="tab" data-tab="lesson2">📚 השוואה וסידור</button>
+            <button class="tab" data-tab="game2">🎯 משחק השוואה</button>
+            <button class="tab" data-tab="lesson3">📚 עיגול מספרים</button>
+            <button class="tab" data-tab="game3">🏆 משחק עיגול</button>
+        </div>
+        
+        <div id="lesson1" class="content active">
+            <div class="lesson">
+                <h2>ערך מקומי מורחב - עד 100,000</h2>
+                <p>כל ספרה במספר יושבת במקום מסוים ויש לה ערך שונה. בואו נלמד את המקומות:</p>
+                
+                <div class="example">
+                    <h3>המקומות במספר</h3>
+                    <div style="text-align: center; font-size: 1.5em; margin: 20px 0;">
+                        <span style="color: #ffa500;">אחדות</span> |
+                        <span style="color: #51cf66;">עשרות</span> |
+                        <span style="color: #667eea;">מאות</span> |
+                        <span style="color: #f093fb;">אלפים</span> |
+                        <span style="color: #ff6b6b;">עשרות אלפים</span>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: המספר 67,385</h3>
+                    <div class="place-value-box">
+                        <div class="place-value-item">
+                            <span class="digit" style="color: #ff6b6b;">6</span>
+                            <span class="label">עשרות אלפים</span>
+                            <div style="margin-top: 5px;">60,000</div>
+                        </div>
+                        <div class="place-value-item">
+                            <span class="digit" style="color: #f093fb;">7</span>
+                            <span class="label">אלפים</span>
+                            <div style="margin-top: 5px;">7,000</div>
+                        </div>
+                        <div class="place-value-item">
+                            <span class="digit" style="color: #667eea;">3</span>
+                            <span class="label">מאות</span>
+                            <div style="margin-top: 5px;">300</div>
+                        </div>
+                        <div class="place-value-item">
+                            <span class="digit" style="color: #51cf66;">8</span>
+                            <span class="label">עשרות</span>
+                            <div style="margin-top: 5px;">80</div>
+                        </div>
+                        <div class="place-value-item">
+                            <span class="digit" style="color: #ffa500;">5</span>
+                            <span class="label">אחדות</span>
+                            <div style="margin-top: 5px;">5</div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; font-size: 1.3em; margin-top: 20px;">
+                        <strong>סה"כ:</strong> <span dir="ltr">60,000 + 7,000 + 300 + 80 + 5 = 67,385</span>
+                    </p>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: קריאת מספרים</h3>
+                    <p style="font-size: 1.5em; text-align: center; direction: ltr; color: #667eea;">92,456</p>
+                    <p><strong>קוראים:</strong> תשעים ושניים אלף ארבע מאות חמישים ושש</p>
+                    <p><strong>פירוק:</strong> <span dir="ltr">90,000 + 2,000 + 400 + 50 + 6</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game1" class="content">
+            <div class="game">
+                <h2>משחק ערך מקומי</h2>
+                <div class="question-counter">שאלה <span id="q-count1">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="score1">0</span></div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress1" style="width: 0%">0%</div>
+                </div>
+                <div class="number-display" id="display1">טוען...</div>
+                <div class="controls">
+                    <input type="number" id="answer1" placeholder="הכנס תשובה">
+                    <br><br>
+                    <button id="check1">בדוק</button>
+                </div>
+                <div id="feedback1"></div>
+                <div id="round-end1" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <div id="lesson2" class="content">
+            <div class="lesson">
+                <h2>⚖️ השוואה וסידור מספרים גדולים</h2>
+                <p>כדי להשוות מספרים גדולים, משווים ספרה אחר ספרה מהמקום הגדול ביותר:</p>
+                
+                <div class="example">
+                    <h3>שלבי השוואה</h3>
+                    <p><strong>1.</strong> משווים תחילה את כמות הספרות</p>
+                    <p><strong>2.</strong> אם שווה - משווים מעשרות אלפים</p>
+                    <p><strong>3.</strong> ממשיכים ימינה עד שנמצא הבדל</p>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: השוואת שני מספרים</h3>
+                    <div style="text-align: center; font-size: 1.8em; margin: 20px 0;">
+                        <span dir="ltr" style="color: #667eea;">45,278</span>
+                        <span style="margin: 0 20px;">או</span>
+                        <span dir="ltr" style="color: #f093fb;">45,832</span>
+                    </div>
+                    <p><strong>פתרון:</strong></p>
+                    <p>1. שני המספרים בעלי 5 ספרות ✓</p>
+                    <p>2. עשרות אלפים: 4 = 4 ✓</p>
+                    <p>3. אלפים: 5 = 5 ✓</p>
+                    <p>4. מאות: <span style="color: #ff6b6b;">2 < 8</span></p>
+                    <p style="text-align: center; font-size: 1.5em; margin-top: 15px; direction: ltr;">
+                        <strong>45,278 < 45,832</strong>
+                    </p>
+                </div>
+                
+                <div class="example">
+                    <h3>מספרים זוגיים ואי-זוגיים</h3>
+                    <p><strong>מספר זוגי:</strong> מסתיים ב- <span dir="ltr">0, 2, 4, 6, 8</span></p>
+                    <p><strong>מספר אי-זוגי:</strong> מסתיים ב- <span dir="ltr">1, 3, 5, 7, 9</span></p>
+                    <p style="margin-top: 15px;"><strong>דוגמאות:</strong></p>
+                    <p dir="ltr" style="text-align: center; font-size: 1.3em;">
+                        56,842 - זוגי | 73,957 - אי-זוגי
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game2" class="content">
+            <div class="game">
+                <h2>משחק השוואה</h2>
+                <div class="question-counter">שאלה <span id="q-count2">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="score2">0</span></div>
+                <div style="display: flex; gap: 30px; justify-content: center; flex-wrap: wrap;">
+                    <div style="position: relative; margin-top: 60px;">
+                        <div class="number-label">מספר 1</div>
+                        <div class="number-display" id="num1">0</div>
+                    </div>
+                    <div style="position: relative; margin-top: 60px;">
+                        <div class="number-label">מספר 2</div>
+                        <div class="number-display" id="num2">0</div>
+                    </div>
+                </div>
+                <div class="options">
+                    <button class="option-btn" id="opt1">המספר הראשון גדול יותר</button>
+                    <button class="option-btn" id="opt2">המספר השני גדול יותר</button>
+                    <button class="option-btn" id="opt3">שווים</button>
+                </div>
+                <div id="feedback2"></div>
+                <div id="round-end2" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <div id="lesson3" class="content">
+            <div class="lesson">
+                <h2>🎯 עיגול מספרים</h2>
+                <p>עיגול עוזר לנו לעבוד עם מספרים קלים יותר. יש כללים פשוטים:</p>
+                
+                <div class="example">
+                    <h3>כללי עיגול</h3>
+                    <p><strong>אם הספרה היא 0-4:</strong> מעגלים למטה</p>
+                    <p><strong>אם הספרה היא 5-9:</strong> מעגלים למעלה</p>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: עיגול לאלפים</h3>
+                    <p style="font-size: 1.8em; text-align: center; direction: ltr; color: #667eea;">47,382</p>
+                    <p><strong>שלבים:</strong></p>
+                    <p>1. מסתכלים על ספרת המאות: <span style="color: #ff6b6b; font-size: 1.3em;">3</span></p>
+                    <p>2. הספרה 3 קטנה מ-5, לכן מעגלים למטה</p>
+                    <p>3. שומרים את האלפים ומאפסים הכל אחרי</p>
+                    <p style="text-align: center; font-size: 1.5em; margin-top: 15px; direction: ltr; color: #51cf66;">
+                        <strong>47,000</strong>
+                    </p>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: עיגול לעשרות אלפים</h3>
+                    <p style="font-size: 1.8em; text-align: center; direction: ltr; color: #667eea;">68,742</p>
+                    <p><strong>שלבים:</strong></p>
+                    <p>1. מסתכלים על ספרת האלפים: <span style="color: #ff6b6b; font-size: 1.3em;">8</span></p>
+                    <p>2. הספרה 8 גדולה מ-5, לכן מעגלים למעלה</p>
+                    <p>3. מוסיפים 1 לעשרות אלפים ומאפסים הכל אחרי</p>
+                    <p style="text-align: center; font-size: 1.5em; margin-top: 15px; direction: ltr; color: #51cf66;">
+                        <strong>70,000</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game3" class="content">
+            <div class="game">
+                <h2>משחק עיגול</h2>
+                <div class="question-counter">שאלה <span id="q-count3">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="score3">0</span></div>
+                <p id="round-inst" style="font-size: 1.2em; margin-bottom: 20px;">עגלו את המספר:</p>
+                <div class="number-display" id="round-num">0</div>
+                <div class="controls">
+                    <input type="number" id="answer3" placeholder="הכנס תשובה">
+                    <br><br>
+                    <button id="check3">בדוק</button>
+                </div>
+                <div id="feedback3"></div>
+                <div id="round-end3" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(type) {
+            if (type === 'click') {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.frequency.value = 800;
+                gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                osc.start(audioContext.currentTime);
+                osc.stop(audioContext.currentTime + 0.1);
+            } else if (type === 'correct') {
+                const notes = [523.25, 659.25, 783.99];
+                notes.forEach((freq, index) => {
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.15, audioContext.currentTime + index * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + index * 0.1 + 0.3);
+                    osc.start(audioContext.currentTime + index * 0.1);
+                    osc.stop(audioContext.currentTime + index * 0.1 + 0.3);
+                });
+            } else if (type === 'incorrect') {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.frequency.value = 200;
+                gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                osc.start(audioContext.currentTime);
+                osc.stop(audioContext.currentTime + 0.3);
+            }
+        }
+        
+        const scores = {1: 0, 2: 0, 3: 0};
+        const questionsPerRound = 12;
+        const totalQuestions = 20;
+        let game1Data = {};
+        let game2Data = {};
+        let game3Data = {};
+        let currentQuestion = {1: 0, 2: 0, 3: 0};
+        let questionBank = {1: [], 2: [], 3: []};
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    playSound('click');
+                    const tabId = this.getAttribute('data-tab');
+                    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.getElementById(tabId).classList.add('active');
+                    this.classList.add('active');
+                    
+                    if (tabId === 'game1' && currentQuestion[1] === 0) {
+                        initGame(1);
+                    } else if (tabId === 'game2' && currentQuestion[2] === 0) {
+                        initGame(2);
+                    } else if (tabId === 'game3' && currentQuestion[3] === 0) {
+                        initGame(3);
+                    }
+                });
+            });
+            
+            document.getElementById('check1').addEventListener('click', () => {
+                playSound('click');
+                checkGame1();
+            });
+            document.getElementById('check3').addEventListener('click', () => {
+                playSound('click');
+                checkGame3();
+            });
+            document.getElementById('opt1').addEventListener('click', () => {
+                playSound('click');
+                checkGame2(1);
+            });
+            document.getElementById('opt2').addEventListener('click', () => {
+                playSound('click');
+                checkGame2(2);
+            });
+            document.getElementById('opt3').addEventListener('click', () => {
+                playSound('click');
+                checkGame2(3);
+            });
+            
+            // מניעת שינוי ערך בקלט מספרים עם גלגלת העכבר
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                });
+                input.addEventListener('focus', function() {
+                    this.addEventListener('wheel', (e) => {
+                        e.preventDefault();
+                    }, { passive: false });
+                });
+            });
+            
+            initGame(1);
+        });
+        
+        function initGame(gameNum) {
+            questionBank[gameNum] = [];
+            currentQuestion[gameNum] = 0;
+            scores[gameNum] = 0;
+            
+            for (let i = 0; i < totalQuestions; i++) {
+                if (gameNum === 1) {
+                    questionBank[gameNum].push(generateGame1Question());
+                } else if (gameNum === 2) {
+                    questionBank[gameNum].push(generateGame2Question());
+                } else if (gameNum === 3) {
+                    questionBank[gameNum].push(generateGame3Question());
+                }
+            }
+            
+            if (gameNum === 1) nextGame1();
+            else if (gameNum === 2) nextGame2();
+            else if (gameNum === 3) nextGame3();
+        }
+        
+        function generateGame1Question() {
+            const num = Math.floor(Math.random() * 90000) + 10000;
+            const places = ['האחדות', 'העשרות', 'המאות', 'האלפים', 'עשרות האלפים'];
+            const mults = [1, 10, 100, 1000, 10000];
+            const idx = Math.floor(Math.random() * 5);
+            const digit = Math.floor(num / mults[idx]) % 10;
+            return {num, place: places[idx], digit, answer: digit * mults[idx]};
+        }
+        
+        function generateGame2Question() {
+            const n1 = Math.floor(Math.random() * 90000) + 10000;
+            let n2 = Math.floor(Math.random() * 90000) + 10000;
+            if (Math.random() < 0.2) n2 = n1;
+            return {n1, n2, answer: n1 > n2 ? 1 : n1 < n2 ? 2 : 3};
+        }
+        
+        function generateGame3Question() {
+            const num = Math.floor(Math.random() * 90000) + 10000;
+            const roundTo = Math.random() < 0.5 ? 1000 : 10000;
+            const answer = Math.round(num / roundTo) * roundTo;
+            const txt = roundTo === 1000 ? 'אלפים' : 'עשרות אלפים';
+            return {num, roundTo, answer, txt};
+        }
+        
+        function nextGame1() {
+            if (currentQuestion[1] >= questionsPerRound) {
+                showRoundEnd(1);
+                return;
+            }
+            
+            game1Data = questionBank[1][currentQuestion[1]];
+            document.getElementById('display1').innerHTML = `במספר: <span style="font-size: 1.2em; color: #fff; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 8px;">${game1Data.num.toLocaleString('en-US')}</span><br><br>מה ערך הספרה <span class="place-highlight">${game1Data.digit}</span> במקום של <span class="place-highlight">${game1Data.place}?</span>`;
+            document.getElementById('answer1').value = '';
+            document.getElementById('feedback1').innerHTML = '';
+            document.getElementById('q-count1').textContent = currentQuestion[1] + 1;
+            document.getElementById('display1').style.display = 'block';
+            document.querySelector('#game1 .controls').style.display = 'block';
+        }
+        
+        function checkGame1() {
+            const ans = parseInt(document.getElementById('answer1').value);
+            if (isNaN(ans)) return;
+            
+            currentQuestion[1]++;
+            
+            if (ans === game1Data.answer) {
+                scores[1]++;
+                playSound('correct');
+                document.getElementById('feedback1').innerHTML = '<div class="feedback correct">נכון!</div>';
+            } else {
+                playSound('incorrect');
+                document.getElementById('feedback1').innerHTML = `<div class="feedback incorrect">לא נכון. התשובה: ${game1Data.answer.toLocaleString('en-US')}</div>`;
+            }
+            
+            document.getElementById('score1').textContent = scores[1];
+            const pct = Math.min(100, (scores[1] / questionsPerRound) * 100);
+            document.getElementById('progress1').style.width = pct + '%';
+            document.getElementById('progress1').textContent = Math.round(pct) + '%';
+            
+            // גלילה אוטומטית לפידבק
+            setTimeout(() => {
+                document.getElementById('feedback1').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+            
+            setTimeout(nextGame1, 1500);
+        }
+        
+        function showRoundEnd(gameNum) {
+            const endDiv = document.getElementById(`round-end${gameNum}`);
+            const percentage = Math.round((scores[gameNum] / questionsPerRound) * 100);
+            
+            endDiv.innerHTML = `
+                <div class="round-complete">
+                    <h3>🎉 סיימת את הסיבוב! 🎉</h3>
+                    <p>ענית נכון על <strong>${scores[gameNum]}</strong> מתוך <strong>${questionsPerRound}</strong> שאלות</p>
+                    <p>ציון: <strong>${percentage}%</strong></p>
+                    <button class="new-round-btn" onclick="startNewRound(${gameNum})">סיבוב חדש 🔄</button>
+                </div>
+            `;
+            endDiv.style.display = 'block';
+            
+            if (gameNum === 1) {
+                document.getElementById('display1').style.display = 'none';
+                document.querySelector('#game1 .controls').style.display = 'none';
+            } else if (gameNum === 2) {
+                document.getElementById('num1').parentElement.parentElement.style.display = 'none';
+                document.querySelector('#game2 .options').style.display = 'none';
+            } else if (gameNum === 3) {
+                document.getElementById('round-num').style.display = 'none';
+                document.querySelector('#game3 .controls').style.display = 'none';
+            }
+        }
+        
+        function startNewRound(gameNum) {
+            playSound('click');
+            resetGame(gameNum);
+        }
+        
+        function resetGame(gameNum) {
+            scores[gameNum] = 0;
+            currentQuestion[gameNum] = 0;
+            document.getElementById(`score${gameNum}`).textContent = '0';
+            document.getElementById(`round-end${gameNum}`).style.display = 'none';
+            document.getElementById(`feedback${gameNum}`).innerHTML = '';
+            
+            questionBank[gameNum] = [];
+            for (let i = 0; i < totalQuestions; i++) {
+                if (gameNum === 1) {
+                    questionBank[gameNum].push(generateGame1Question());
+                } else if (gameNum === 2) {
+                    questionBank[gameNum].push(generateGame2Question());
+                } else if (gameNum === 3) {
+                    questionBank[gameNum].push(generateGame3Question());
+                }
+            }
+            
+            if (gameNum === 1) {
+                document.getElementById('progress1').style.width = '0%';
+                document.getElementById('progress1').textContent = '0%';
+                document.getElementById('display1').style.display = 'block';
+                document.querySelector('#game1 .controls').style.display = 'block';
+                nextGame1();
+            } else if (gameNum === 2) {
+                document.getElementById('num1').parentElement.parentElement.style.display = 'flex';
+                document.querySelector('#game2 .options').style.display = 'flex';
+                nextGame2();
+            } else if (gameNum === 3) {
+                document.getElementById('round-num').style.display = 'block';
+                document.querySelector('#game3 .controls').style.display = 'block';
+                nextGame3();
+            }
+        }
+        
+        function nextGame2() {
+            if (currentQuestion[2] >= questionsPerRound) {
+                showRoundEnd(2);
+                return;
+            }
+            
+            game2Data = questionBank[2][currentQuestion[2]];
+            document.getElementById('num1').textContent = game2Data.n1.toLocaleString('en-US');
+            document.getElementById('num2').textContent = game2Data.n2.toLocaleString('en-US');
+            document.getElementById('feedback2').innerHTML = '';
+            document.getElementById('q-count2').textContent = currentQuestion[2] + 1;
+        }
+        
+        function checkGame2(choice) {
+            currentQuestion[2]++;
+            
+            if (choice === game2Data.answer) {
+                scores[2]++;
+                playSound('correct');
+                document.getElementById('feedback2').innerHTML = '<div class="feedback correct">נכון!</div>';
+            } else {
+                playSound('incorrect');
+                const msgs = ['הראשון גדול', 'השני גדול', 'שווים'];
+                document.getElementById('feedback2').innerHTML = `<div class="feedback incorrect">לא נכון. ${msgs[game2Data.answer - 1]}</div>`;
+            }
+            
+            document.getElementById('score2').textContent = scores[2];
+            
+            // גלילה אוטומטית לפידבק
+            setTimeout(() => {
+                document.getElementById('feedback2').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+            
+            setTimeout(nextGame2, 1500);
+        }
+        
+        function nextGame3() {
+            if (currentQuestion[3] >= questionsPerRound) {
+                showRoundEnd(3);
+                return;
+            }
+            
+            game3Data = questionBank[3][currentQuestion[3]];
+            document.getElementById('round-inst').textContent = `עגלו ל${game3Data.txt}:`;
+            document.getElementById('round-num').textContent = game3Data.num.toLocaleString('en-US');
+            document.getElementById('answer3').value = '';
+            document.getElementById('feedback3').innerHTML = '';
+            document.getElementById('q-count3').textContent = currentQuestion[3] + 1;
+        }
+        
+        function checkGame3() {
+            const ans = parseInt(document.getElementById('answer3').value);
+            if (isNaN(ans)) return;
+            
+            currentQuestion[3]++;
+            
+            if (ans === game3Data.answer) {
+                scores[3]++;
+                playSound('correct');
+                document.getElementById('feedback3').innerHTML = '<div class="feedback correct">נכון!</div>';
+            } else {
+                playSound('incorrect');
+                document.getElementById('feedback3').innerHTML = `<div class="feedback incorrect">לא נכון. התשובה: ${game3Data.answer.toLocaleString('en-US')}</div>`;
+            }
+            
+            document.getElementById('score3').textContent = scores[3];
+            
+            // גלילה אוטומטית לפידבק
+            setTimeout(() => {
+                document.getElementById('feedback3').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+            
+            setTimeout(nextGame3, 1500);
+        }
+    </script>
+</body>
+</html>
