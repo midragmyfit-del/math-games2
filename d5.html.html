@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>כפל וחילוק מתקדם - כיתה ד'</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; border-radius: 25px; padding: 40px; box-shadow: 0 25px 70px rgba(0,0,0,0.4); }
+        h1 { color: #667eea; text-align: center; margin-bottom: 15px; font-size: 3em; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .subtitle { text-align: center; color: #666; margin-bottom: 35px; font-size: 1.3em; }
+        .tabs { display: flex; gap: 12px; margin-bottom: 35px; flex-wrap: wrap; justify-content: center; }
+        .tab { padding: 16px 28px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px; cursor: pointer; font-size: 1.15em; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: white; }
+        .tab:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); background: linear-gradient(135deg, #7c8ef5 0%, #8a5eb8 100%); }
+        .tab.active { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); transform: scale(1.05); }
+        .content { display: none; }
+        .content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        .shake { animation: shake 0.3s; }
+        .lesson { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .lesson h2 { color: #ff6b6b; margin-bottom: 20px; font-size: 1.8em; }
+        .lesson p { font-size: 1.2em; line-height: 1.8; margin-bottom: 15px; color: #333; }
+        .example { background: white; padding: 20px; border-right: 5px solid #667eea; margin: 20px 0; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
+        .example h3 { color: #f093fb; margin-bottom: 12px; font-size: 1.3em; }
+        .calculation { font-family: 'Courier New', monospace; background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 15px 0; text-align: center; font-size: 1.5em; }
+        .calc-content { direction: ltr; display: inline-block; white-space: pre; }
+        .game { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .game h2 { margin-bottom: 20px; font-size: 2em; }
+        .question-counter { text-align: center; font-size: 1.3em; margin: 15px 0; color: #fff; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px; }
+        .score { text-align: center; font-size: 1.8em; margin: 25px 0; color: #fff; font-weight: bold; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; }
+        .problem-display { font-size: 3em; text-align: center; margin: 30px 0; padding: 25px; background: rgba(255,255,255,0.3); border-radius: 15px; font-weight: bold; font-family: 'Courier New', monospace; }
+        .problem-content { direction: ltr; display: inline-block; }
+        .word-problem { font-size: 1.4em; text-align: center; margin: 30px 0; padding: 30px; background: rgba(255,255,255,0.3); border-radius: 15px; line-height: 1.8; direction: rtl; }
+        input[type="number"] { width: 200px; padding: 15px; font-size: 1.8em; border: 4px solid white; border-radius: 10px; text-align: center; margin: 10px; font-weight: bold; transition: border-color 0.3s; }
+        input[type="number"]:focus { outline: none; border-color: #f093fb; }
+        input[type="number"]::placeholder { text-align: center; font-size: 0.7em; color: #999; }
+        input[type="number"].error { border-color: #ff6b6b; }
+        button { background: white; color: #667eea; border: none; padding: 14px 35px; font-size: 1.2em; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-weight: bold; box-shadow: 0 6px 12px rgba(0,0,0,0.2); margin: 5px; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+        .feedback { padding: 20px; border-radius: 12px; margin-top: 20px; font-size: 1.3em; text-align: center; font-weight: bold; }
+        .correct { background: #51cf66; color: white; }
+        .incorrect { background: #ff6b6b; color: white; }
+        .controls { text-align: center; margin: 25px 0; }
+        .round-complete { background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%); padding: 40px; border-radius: 20px; text-align: center; color: white; margin: 20px 0; }
+        .round-complete h3 { font-size: 2.5em; margin-bottom: 20px; }
+        .round-complete p { font-size: 1.5em; margin: 15px 0; }
+        .new-round-btn { background: white; color: #51cf66; font-size: 1.5em; padding: 20px 40px; margin-top: 20px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; box-shadow: 0 8px 16px rgba(0,0,0,0.2); transition: all 0.3s; }
+        .new-round-btn:hover { transform: scale(1.05); box-shadow: 0 12px 24px rgba(0,0,0,0.3); }
+        .steps { background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin: 20px 0; text-align: right; }
+        .steps p { margin: 10px 0; font-size: 1.1em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>כפל וחילוק מתקדם</h1>
+        <div class="subtitle">כיתה ד' - בואו ללמוד כפל וחילוק!</div>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="lesson1">📚 כפל דו-ספרתי</button>
+            <button class="tab" data-tab="game1">🎮 משחק כפל</button>
+            <button class="tab" data-tab="lesson2">📚 חילוק עם שארית</button>
+            <button class="tab" data-tab="game2">🎯 משחק חילוק</button>
+            <button class="tab" data-tab="lesson3">📚 בעיות מילוליות</button>
+            <button class="tab" data-tab="game3">🏆 משחק בעיות</button>
+        </div>
+        
+        <div id="lesson1" class="content active">
+            <div class="lesson">
+                <h2>כפל מספר דו-ספרתי במספר דו-ספרתי</h2>
+                <p>כשמכפילים שני מספרים דו-ספרתיים, נעשה את זה בשלבים:</p>
+                
+                <div class="example">
+                    <h3>דוגמה 1: <span dir="ltr">23 × 15 = ?</span></h3>
+                    <div class="calculation">
+                      <div class="calc-content">    23
+  × 15
+  ----
+   115  (23 × 5)
+  230   (23 × 10)
+  ----
+   345</div>
+                    </div>
+                    <div class="steps">
+                        <p><strong>שלבי הפתרון:</strong></p>
+                        <p>שלב 1: כופלים <span dir="ltr">23 × 5 = 115</span></p>
+                        <p>שלב 2: כופלים <span dir="ltr">23 × 10 = 230</span></p>
+                        <p>שלב 3: מחברים <span dir="ltr">115 + 230 = 345</span></p>
+                        <p><strong>תשובה:</strong> <span dir="ltr">345</span></p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: <span dir="ltr">34 × 26 = ?</span></h3>
+                    <div class="calculation">
+                      <div class="calc-content">    34
+  × 26
+  ----
+   204  (34 × 6)
+  680   (34 × 20)
+  ----
+   884</div>
+                    </div>
+                    <div class="steps">
+                        <p><strong>שלבי הפתרון:</strong></p>
+                        <p>שלב 1: כופלים <span dir="ltr">34 × 6 = 204</span></p>
+                        <p>שלב 2: כופלים <span dir="ltr">34 × 20 = 680</span></p>
+                        <p>שלב 3: מחברים <span dir="ltr">204 + 680 = 884</span></p>
+                        <p><strong>תשובה:</strong> <span dir="ltr">884</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game1" class="content">
+            <div class="game">
+                <h2>משחק כפל דו-ספרתי</h2>
+                <div class="question-counter">שאלה <span id="q-count1">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="score1">0</span></div>
+                <div class="problem-display" id="problem1">טוען...</div>
+                <div class="controls">
+                    <input type="number" id="answer1" placeholder="הכנס תשובה" min="0">
+                    <br><br>
+                    <button id="check1">בדוק</button>
+                </div>
+                <div id="feedback1"></div>
+                <div id="round-end1" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <div id="lesson2" class="content">
+            <div class="lesson">
+                <h2>חילוק עם שארית</h2>
+                <p>לפעמים כשמחלקים, נשאר "משהו" שלא מתחלק בדיוק - זו השארית!</p>
+                
+                <div class="example">
+                    <h3>דוגמה 1: <span dir="ltr">47 ÷ 6 = ?</span></h3>
+                    <p><strong>פתרון:</strong></p>
+                    <p><span dir="ltr">6 × 7 = 42</span> (קרוב ביותר ל-47, אבל לא עובר)</p>
+                    <p><span dir="ltr">6 × 8 = 48</span> (יותר מדי!)</p>
+                    <p>אז התשובה היא <span dir="ltr">7</span> עם שארית</p>
+                    <p>שארית: <span dir="ltr">47 - 42 = 5</span></p>
+                    <p><strong>תשובה:</strong> <span dir="ltr">7</span> שארית <span dir="ltr">5</span></p>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: <span dir="ltr">85 ÷ 9 = ?</span></h3>
+                    <p><strong>פתרון:</strong></p>
+                    <p><span dir="ltr">9 × 9 = 81</span> (קרוב ביותר)</p>
+                    <p><span dir="ltr">9 × 10 = 90</span> (יותר מדי)</p>
+                    <p>שארית: <span dir="ltr">85 - 81 = 4</span></p>
+                    <p><strong>תשובה:</strong> <span dir="ltr">9</span> שארית <span dir="ltr">4</span></p>
+                </div>
+                
+                <div class="example">
+                    <h3>כלל חשוב!</h3>
+                    <p>השארית תמיד חייבת להיות <strong>קטנה מהמחלק</strong>.</p>
+                    <p>למשל: אם מחלקים ב-<span dir="ltr">7</span>, השארית יכולה להיות רק <span dir="ltr">0, 1, 2, 3, 4, 5, 6</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game2" class="content">
+            <div class="game">
+                <h2>משחק חילוק עם שארית</h2>
+                <div class="question-counter">שאלה <span id="q-count2">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="score2">0</span></div>
+                <div class="problem-display" id="problem2">טוען...</div>
+                <div class="controls">
+                    <div style="margin: 20px 0;">
+                        <label style="font-size: 1.2em; display: block; margin-bottom: 10px;">תוצאה:</label>
+                        <input type="number" id="answer2" placeholder="תוצאה" style="width: 150px;" min="0">
+                    </div>
+                    <div style="margin: 20px 0;">
+                        <label style="font-size: 1.2em; display: block; margin-bottom: 10px;">שארית:</label>
+                        <input type="number" id="remainder2" placeholder="שארית" style="width: 150px;" min="0">
+                    </div>
+                    <br>
+                    <button id="check2">בדוק</button>
+                </div>
+                <div id="feedback2"></div>
+                <div id="round-end2" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <div id="lesson3" class="content">
+            <div class="lesson">
+                <h2>בעיות מילוליות עם כפל וחילוק</h2>
+                <p>נלמד איך לזהות מתי להשתמש בכפל ומתי בחילוק!</p>
+                
+                <div class="example">
+                    <h3>דוגמה 1: בעיית כפל</h3>
+                    <p><strong>בעיה:</strong> בכל קופסה יש 24 עפרונות. כמה עפרונות יש ב-15 קופסאות?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>זו בעיית כפל - יש לנו קבוצות שוות</p>
+                        <p><span dir="ltr">24 × 15 = 360</span></p>
+                        <p><strong>תשובה:</strong> <span dir="ltr">360</span> עפרונות</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: בעיית חילוק</h3>
+                    <p><strong>בעיה:</strong> יש 156 תפוחים שצריך לחלק ל-12 סלים שווים. כמה תפוחים בכל סל?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>זו בעיית חילוק - מחלקים לקבוצות שוות</p>
+                        <p><span dir="ltr">156 ÷ 12 = 13</span></p>
+                        <p><strong>תשובה:</strong> <span dir="ltr">13</span> תפוחים בכל סל</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game3" class="content">
+            <div class="game">
+                <h2>משחק בעיות מילוליות</h2>
+                <div class="question-counter">שאלה <span id="q-count3">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="score3">0</span></div>
+                <div class="word-problem" id="problem3">טוען...</div>
+                <div class="controls">
+                    <input type="number" id="answer3" placeholder="הכנס תשובה" min="0">
+                    <br><br>
+                    <button id="check3">בדוק</button>
+                </div>
+                <div id="feedback3"></div>
+                <div id="round-end3" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+var scores = {1: 0, 2: 0, 3: 0};
+var currentQuestion = {1: 0, 2: 0, 3: 0};
+var questionBank = {1: [], 2: [], 3: []};
+var gameData = {1: {}, 2: {}, 3: {}};
+
+function generateQ1() {
+    var n1 = Math.floor(Math.random() * 80) + 11;
+    var n2 = Math.floor(Math.random() * 80) + 11;
+    var n1F = n1.toString();
+    var n2F = n2.toString();
+    return {text: n1F + ' × ' + n2F, answer: n1 * n2};
+}
+
+function generateQ2() {
+    var divisor = Math.floor(Math.random() * 7) + 3;
+    var quotient = Math.floor(Math.random() * 15) + 5;
+    var remainder = Math.floor(Math.random() * divisor);
+    var dividend = divisor * quotient + remainder;
+    return {text: dividend + ' ÷ ' + divisor, answer: quotient, remainder: remainder, dividend: dividend, divisor: divisor};
+}
+
+function generateQ3() {
+    var type = Math.floor(Math.random() * 6);
+    if (type === 0) {
+        var perBox = Math.floor(Math.random() * 30) + 10;
+        var boxes = Math.floor(Math.random() * 20) + 5;
+        return {
+            text: 'בכל קופסה יש ' + perBox + ' עפרונות. כמה עפרונות יש ב-' + boxes + ' קופסאות?',
+            answer: perBox * boxes
+        };
+    } else if (type === 1) {
+        var groups = Math.floor(Math.random() * 15) + 5;
+        var perGroup = Math.floor(Math.random() * 18) + 5;
+        var total = groups * perGroup;
+        return {
+            text: 'יש ' + total + ' תפוחים לחלק ל-' + groups + ' סלים שווים. כמה תפוחים בכל סל?',
+            answer: perGroup
+        };
+    } else if (type === 2) {
+        var perDay = Math.floor(Math.random() * 25) + 10;
+        var days = Math.floor(Math.random() * 12) + 5;
+        return {
+            text: 'דני חוסך ' + perDay + ' שקלים כל יום. כמה כסף חסך אחרי ' + days + ' ימים?',
+            answer: perDay * days
+        };
+    } else if (type === 3) {
+        var perRow = Math.floor(Math.random() * 20) + 8;
+        var rows = Math.floor(Math.random() * 15) + 6;
+        return {
+            text: 'באולם יש ' + rows + ' שורות. בכל שורה ' + perRow + ' כסאות. כמה כסאות יש באולם?',
+            answer: perRow * rows
+        };
+    } else if (type === 4) {
+        var perBag = Math.floor(Math.random() * 12) + 4;
+        var bags = Math.floor(Math.random() * 15) + 5;
+        var total = bags * perBag;
+        return {
+            text: 'יש ' + total + ' סוכריות. רוצים לארוז אותן בשקיות של ' + perBag + ' סוכריות. כמה שקיות אפשר למלא?',
+            answer: bags
+        };
+    } else {
+        var pricePerItem = Math.floor(Math.random() * 18) + 5;
+        var items = Math.floor(Math.random() * 15) + 4;
+        return {
+            text: 'כל צעצוע עולה ' + pricePerItem + ' שקלים. כמה עולים ' + items + ' צעצועים?',
+            answer: pricePerItem * items
+        };
+    }
+}
+
+function initGame(g) {
+    questionBank[g] = [];
+    for (var i = 0; i < 20; i++) {
+        if (g === 1) questionBank[g].push(generateQ1());
+        else if (g === 2) questionBank[g].push(generateQ2());
+        else questionBank[g].push(generateQ3());
+    }
+    nextQ(g);
+}
+
+function nextQ(g) {
+    if (currentQuestion[g] >= 12) { showEnd(g); return; }
+    gameData[g] = questionBank[g][currentQuestion[g]];
+    document.getElementById('q-count' + g).textContent = currentQuestion[g] + 1;
+    if (g === 3) {
+        document.getElementById('problem3').textContent = gameData[g].text;
+    } else {
+        document.getElementById('problem' + g).innerHTML = '<div class="problem-content">' + gameData[g].text + ' = ?</div>';
+    }
+    document.getElementById('answer' + g).value = '';
+    document.getElementById('answer' + g).classList.remove('error');
+    if (g === 2) {
+        document.getElementById('remainder2').value = '';
+        document.getElementById('remainder2').classList.remove('error');
+    }
+    document.getElementById('feedback' + g).innerHTML = '';
+}
+
+function checkAns(g) {
+    if (g === 2) {
+        var ans = parseInt(document.getElementById('answer2').value);
+        var rem = parseInt(document.getElementById('remainder2').value);
+        if (isNaN(ans) || isNaN(rem)) return;
+        
+        if (rem >= gameData[g].divisor) {
+            playSound('incorrect');
+            document.getElementById('remainder2').classList.add('error', 'shake');
+            document.getElementById('feedback2').innerHTML = '<div class="feedback incorrect">שארית חייבת להיות קטנה מהמחלק (' + gameData[g].divisor + ')!</div>';
+            setTimeout(function() {
+                document.getElementById('remainder2').classList.remove('shake');
+            }, 300);
+            return;
+        }
+        
+        currentQuestion[g]++;
+        if (ans === gameData[g].answer && rem === gameData[g].remainder) {
+            scores[g]++;
+            playSound('correct');
+            document.getElementById('feedback2').innerHTML = '<div class="feedback correct">נכון מעולה!</div>';
+        } else {
+            playSound('incorrect');
+            var msg = 'לא נכון. תשובה נכונה: ' + gameData[g].answer + ' שארית ' + gameData[g].remainder;
+            document.getElementById('feedback2').innerHTML = '<div class="feedback incorrect">' + msg + '</div>';
+        }
+        document.getElementById('score2').textContent = scores[g];
+        
+        // גלילה חלקה לפידבק
+        setTimeout(function() {
+            document.getElementById('feedback2').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+        
+        setTimeout(function() { nextQ(g); }, 2000);
+    } else {
+        var ans = parseInt(document.getElementById('answer' + g).value);
+        if (isNaN(ans)) return;
+        currentQuestion[g]++;
+        if (ans === gameData[g].answer) {
+            scores[g]++;
+            playSound('correct');
+            document.getElementById('feedback' + g).innerHTML = '<div class="feedback correct">נכון מעולה!</div>';
+        } else {
+            playSound('incorrect');
+            var correctAns = gameData[g].answer.toLocaleString('en-US');
+            var msg = 'לא נכון. תשובה: ' + correctAns;
+            document.getElementById('feedback' + g).innerHTML = '<div class="feedback incorrect">' + msg + '</div>';
+        }
+        document.getElementById('score' + g).textContent = scores[g];
+        
+        // גלילה חלקה לפידבק
+        setTimeout(function() {
+            document.getElementById('feedback' + g).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+        
+        setTimeout(function() { nextQ(g); }, 2000);
+    }
+}
+
+function showEnd(g) {
+    var pct = Math.round((scores[g] / 12) * 100);
+    var html = '<div class="round-complete"><h3>סיימת!</h3><p>ציון: ' + scores[g] + '/12 (' + pct + '%)</p><button class="new-round-btn" onclick="resetGame(' + g + ')">סיבוב נוסף</button></div>';
+    document.getElementById('round-end' + g).innerHTML = html;
+    document.getElementById('round-end' + g).style.display = 'block';
+    var probId = (g === 3) ? 'problem3' : 'problem' + g;
+    document.getElementById(probId).style.display = 'none';
+}
+
+function resetGame(g) {
+    scores[g] = 0;
+    currentQuestion[g] = 0;
+    document.getElementById('score' + g).textContent = '0';
+    document.getElementById('round-end' + g).style.display = 'none';
+    document.getElementById('feedback' + g).innerHTML = '';
+    var probId = (g === 3) ? 'problem3' : 'problem' + g;
+    document.getElementById(probId).style.display = 'block';
+    
+    questionBank[g] = [];
+    for (var i = 0; i < 20; i++) {
+        if (g === 1) questionBank[g].push(generateQ1());
+        else if (g === 2) questionBank[g].push(generateQ2());
+        else questionBank[g].push(generateQ3());
+    }
+    
+    var controlsSelector = (g === 1) ? '#game1 .controls' : (g === 2) ? '#game2 .controls' : '#game3 .controls';
+    var controls = document.querySelector(controlsSelector);
+    if (controls) controls.style.display = 'block';
+    
+    initGame(g);
+}
+
+window.onload = function() {
+    var tabs = document.querySelectorAll('.tab');
+    for (var i = 0; i < tabs.length; i++) {
+        tabs[i].onclick = function() {
+            playSound('click');
+            var tabId = this.getAttribute('data-tab');
+            var allContent = document.querySelectorAll('.content');
+            var allTabs = document.querySelectorAll('.tab');
+            
+            for (var j = 0; j < allContent.length; j++) {
+                allContent[j].classList.remove('active');
+            }
+            for (var k = 0; k < allTabs.length; k++) {
+                allTabs[k].classList.remove('active');
+            }
+            
+            document.getElementById(tabId).classList.add('active');
+            this.classList.add('active');
+            
+            if (tabId === 'game1' && currentQuestion[1] > 0) {
+                resetGame(1);
+            } else if (tabId === 'game2' && currentQuestion[2] > 0) {
+                resetGame(2);
+            } else if (tabId === 'game3' && currentQuestion[3] > 0) {
+                resetGame(3);
+            }
+        };
+    }
+    
+    // מניעת שינוי ערך עם גלגלת העכבר
+    var allInputs = document.querySelectorAll('input[type="number"]');
+    for (var i = 0; i < allInputs.length; i++) {
+        allInputs[i].addEventListener('wheel', function(e) {
+            e.preventDefault();
+        });
+        allInputs[i].addEventListener('focus', function() {
+            this.addEventListener('wheel', function(e) {
+                e.preventDefault();
+            });
+        });
+    }
+    
+    document.getElementById('answer1').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') checkAns(1);
+    });
+    document.getElementById('answer2').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') checkAns(2);
+    });
+    document.getElementById('remainder2').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') checkAns(2);
+    });
+    document.getElementById('answer3').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') checkAns(3);
+    });
+    
+    document.getElementById('check1').onclick = function() { playSound('click'); checkAns(1); };
+    document.getElementById('check2').onclick = function() { playSound('click'); checkAns(2); };
+    document.getElementById('check3').onclick = function() { playSound('click'); checkAns(3); };
+    
+    initGame(1);
+    initGame(2);
+    initGame(3);
+};
+
+function playSound(type) {
+    var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    if (type === 'click') {
+        var osc = audioContext.createOscillator();
+        var gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.type = 'sine';
+        osc.frequency.value = 600;
+        gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+        osc.start(audioContext.currentTime);
+        osc.stop(audioContext.currentTime + 0.15);
+    } else if (type === 'correct') {
+        var notes = [523.25, 659.25, 783.99];
+        for (var i = 0; i < notes.length; i++) {
+            var osc = audioContext.createOscillator();
+            var gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.type = 'sine';
+            osc.frequency.value = notes[i];
+            gain.gain.setValueAtTime(0.1, audioContext.currentTime + i * 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.1 + 0.3);
+            osc.start(audioContext.currentTime + i * 0.1);
+            osc.stop(audioContext.currentTime + i * 0.1 + 0.3);
+        }
+    } else if (type === 'incorrect') {
+        var osc = audioContext.createOscillator();
+        var gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.type = 'sine';
+        osc.frequency.value = 200;
+        gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        osc.start(audioContext.currentTime);
+        osc.stop(audioContext.currentTime + 0.3);
+    }
+}
+</script>
+</body>
+</html>
