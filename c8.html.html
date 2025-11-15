@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>שיעור שברים</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; margin: 0; direction: rtl; min-height: 100vh; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); margin-bottom: 40px; }
+        h1 { color: #667eea; text-align: center; margin-bottom: 30px; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab { flex: 1; min-width: 140px; padding: 12px; background: #f0f0f0; border: none; border-radius: 10px; cursor: pointer; font-size: 1em; font-weight: bold; }
+        .tab.active { background: #667eea; color: white; }
+        .content { display: none; }
+        .content.active { display: block; }
+        .lesson-section { margin: 20px 0; padding: 20px; background: #f9f9f9; border-radius: 15px; }
+        .game-area { background: #f0f7ff; padding: 30px; border-radius: 15px; }
+        .question { font-size: 1.5em; text-align: center; margin-bottom: 20px; font-weight: bold; }
+        .options { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin: 20px 0; }
+        .option { padding: 20px; background: white; border: 3px solid #ddd; border-radius: 10px; cursor: pointer; text-align: center; font-size: 1.3em; font-weight: bold; }
+        .option:hover { transform: scale(1.05); border-color: #667eea; }
+        .option.correct { background: #4caf50; color: white; }
+        .option.wrong { background: #f44336; color: white; }
+        .score { text-align: center; font-size: 1.5em; margin: 20px 0; color: #667eea; font-weight: bold; }
+        .next-btn { display: block; margin: 20px auto; padding: 15px 40px; background: #667eea; color: white; border: none; border-radius: 10px; font-size: 1.2em; cursor: pointer; font-weight: bold; }
+        .next-btn:hover { background: #5568d3; }
+        .feedback { text-align: center; font-size: 1.3em; margin: 20px 0; padding: 15px; border-radius: 10px; font-weight: bold; }
+        .feedback.success { background: #d4edda; color: #155724; }
+        .feedback.error { background: #f8d7da; color: #721c24; }
+        .pizza-slice { width: 80px; height: 80px; background: #ffd700; border: 3px solid #ff8c00; margin: 5px; display: inline-block; border-radius: 10px; cursor: pointer; font-size: 2em; line-height: 80px; text-align: center; }
+        .pizza-slice.selected { background: #ff6347; }
+        .fraction-display { font-size: 3em; text-align: center; margin: 20px; color: #667eea; }
+        .number-line { width: 100%; height: 80px; position: relative; margin: 30px 0; }
+        .line { position: absolute; top: 40px; left: 0; right: 0; height: 3px; background: #333; }
+        .mark { position: absolute; width: 2px; height: 20px; background: #333; top: 30px; }
+        .mark-label { position: absolute; top: 55px; transform: translateX(-50%); font-weight: bold; }
+        .draggable { position: absolute; width: 40px; height: 40px; background: #ff6b6b; border-radius: 50%; top: 20px; cursor: move; text-align: center; line-height: 40px; color: white; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 שיעור שברים - כיתה ג' 🎓</h1>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab(0)">📚 למידה</button>
+            <button class="tab" onclick="showTab(1)">🎮 זיהוי</button>
+            <button class="tab" onclick="showTab(2)">🍕 פיצה</button>
+            <button class="tab" onclick="showTab(3)">⚖️ השוואה</button>
+            <button class="tab" onclick="showTab(4)">➕ חיבור</button>
+            <button class="tab" onclick="showTab(5)">➖ חיסור</button>
+            <button class="tab" onclick="showTab(6)">📏 ציר</button>
+        </div>
+        
+        <div class="content active" id="tab0">
+            <div class="lesson-section">
+                <h2>🤔 מה זה שבר?</h2>
+                <p style="font-size: 1.2em; line-height: 1.8;">שבר הוא חלק משלם. כשחותכים עוגה, פיצה או תפוח לחלקים שווים - כל חלק הוא שבר!</p>
+                <p style="font-size: 1.1em; margin-top: 10px; color: #555;">לדוגמה: אם חותכים עוגה ל-4 חלקים שווים ולוקחים חלק אחד, יש לנו <strong>רבע (¼)</strong> מהעוגה.</p>
+            </div>
+            
+            <div class="lesson-section">
+                <h2>🎯 השברים הפשוטים:</h2>
+                <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin: 20px 0;">
+                    <div style="text-align: center;">
+                        <h3>חצי (½)</h3>
+                        <svg width="120" height="120">
+                            <circle cx="60" cy="60" r="55" fill="#ff6b6b" stroke="#333" stroke-width="2"/>
+                            <path d="M 60 60 L 60 5 A 55 55 0 0 1 60 115 Z" fill="#ffeb3b"/>
+                            <line x1="60" y1="5" x2="60" y2="115" stroke="#333" stroke-width="2"/>
+                        </svg>
+                        <p><strong>1 מתוך 2</strong></p>
+                    </div>
+                    <div style="text-align: center;">
+                        <h3>שליש (⅓)</h3>
+                        <svg width="120" height="120">
+                            <circle cx="60" cy="60" r="55" fill="#4ecdc4" stroke="#333" stroke-width="2"/>
+                            <path d="M 60 60 L 60 5 A 55 55 0 0 1 107.6 87.5 Z" fill="#ff6b6b"/>
+                        </svg>
+                        <p><strong>1 מתוך 3</strong></p>
+                    </div>
+                    <div style="text-align: center;">
+                        <h3>רבע (¼)</h3>
+                        <svg width="120" height="120">
+                            <circle cx="60" cy="60" r="55" fill="#95e1d3" stroke="#333" stroke-width="2"/>
+                            <path d="M 60 60 L 60 5 A 55 55 0 0 1 115 60 Z" fill="#f38181"/>
+                            <line x1="60" y1="5" x2="60" y2="115" stroke="#333" stroke-width="2"/>
+                            <line x1="5" y1="60" x2="115" y2="60" stroke="#333" stroke-width="2"/>
+                        </svg>
+                        <p><strong>1 מתוך 4</strong></p>
+                    </div>
+                    <div style="text-align: center;">
+                        <h3>חמישית (⅕)</h3>
+                        <svg width="120" height="120">
+                            <circle cx="60" cy="60" r="55" fill="#a8e6cf" stroke="#333" stroke-width="2"/>
+                            <path d="M 60 60 L 60 5 A 55 55 0 0 1 94 26 Z" fill="#ff8b94"/>
+                        </svg>
+                        <p><strong>1 מתוך 5</strong></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lesson-section">
+                <h2>📝 איך כותבים שבר?</h2>
+                <div style="font-size: 1.2em; text-align: center; margin: 20px 0;">
+                    <div style="display: inline-block; text-align: center; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <div style="font-size: 2em; color: #667eea; border-bottom: 3px solid #333; padding-bottom: 10px;">1</div>
+                        <div style="font-size: 2em; color: #667eea; padding-top: 10px;">4</div>
+                    </div>
+                </div>
+                <p style="text-align: center; margin-top: 15px;">
+                    <span style="background: #ffe6e6; padding: 5px 10px; border-radius: 5px; margin: 0 5px;"><strong>המונה (1)</strong> = כמה חלקים לקחנו</span><br>
+                    <span style="background: #e6f3ff; padding: 5px 10px; border-radius: 5px; margin: 0 5px; margin-top: 10px; display: inline-block;"><strong>המכנה (4)</strong> = לכמה חלקים חילקנו</span>
+                </p>
+            </div>
+            
+            <div class="lesson-section">
+                <h2>🔄 שברים שווים</h2>
+                <p style="font-size: 1.2em; line-height: 1.8;">שברים שונים יכולים להיות שווים בגודל! למשל:</p>
+                <div style="text-align: center; font-size: 2em; margin: 20px 0; color: #667eea; display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap;">
+                    <div style="display: inline-block; text-align: center;">
+                        <div style="border-bottom: 3px solid #333; padding-bottom: 5px;">1</div>
+                        <div style="padding-top: 5px;">2</div>
+                    </div>
+                    <strong>=</strong>
+                    <div style="display: inline-block; text-align: center;">
+                        <div style="border-bottom: 3px solid #333; padding-bottom: 5px;">2</div>
+                        <div style="padding-top: 5px;">4</div>
+                    </div>
+                    <strong>=</strong>
+                    <div style="display: inline-block; text-align: center;">
+                        <div style="border-bottom: 3px solid #333; padding-bottom: 5px;">3</div>
+                        <div style="padding-top: 5px;">6</div>
+                    </div>
+                    <strong>=</strong>
+                    <div style="display: inline-block; text-align: center;">
+                        <div style="border-bottom: 3px solid #333; padding-bottom: 5px;">4</div>
+                        <div style="padding-top: 5px;">8</div>
+                    </div>
+                </div>
+                <p style="font-size: 1.1em; text-align: center;">כולם מייצגים את אותו הגודל - חצי!</p>
+            </div>
+            
+            <div class="lesson-section">
+                <h2>📊 השוואת שברים</h2>
+                <p style="font-size: 1.2em; line-height: 1.8;"><strong>כלל חשוב:</strong> כשהמכנה גדול יותר, כל חלק קטן יותר!</p>
+                <div style="margin: 20px 0; padding: 15px; background: #fff; border-radius: 10px;">
+                    <p style="font-size: 1.4em; display: flex; align-items: center; gap: 15px; margin: 15px 0;">
+                        <span style="font-size: 1.5em;">⭐</span>
+                        <div style="display: inline-block; text-align: center; vertical-align: middle;">
+                            <div style="border-bottom: 3px solid #333; padding-bottom: 5px; font-size: 1.2em;">1</div>
+                            <div style="padding-top: 5px; font-size: 1.2em;">2</div>
+                        </div>
+                        <strong style="font-size: 1.1em;">גדול מ-</strong>
+                        <div style="display: inline-block; text-align: center; vertical-align: middle;">
+                            <div style="border-bottom: 3px solid #333; padding-bottom: 5px; font-size: 1.2em;">1</div>
+                            <div style="padding-top: 5px; font-size: 1.2em;">4</div>
+                        </div>
+                    </p>
+                    <p style="font-size: 1.4em; display: flex; align-items: center; gap: 15px; margin: 15px 0;">
+                        <span style="font-size: 1.5em;">⭐</span>
+                        <div style="display: inline-block; text-align: center; vertical-align: middle;">
+                            <div style="border-bottom: 3px solid #333; padding-bottom: 5px; font-size: 1.2em;">1</div>
+                            <div style="padding-top: 5px; font-size: 1.2em;">3</div>
+                        </div>
+                        <strong style="font-size: 1.1em;">גדול מ-</strong>
+                        <div style="display: inline-block; text-align: center; vertical-align: middle;">
+                            <div style="border-bottom: 3px solid #333; padding-bottom: 5px; font-size: 1.2em;">1</div>
+                            <div style="padding-top: 5px; font-size: 1.2em;">5</div>
+                        </div>
+                    </p>
+                    <p style="font-size: 1.4em; display: flex; align-items: center; gap: 15px; margin: 15px 0;">
+                        <span style="font-size: 1.5em;">⭐</span>
+                        <div style="display: inline-block; text-align: center; vertical-align: middle;">
+                            <div style="border-bottom: 3px solid #333; padding-bottom: 5px; font-size: 1.2em;">3</div>
+                            <div style="padding-top: 5px; font-size: 1.2em;">4</div>
+                        </div>
+                        <strong style="font-size: 1.1em;">גדול מ-</strong>
+                        <div style="display: inline-block; text-align: center; vertical-align: middle;">
+                            <div style="border-bottom: 3px solid #333; padding-bottom: 5px; font-size: 1.2em;">1</div>
+                            <div style="padding-top: 5px; font-size: 1.2em;">4</div>
+                        </div>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="lesson-section">
+                <h2>➕ חיבור שברים</h2>
+                <p style="font-size: 1.2em; line-height: 1.8;">כדי לחבר שברים עם <strong>אותו מכנה</strong>, מחברים את המונים:</p>
+                <div style="text-align: center; font-size: 1.8em; margin: 20px 0; padding: 20px; background: #fff; border-radius: 10px; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
+                    <strong style="color: #667eea;">? =</strong>
+                    <div style="display: inline-block; text-align: center; color: #667eea;">
+                        <div style="border-bottom: 3px solid #333; padding-bottom: 5px;">2</div>
+                        <div style="padding-top: 5px;">4</div>
+                    </div>
+                    <strong style="color: #667eea;">+</strong>
+                    <div style="display: inline-block; text-align: center; color: #667eea;">
+                        <div style="border-bottom: 3px solid #333; padding-bottom: 5px;">1</div>
+                        <div style="padding-top: 5px;">4</div>
+                    </div>
+                </div>
+                <div style="text-align: center; font-size: 1.8em; margin: 20px 0; padding: 20px; background: #fff; border-radius: 10px; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
+                    <div style="display: inline-block; text-align: center; color: #667eea;">
+                        <div style="border-bottom: 3px solid #333; padding-bottom: 5px;">3</div>
+                        <div style="padding-top: 5px;">4</div>
+                    </div>
+                    <strong style="color: #667eea;">=</strong>
+                    <div style="display: inline-block; text-align: center; color: #667eea;">
+                        <div style="border-bottom: 3px solid #333; padding-bottom: 5px;">2</div>
+                        <div style="padding-top: 5px;">4</div>
+                    </div>
+                    <strong style="color: #667eea;">+</strong>
+                    <div style="display: inline-block; text-align: center; color: #667eea;">
+                        <div style="border-bottom: 3px solid #333; padding-bottom: 5px;">1</div>
+                        <div style="padding-top: 5px;">4</div>
+                    </div>
+                </div>
+                <p style="text-align: center; font-size: 1.1em;">רבע אחד + שני רבעים = שלושה רבעים</p>
+            </div>
+            
+            <div class="lesson-section">
+                <h2>➖ חיסור שברים</h2>
+                <p style="font-size: 1.2em; line-height: 1.8;">כדי לחסר שברים עם <strong>אותו מכנה</strong>, מחסרים את המונים:</p>
+                <div style="text-align: center; font-size: 1.8em; margin: 20px 0; padding: 20px; background: #fff; border-radius: 10px; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
+                    <strong style="color: #667eea;">? =</strong>
+                    <div style="display: inline-block; text-align: center; color: #667eea;">
+                        <div style="border-bottom: 3px solid #333; padding-bottom: 5px;">3</div>
+                        <div style="padding-top: 5px;">4</div>
+                    </div>
+                    <strong style="color: #667eea;">-</strong>
+                    <div style="display: inline-block; text-align: center; color: #667eea;">
+                        <div style="border-bottom: 3px solid #333; padding-bottom: 5px;">3</div>
+                        <div style="padding-top: 5px;">4</div>
+                    </div>
+                </div>
+                <div style="text-align: center; font-size: 1.8em; margin: 20px 0; padding: 20px; background: #fff; border-radius: 10px; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
+                    <strong style="color: #667eea;">0</strong>
+                    <strong style="color: #667eea;">=</strong>
+                    <div style="display: inline-block; text-align: center; color: #667eea;">
+                        <div style="border-bottom: 3px solid #333; padding-bottom: 5px;">3</div>
+                        <div style="padding-top: 5px;">4</div>
+                    </div>
+                    <strong style="color: #667eea;">-</strong>
+                    <div style="display: inline-block; text-align: center; color: #667eea;">
+                        <div style="border-bottom: 3px solid #333; padding-bottom: 5px;">3</div>
+                        <div style="padding-top: 5px;">4</div>
+                    </div>
+                </div>
+                <p style="text-align: center; font-size: 1.1em;">שלושה רבעים פחות שלושה רבעים = אפס</p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; color: white;">
+                <h2 style="color: white;">🎮 עכשיו בואו נתרגל!</h2>
+                <p style="font-size: 1.2em;">לחצו על המשחקים למעלה כדי להתחיל!</p>
+            </div>
+        </div>
+        
+        <div class="content" id="tab1">
+            <div class="game-area">
+                <h2 style="text-align: center; color: #667eea;">משחק זיהוי שברים</h2>
+                <div class="score" id="score1">ניקוד: 0</div>
+                <div class="question" id="question1"></div>
+                <div style="text-align: center;"><svg id="visual1" width="180" height="180"></svg></div>
+                <div class="options" id="options1"></div>
+                <div class="feedback" id="feedback1" style="display: none;"></div>
+                <button class="next-btn" id="next1" style="display: none;">שאלה הבאה</button>
+            </div>
+        </div>
+        
+        <div class="content" id="tab2">
+            <div class="game-area">
+                <h2 style="text-align: center; color: #667eea;">משחק הפיצה 🍕</h2>
+                <div class="score" id="score2">ניקוד: 0</div>
+                <div class="question" id="question2"></div>
+                <div id="pizza-container" style="text-align: center; margin: 20px 0;"></div>
+                <div class="fraction-display" id="fraction-display"></div>
+                <button class="next-btn" onclick="checkPizza()">בדוק</button>
+                <div class="feedback" id="feedback2" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <div class="content" id="tab3">
+            <div class="game-area">
+                <h2 style="text-align: center; color: #667eea;">השוואת שברים</h2>
+                <div class="score" id="score3">ניקוד: 0</div>
+                <div class="question" id="question3"></div>
+                <div class="options" id="options3"></div>
+                <div class="feedback" id="feedback3" style="display: none;"></div>
+                <button class="next-btn" id="next3" style="display: none;">הבא</button>
+            </div>
+        </div>
+        
+        <div class="content" id="tab4">
+            <div class="game-area">
+                <h2 style="text-align: center; color: #667eea;">חיבור שברים</h2>
+                <div class="score" id="score4">ניקוד: 0</div>
+                <div class="question" id="question4"></div>
+                <div class="options" id="options4"></div>
+                <div class="feedback" id="feedback4" style="display: none;"></div>
+                <button class="next-btn" id="next4" style="display: none;">הבא</button>
+            </div>
+        </div>
+        
+        <div class="content" id="tab5">
+            <div class="game-area">
+                <h2 style="text-align: center; color: #667eea;">חיסור שברים</h2>
+                <div class="score" id="score5">ניקוד: 0</div>
+                <div class="question" id="question5"></div>
+                <div class="options" id="options5"></div>
+                <div class="feedback" id="feedback5" style="display: none;"></div>
+                <button class="next-btn" id="next5" style="display: none;">הבא</button>
+            </div>
+        </div>
+        
+        <div class="content" id="tab6">
+            <div class="game-area">
+                <h2 style="text-align: center; color: #667eea;">ציר המספרים</h2>
+                <div class="score" id="score6">ניקוד: 0</div>
+                <div class="question" id="question6"></div>
+                <div class="number-line" id="number-line"><div class="line"></div></div>
+                <button class="next-btn" onclick="checkLine()">בדוק</button>
+                <div class="feedback" id="feedback6" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function makeFrac(f,s='1em'){const p=f.split('/');return p.length===2?`<div style="display:inline-block;text-align:center;font-size:${s};vertical-align:middle;margin:0 5px"><div style="border-bottom:2px solid #333;padding-bottom:3px">${p[0]}</div><div style="padding-top:3px">${p[1]}</div></div>`:f}
+        function shuffleArray(arr){const newArr=[...arr];for(let i=newArr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[newArr[i],newArr[j]]=[newArr[j],newArr[i]]}return newArr}
+        const ctx=new(window.AudioContext||window.webkitAudioContext)();function sound(t){const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);if(t==='click'){o.frequency.value=800;g.gain.setValueAtTime(0.1,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.1);o.start();o.stop(ctx.currentTime+0.1)}else if(t==='ok'){o.type='sine';o.frequency.value=523.25;g.gain.setValueAtTime(0.15,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.4);o.start();o.stop(ctx.currentTime+0.4)}else if(t==='no'){o.frequency.value=200;g.gain.setValueAtTime(0.2,ctx.currentTime);o.start();o.stop(ctx.currentTime+0.3)}else if(t==='win'){[523.25,659.25,783.99,880].forEach((f,i)=>{const o2=ctx.createOscillator(),g2=ctx.createGain();o2.connect(g2);g2.connect(ctx.destination);o2.frequency.value=f;g2.gain.setValueAtTime(0.15,ctx.currentTime+i*0.18);g2.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+i*0.18+0.4);o2.start(ctx.currentTime+i*0.18);o2.stop(ctx.currentTime+i*0.18+0.4)})}}
+        let sc=[0,0,0,0,0,0,0];function showTab(n){sound('click');document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab'+n).classList.add('active');document.querySelectorAll('.tab')[n].classList.add('active');if(n===1)startG1();if(n===2)startG2();if(n===3)startG3();if(n===4)startG4();if(n===5)startG5();if(n===6)startG6()}
+        let g1={n:0,max:12,qs:[]};function startG1(){g1.n=0;const allQs=[{f:'1/2',p:2,fill:1,opts:['1/2','1/3','1/4']},{f:'1/3',p:3,fill:1,opts:['1/2','1/3','1/4']},{f:'1/4',p:4,fill:1,opts:['1/2','1/3','1/4']},{f:'2/4',p:4,fill:2,opts:['1/4','2/4','3/4']},{f:'3/4',p:4,fill:3,opts:['1/4','2/4','3/4']},{f:'2/3',p:3,fill:2,opts:['1/3','2/3','3/3']},{f:'1/5',p:5,fill:1,opts:['1/5','2/5','1/4']},{f:'2/5',p:5,fill:2,opts:['1/5','2/5','3/5']},{f:'3/5',p:5,fill:3,opts:['2/5','3/5','4/5']},{f:'4/5',p:5,fill:4,opts:['3/5','4/5','1']},{f:'1/6',p:6,fill:1,opts:['1/6','1/5','1/4']},{f:'5/6',p:6,fill:5,opts:['4/6','5/6','1']},{f:'3/6',p:6,fill:3,opts:['2/6','3/6','4/6']},{f:'4/6',p:6,fill:4,opts:['3/6','4/6','5/6']},{f:'1/8',p:8,fill:1,opts:['1/8','1/6','1/4']},{f:'3/8',p:8,fill:3,opts:['2/8','3/8','4/8']},{f:'5/8',p:8,fill:5,opts:['4/8','5/8','6/8']},{f:'7/8',p:8,fill:7,opts:['6/8','7/8','1']},{f:'2/5',p:5,fill:2,opts:['1/5','2/5','3/5']},{f:'4/4',p:4,fill:4,opts:['3/4','4/4','1']}];g1.qs=allQs.sort(()=>Math.random()-0.5).slice(0,12);sc[1]=0;nextG1()}
+        function nextG1(){if(g1.n>=g1.max){sound('win');document.getElementById('question1').textContent='🎊 סיימת!';document.getElementById('visual1').innerHTML='';document.getElementById('options1').innerHTML='';document.getElementById('next1').textContent='סיבוב נוסף';document.getElementById('next1').onclick=startG1;document.getElementById('next1').style.display='block';document.getElementById('feedback1').className='feedback success';document.getElementById('feedback1').textContent=`ניקוד: ${sc[1]}`;document.getElementById('feedback1').style.display='block';return}const q=g1.qs[g1.n];document.getElementById('question1').textContent=`שאלה ${g1.n+1}/${g1.max}: איזה שבר?`;document.getElementById('feedback1').style.display='none';document.getElementById('next1').style.display='none';const svg=document.getElementById('visual1');svg.innerHTML='';const step=360/q.p;for(let i=0;i<q.p;i++){const s=(i*step-90)*Math.PI/180,e=((i+1)*step-90)*Math.PI/180,x1=90+70*Math.cos(s),y1=90+70*Math.sin(s),x2=90+70*Math.cos(e),y2=90+70*Math.sin(e),big=step>180?1:0,col=i<q.fill?'#ff6b6b':'#e0e0e0',path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d',`M 90 90 L ${x1} ${y1} A 70 70 0 ${big} 1 ${x2} ${y2} Z`);path.setAttribute('fill',col);path.setAttribute('stroke','#333');path.setAttribute('stroke-width','2');svg.appendChild(path)}            const opts=document.getElementById('options1');opts.innerHTML='';const shuffledOpts=shuffleArray(q.opts);shuffledOpts.forEach(o=>{const btn=document.createElement('div');btn.className='option';btn.dataset.value=o;const parts=o.split('/');if(parts.length===2)btn.innerHTML=`<div style="display:inline-block;text-align:center"><div style="border-bottom:2px solid #333;padding-bottom:3px">${parts[0]}</div><div style="padding-top:3px">${parts[1]}</div></div>`;else btn.textContent=o;btn.onclick=()=>{sound('click');check1(o,q.f)};opts.appendChild(btn)})}
+        function check1(ans,cor){document.querySelectorAll('#options1 .option').forEach(opt=>{opt.onclick=null;if(opt.dataset.value===cor)opt.classList.add('correct');else if(opt.dataset.value===ans)opt.classList.add('wrong')});const fb=document.getElementById('feedback1');if(ans===cor){sc[1]+=10;sound('ok');fb.className='feedback success';fb.textContent='🎉 נכון!'}else{sound('no');fb.className='feedback error';fb.innerHTML='❌ התשובה: '+makeFrac(cor,'1.3em')}fb.style.display='block';document.getElementById('score1').textContent='ניקוד: '+sc[1];document.getElementById('next1').style.display='block';document.getElementById('next1').textContent='הבא ➡️';document.getElementById('next1').onclick=()=>{sound('click');g1.n++;nextG1()}}
+        let g2={tgt:0,sel:0,tot:8,rnd:0,max:12};function startG2(){g2.rnd=0;sc[2]=0;document.getElementById('score2').textContent='ניקוד: 0';nextG2()}
+        function nextG2(){if(g2.rnd>=g2.max){sound('win');document.getElementById('question2').textContent='🎊 סיימת!';document.getElementById('pizza-container').innerHTML='<button class="next-btn" onclick="startG2()">סיבוב נוסף</button>';document.getElementById('fraction-display').innerHTML='';document.getElementById('feedback2').className='feedback success';document.getElementById('feedback2').textContent=`ניקוד: ${sc[2]}`;document.getElementById('feedback2').style.display='block';return}g2.tot=[4,6,8][Math.floor(Math.random()*3)];g2.tgt=Math.floor(Math.random()*g2.tot)+1;g2.sel=0;document.getElementById('question2').textContent=`סיבוב ${g2.rnd+1}/${g2.max}: בחר ${g2.tgt} מתוך ${g2.tot}`;document.getElementById('feedback2').style.display='none';const cont=document.getElementById('pizza-container');cont.innerHTML='';for(let i=0;i<g2.tot;i++){const s=document.createElement('div');s.className='pizza-slice';s.textContent='🍕';s.onclick=()=>{sound('click');tog(s)};cont.appendChild(s)}upFrac()}
+        function tog(s){if(s.classList.contains('selected')){s.classList.remove('selected');g2.sel--}else{s.classList.add('selected');g2.sel++}upFrac()}
+        function upFrac(){document.getElementById('fraction-display').innerHTML=`<div style="display:inline-block;text-align:center"><div style="border-bottom:4px solid #333;padding-bottom:8px;font-size:1em">${g2.sel}</div><div style="padding-top:8px;font-size:1em">${g2.tot}</div></div>`}
+        function checkPizza(){sound('click');const fb=document.getElementById('feedback2');if(g2.sel===g2.tgt){sc[2]+=10;sound('ok');fb.className='feedback success';fb.textContent='🎉 מצוין!';g2.rnd++;setTimeout(nextG2,2000)}else{sound('no');fb.className='feedback error';fb.textContent=`נסה שוב! צריך ${g2.tgt}`}fb.style.display='block';document.getElementById('score2').textContent='ניקוד: '+sc[2]}
+        let g3={n:0,max:12,qs:[]};function startG3(){g3.n=0;const allQs=[{q:'איזה גדול?',f1:'1/2',f2:'1/4',a:'1/2'},{q:'איזה גדול?',f1:'1/3',f2:'1/2',a:'1/2'},{q:'איזה גדול?',f1:'2/4',f2:'1/4',a:'2/4'},{q:'איזה גדול?',f1:'3/4',f2:'1/2',a:'3/4'},{q:'איזה קטן?',f1:'1/4',f2:'1/2',a:'1/4'},{q:'איזה גדול?',f1:'2/3',f2:'1/3',a:'2/3'},{q:'איזה קטן?',f1:'1/5',f2:'1/3',a:'1/5'},{q:'איזה גדול?',f1:'4/5',f2:'3/4',a:'4/5'},{q:'איזה גדול?',f1:'3/6',f2:'2/6',a:'3/6'},{q:'איזה קטן?',f1:'2/5',f2:'3/5',a:'2/5'},{q:'איזה גדול?',f1:'5/6',f2:'2/3',a:'5/6'},{q:'איזה קטן?',f1:'1/6',f2:'1/4',a:'1/6'},{q:'איזה גדול?',f1:'3/5',f2:'2/5',a:'3/5'},{q:'איזה קטן?',f1:'1/8',f2:'1/6',a:'1/8'},{q:'איזה גדול?',f1:'5/8',f2:'1/2',a:'5/8'},{q:'איזה קטן?',f1:'2/6',f2:'3/6',a:'2/6'},{q:'איזה גדול?',f1:'4/6',f2:'3/6',a:'4/6'},{q:'איזה קטן?',f1:'1/5',f2:'2/5',a:'1/5'},{q:'איזה גדול?',f1:'7/8',f2:'3/4',a:'7/8'},{q:'איזה קטן?',f1:'3/8',f2:'5/8',a:'3/8'}];g3.qs=allQs.sort(()=>Math.random()-0.5).slice(0,12);sc[3]=0;nextG3()}
+        function nextG3(){if(g3.n>=g3.max){sound('win');document.getElementById('question3').textContent='🎊 סיימת!';document.getElementById('options3').innerHTML='';document.getElementById('next3').textContent='סיבוב נוסף';document.getElementById('next3').onclick=startG3;document.getElementById('next3').style.display='block';document.getElementById('feedback3').className='feedback success';document.getElementById('feedback3').textContent=`ניקוד: ${sc[3]}`;document.getElementById('feedback3').style.display='block';return}const q=g3.qs[g3.n];document.getElementById('question3').textContent=`שאלה ${g3.n+1}/${g3.max}: ${q.q}`;document.getElementById('feedback3').style.display='none';document.getElementById('next3').style.display='none';const opts=document.getElementById('options3');opts.innerHTML='';const shuffledOpts=shuffleArray([q.f1,q.f2]);shuffledOpts.forEach(f=>{const btn=document.createElement('div');btn.className='option';btn.dataset.value=f;const parts=f.split('/');if(parts.length===2)btn.innerHTML=`<div style="display:inline-block;text-align:center"><div style="border-bottom:2px solid #333;padding-bottom:3px">${parts[0]}</div><div style="padding-top:3px">${parts[1]}</div></div>`;else btn.textContent=f;btn.onclick=()=>{sound('click');check3(f,q.a)};opts.appendChild(btn)})}
+        function check3(ans,cor){document.querySelectorAll('#options3 .option').forEach(opt=>{opt.onclick=null;if(opt.dataset.value===cor)opt.classList.add('correct');else if(opt.dataset.value===ans)opt.classList.add('wrong')});const fb=document.getElementById('feedback3');if(ans===cor){sc[3]+=10;sound('ok');fb.className='feedback success';fb.textContent='🎉 מעולה!'}else{sound('no');fb.className='feedback error';fb.innerHTML='❌ '+makeFrac(cor,'1.3em')}fb.style.display='block';document.getElementById('score3').textContent='ניקוד: '+sc[3];document.getElementById('next3').style.display='block';document.getElementById('next3').textContent='הבא ➡️';document.getElementById('next3').onclick=()=>{sound('click');g3.n++;nextG3()}}
+        let g4={n:0,max:12,qs:[]};function startG4(){g4.n=0;const allQs=[{q:'? = 1/4 + 1/4',a:'2/4',opts:['1/4','2/4','3/4','1/2']},{q:'? = 1/3 + 1/3',a:'2/3',opts:['1/3','2/3','3/3','1']},{q:'? = 1/4 + 2/4',a:'3/4',opts:['2/4','3/4','4/4','1']},{q:'? = 2/5 + 1/5',a:'3/5',opts:['2/5','3/5','4/5','1/5']},{q:'? = 1/6 + 2/6',a:'3/6',opts:['1/6','2/6','3/6','4/6']},{q:'? = 1/5 + 1/5',a:'2/5',opts:['1/5','2/5','3/5','1/10']},{q:'? = 1/3 + 2/3',a:'3/3',opts:['2/3','3/3','1','4/3']},{q:'? = 1/5 + 3/5',a:'4/5',opts:['3/5','4/5','5/5','1']},{q:'? = 2/6 + 1/6',a:'3/6',opts:['2/6','3/6','4/6','1/2']},{q:'? = 2/5 + 2/5',a:'4/5',opts:['2/5','3/5','4/5','1']},{q:'? = 2/4 + 1/4',a:'3/4',opts:['2/4','3/4','4/4','1/2']},{q:'? = 2/6 + 3/6',a:'5/6',opts:['4/6','5/6','6/6','1']},{q:'? = 1/8 + 2/8',a:'3/8',opts:['2/8','3/8','4/8','1/4']},{q:'? = 3/8 + 2/8',a:'5/8',opts:['4/8','5/8','6/8','3/4']},{q:'? = 1/6 + 1/6',a:'2/6',opts:['1/6','2/6','3/6','1/3']},{q:'? = 2/8 + 1/8',a:'3/8',opts:['2/8','3/8','4/8','1/2']},{q:'? = 1/5 + 2/5',a:'3/5',opts:['2/5','3/5','4/5','1']},{q:'? = 3/6 + 2/6',a:'5/6',opts:['4/6','5/6','6/6','1']},{q:'? = 2/8 + 3/8',a:'5/8',opts:['4/8','5/8','6/8','1/2']},{q:'? = 1/4 + 3/4',a:'4/4',opts:['3/4','4/4','1','5/4']}];g4.qs=allQs.sort(()=>Math.random()-0.5).slice(0,12);sc[4]=0;nextG4()}
+        function nextG4(){if(g4.n>=g4.max){sound('win');document.getElementById('question4').textContent='🎊 סיימת!';document.getElementById('options4').innerHTML='';document.getElementById('next4').textContent='סיבוב נוסף';document.getElementById('next4').onclick=startG4;document.getElementById('next4').style.display='block';document.getElementById('feedback4').className='feedback success';document.getElementById('feedback4').textContent=`ניקוד: ${sc[4]}`;document.getElementById('feedback4').style.display='block';return}const q=g4.qs[g4.n];const qParts=q.q.split(' ');let qText='';qParts.forEach(p=>{if(p.includes('/'))qText+=makeFrac(p,'1.5em');else qText+=' '+p+' '});            document.getElementById('question4').innerHTML=`שאלה ${g4.n+1}/${g4.max}: ${qText}`;document.getElementById('feedback4').style.display='none';document.getElementById('next4').style.display='none';const opts=document.getElementById('options4');opts.innerHTML='';const shuffledOpts=shuffleArray(q.opts);shuffledOpts.forEach(o=>{const btn=document.createElement('div');btn.className='option';btn.dataset.value=o;const parts=o.split('/');if(parts.length===2)btn.innerHTML=`<div style="display:inline-block;text-align:center"><div style="border-bottom:2px solid #333;padding-bottom:3px">${parts[0]}</div><div style="padding-top:3px">${parts[1]}</div></div>`;else btn.textContent=o;btn.onclick=()=>{sound('click');check4(o,q.a)};opts.appendChild(btn)})}
+        function check4(ans,cor){document.querySelectorAll('#options4 .option').forEach(opt=>{opt.onclick=null;if(opt.dataset.value===cor)opt.classList.add('correct');else if(opt.dataset.value===ans)opt.classList.add('wrong')});const fb=document.getElementById('feedback4');if(ans===cor){sc[4]+=10;sound('ok');fb.className='feedback success';fb.textContent='🎉 נכון!'}else{sound('no');fb.className='feedback error';fb.innerHTML='❌ '+makeFrac(cor,'1.3em')}fb.style.display='block';document.getElementById('score4').textContent='ניקוד: '+sc[4];document.getElementById('next4').style.display='block';document.getElementById('next4').textContent='הבא ➡️';document.getElementById('next4').onclick=()=>{sound('click');g4.n++;nextG4()}}
+        let g5={n:0,max:12,qs:[]};function startG5(){g5.n=0;const allQs=[{q:'? = 1/4 - 3/4',a:'2/4',opts:['1/4','2/4','3/4','4/4']},{q:'? = 1/3 - 2/3',a:'1/3',opts:['1/3','2/3','3/3','0']},{q:'? = 1/5 - 3/5',a:'2/5',opts:['1/5','2/5','3/5','4/5']},{q:'? = 2/6 - 4/6',a:'2/6',opts:['1/6','2/6','3/6','4/6']},{q:'? = 1/6 - 5/6',a:'4/6',opts:['3/6','4/6','5/6','6/6']},{q:'? = 2/5 - 4/5',a:'2/5',opts:['1/5','2/5','3/5','4/5']},{q:'? = 1/3 - 3/3',a:'2/3',opts:['1/3','2/3','3/3','0']},{q:'? = 2/5 - 5/5',a:'3/5',opts:['2/5','3/5','4/5','5/5']},{q:'? = 1/4 - 4/4',a:'3/4',opts:['1/4','2/4','3/4','4/4']},{q:'? = 1/6 - 3/6',a:'2/6',opts:['1/6','2/6','3/6','4/6']},{q:'? = 1/5 - 4/5',a:'3/5',opts:['2/5','3/5','4/5','1']},{q:'? = 3/6 - 5/6',a:'2/6',opts:['1/6','2/6','3/6','4/6']},{q:'? = 2/8 - 5/8',a:'3/8',opts:['2/8','3/8','4/8','5/8']},{q:'? = 1/8 - 7/8',a:'6/8',opts:['5/8','6/8','7/8','1']},{q:'? = 2/6 - 5/6',a:'3/6',opts:['2/6','3/6','4/6','5/6']},{q:'? = 1/8 - 4/8',a:'3/8',opts:['2/8','3/8','4/8','1/2']},{q:'? = 3/5 - 5/5',a:'2/5',opts:['1/5','2/5','3/5','4/5']},{q:'? = 1/6 - 4/6',a:'3/6',opts:['2/6','3/6','4/6','1/2']},{q:'? = 2/8 - 6/8',a:'4/8',opts:['3/8','4/8','5/8','6/8']},{q:'? = 1/4 - 2/4',a:'1/4',opts:['1/4','2/4','3/4','0']}];g5.qs=allQs.sort(()=>Math.random()-0.5).slice(0,12);sc[5]=0;nextG5()}
+        function nextG5(){if(g5.n>=g5.max){sound('win');document.getElementById('question5').textContent='🎊 סיימת!';document.getElementById('options5').innerHTML='';document.getElementById('next5').textContent='סיבוב נוסף 🔄';document.getElementById('next5').onclick=startG5;document.getElementById('next5').style.display='block';document.getElementById('feedback5').className='feedback success';document.getElementById('feedback5').textContent=`ניקוד: ${sc[5]}`;document.getElementById('feedback5').style.display='block';return}const q=g5.qs[g5.n];const qParts=q.q.split(' ');let qText='';qParts.forEach(p=>{if(p.includes('/'))qText+=makeFrac(p,'1.5em');else qText+=' '+p+' '});            document.getElementById('question5').innerHTML=`שאלה ${g5.n+1}/${g5.max}: ${qText}`;document.getElementById('feedback5').style.display='none';document.getElementById('next5').style.display='none';const opts=document.getElementById('options5');opts.innerHTML='';const shuffledOpts=shuffleArray(q.opts);shuffledOpts.forEach(o=>{const btn=document.createElement('div');btn.className='option';btn.dataset.value=o;const parts=o.split('/');if(parts.length===2)btn.innerHTML=`<div style="display:inline-block;text-align:center"><div style="border-bottom:2px solid #333;padding-bottom:3px">${parts[0]}</div><div style="padding-top:3px">${parts[1]}</div></div>`;else btn.textContent=o;btn.onclick=()=>{sound('click');check5(o,q.a)};opts.appendChild(btn)})}
+        function check5(ans,cor){document.querySelectorAll('#options5 .option').forEach(opt=>{opt.onclick=null;if(opt.dataset.value===cor)opt.classList.add('correct');else if(opt.dataset.value===ans)opt.classList.add('wrong')});const fb=document.getElementById('feedback5');if(ans===cor){sc[5]+=10;sound('ok');fb.className='feedback success';fb.textContent='🎉 נכון!'}else{sound('no');fb.className='feedback error';fb.innerHTML='❌ '+makeFrac(cor,'1.3em')}fb.style.display='block';document.getElementById('score5').textContent='ניקוד: '+sc[5];document.getElementById('next5').style.display='block';document.getElementById('next5').textContent='הבא ➡️';document.getElementById('next5').onclick=()=>{sound('click');g5.n++;nextG5()}}
+        let g6={n:0,max:12,qs:[],pos:0};function startG6(){g6.n=0;const allQs=[{f:'1/2',v:0.5},{f:'1/4',v:0.25},{f:'3/4',v:0.75},{f:'1/3',v:0.33},{f:'2/3',v:0.67},{f:'1/5',v:0.2},{f:'2/5',v:0.4},{f:'3/5',v:0.6},{f:'4/5',v:0.8},{f:'1/6',v:0.17},{f:'5/6',v:0.83},{f:'2/4',v:0.5},{f:'1/8',v:0.125},{f:'3/8',v:0.375},{f:'5/8',v:0.625},{f:'7/8',v:0.875},{f:'2/6',v:0.33},{f:'3/6',v:0.5},{f:'4/6',v:0.67},{f:'3/4',v:0.75}];g6.qs=allQs.sort(()=>Math.random()-0.5).slice(0,12);sc[6]=0;nextG6()}
+        function nextG6(){if(g6.n>=g6.max){sound('win');document.getElementById('question6').textContent='🎊 סיימת!';document.getElementById('number-line').innerHTML='<button class="next-btn" onclick="startG6()">סיבוב נוסף</button>';document.getElementById('feedback6').className='feedback success';document.getElementById('feedback6').textContent=`ניקוד: ${sc[6]}`;document.getElementById('feedback6').style.display='block';return}const q=g6.qs[g6.n];document.getElementById('question6').innerHTML=`שאלה ${g6.n+1}/${g6.max}: גרור ${makeFrac(q.f,'1.3em')} למקום הנכון`;document.getElementById('feedback6').style.display='none';document.getElementById('score6').textContent='ניקוד: '+sc[6];const nl=document.getElementById('number-line');nl.innerHTML='<div class="line"></div>';for(let i=0;i<=4;i++){const m=document.createElement('div');m.className='mark';m.style.left=(i*25)+'%';nl.appendChild(m);const l=document.createElement('div');l.className='mark-label';l.textContent=i===0?'0':i===4?'1':(i/4);l.style.left=(i*25)+'%';nl.appendChild(l)}const d=document.createElement('div');d.className='draggable';const parts=q.f.split('/');if(parts.length===2)d.innerHTML=`<div style="font-size:0.7em;line-height:1.1"><div>${parts[0]}</div><div style="border-top:1px solid white">${parts[1]}</div></div>`;else d.textContent=q.f;d.style.left='10%';nl.appendChild(d);g6.pos=0.1;let drag=false;d.onmousedown=()=>{sound('click');drag=true};document.onmousemove=(e)=>{if(drag){const r=nl.getBoundingClientRect();let x=e.clientX-r.left-20;if(x<0)x=0;if(x>r.width-40)x=r.width-40;d.style.left=x+'px';g6.pos=x/r.width}};document.onmouseup=()=>{if(drag)sound('click');drag=false};d.ontouchstart=(e)=>{sound('click');drag=true;e.preventDefault()};document.ontouchmove=(e)=>{if(drag){const r=nl.getBoundingClientRect();let x=e.touches[0].clientX-r.left-20;if(x<0)x=0;if(x>r.width-40)x=r.width-40;d.style.left=x+'px';g6.pos=x/r.width}};document.ontouchend=()=>{if(drag)sound('click');drag=false}}
+        function checkLine(){sound('click');const q=g6.qs[g6.n];const fb=document.getElementById('feedback6');const diff=Math.abs(g6.pos-q.v);if(diff<0.06){sc[6]+=10;sound('ok');fb.className='feedback success';fb.textContent='🎉 מצוין!';g6.n++;setTimeout(nextG6,2000)}else{sound('no');fb.className='feedback error';fb.textContent='❌ נסה שוב!'}fb.style.display='block';document.getElementById('score6').textContent='ניקוד: '+sc[6]}
+    </script>
+</body>
+</html>
