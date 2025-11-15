@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>גורילה רעבה - כיתה א'</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .menu-container {
+            background: white;
+            border-radius: 25px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .mode-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .mode-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.3em;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        .game-container {
+            display: none;
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .back-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .game-title-header {
+            font-size: 2.5em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .difficulty-selector {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .difficulty-selector h3 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        .difficulty-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .difficulty-btn {
+            padding: 15px 35px;
+            font-size: 1.2em;
+            border: 3px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .difficulty-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .difficulty-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .round-info {
+            text-align: center;
+            font-size: 1.3em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .turn-display {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .turn-display div {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 1.8em;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .scoreboard {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .player-card {
+            flex: 1;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .player1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .player2 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .player-card.active {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .score-display {
+            font-size: 3em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .question-section {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            padding: 35px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .question-text {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: bold;
+            direction: ltr;
+            text-align: center;
+        }
+
+        .answers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .answer-btn {
+            padding: 25px;
+            font-size: 2em;
+            border: 4px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            direction: ltr;
+        }
+
+        .answer-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .answer-btn.correct {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .answer-btn.wrong {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .catch-game {
+            display: none;
+            position: relative;
+            background: linear-gradient(180deg, #87CEEB 0%, #90EE90 50%, #228B22 100%);
+            border-radius: 20px;
+            overflow: hidden;
+            height: 600px;
+            margin-bottom: 20px;
+        }
+
+        .game-info {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.95);
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            z-index: 100;
+            display: flex;
+            gap: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .gorilla {
+            position: absolute;
+            bottom: 20px;
+            font-size: 5em;
+            z-index: 20;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4));
+            transition: left 0.05s linear;
+        }
+
+        .fruit {
+            position: absolute;
+            font-size: 3em;
+            z-index: 15;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+        }
+
+        .ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(180deg, #3CB371 0%, #2E8B57 100%);
+            border-top: 4px solid #228B22;
+        }
+
+        .controls-hint {
+            position: absolute;
+            top: 90px;
+            left: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            color: #333;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .score-popup {
+            position: absolute;
+            font-size: 2.5em;
+            font-weight: bold;
+            animation: floatUp 1s ease-out forwards;
+            pointer-events: none;
+            z-index: 70;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px);
+            }
+        }
+
+        .combo-display {
+            position: absolute;
+            top: 100px;
+            right: 30px;
+            background: rgba(255,215,0,0.95);
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+            display: none;
+            animation: pulse 0.5s infinite;
+            box-shadow: 0 5px 20px rgba(255,215,0,0.5);
+            z-index: 100;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .cloud {
+            position: absolute;
+            font-size: 3em;
+            opacity: 0.6;
+            z-index: 5;
+        }
+
+        .winner-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .winner-text {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .play-again-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            font-size: 1.5em;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .play-again-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        .feedback-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 30px 60px;
+            border-radius: 20px;
+            font-size: 2em;
+            font-weight: bold;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .feedback-message.correct {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .feedback-message.wrong {
+            background: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-container" id="mainMenu">
+        <h1>🦍 גורילה רעבה 🍎</h1>
+        <div class="subtitle">ענו נכון ותאכילו את הגורילה!</div>
+        <div class="mode-buttons">
+            <button class="mode-btn" onclick="startGame('single')">🎮 שחקן אחד</button>
+            <button class="mode-btn" onclick="startGame('teams')">👥 שני שחקנים</button>
+        </div>
+    </div>
+
+    <div class="game-container" id="gameContainer">
+        <div class="game-header">
+            <button class="back-button" onclick="backToMenu()">🏠 חזרה לתפריט</button>
+            <div class="game-title-header">🦍 גורילה רעבה</div>
+            <div style="width: 150px;"></div>
+        </div>
+
+        <div id="difficultySelector" class="difficulty-selector">
+            <h3>🎯 בחר רמת קושי:</h3>
+            <div class="difficulty-buttons">
+                <button class="difficulty-btn" onclick="selectDifficulty('easy')">🟢 קל<br>(1-10)</button>
+                <button class="difficulty-btn" onclick="selectDifficulty('medium')">🟡 בינוני<br>(10-20)</button>
+                <button class="difficulty-btn" onclick="selectDifficulty('hard')">🔴 קשה<br>(20-50)</button>
+            </div>
+        </div>
+
+        <div id="gameArena" style="display: none;">
+            <div class="round-info" id="roundInfo"></div>
+            <div class="turn-display" id="turnDisplay">
+                <div id="currentPlayerTurn"></div>
+            </div>
+            <div class="scoreboard">
+                <div class="player-card player1" id="player1Card">
+                    <h3>🦍 שחקן 1</h3>
+                    <div class="score-display" id="score1">0</div>
+                </div>
+                <div class="player-card player2" id="player2Card">
+                    <h3>🦍 שחקן 2</h3>
+                    <div class="score-display" id="score2">0</div>
+                </div>
+            </div>
+            
+            <div class="question-section" id="questionSection">
+                <div class="question-text" id="questionText"></div>
+                <div class="answers-grid" id="answersGrid"></div>
+            </div>
+
+            <div class="catch-game" id="catchGame">
+                <div class="game-info">
+                    <div>⏱️ זמן: <span id="timeLeft">35</span></div>
+                    <div>🎯 ניקוד: <span id="currentScore">0</span></div>
+                    <div>🍎 נאכלו: <span id="caught">0</span></div>
+                </div>
+                <div style="position: absolute; top: 80px; left: 5%; font-size: 4em; z-index: 5;">🌴</div>
+                <div style="position: absolute; top: 100px; right: 8%; font-size: 3.5em; z-index: 5;">🌳</div>
+                <div style="position: absolute; top: 120px; left: 40%; font-size: 3em; z-index: 5;">🌲</div>
+                <div class="gorilla" id="gorilla">🦍</div>
+                <div class="ground"></div>
+                <div class="controls-hint">חיצים ← → להזזת הגורילה</div>
+            </div>
+        </div>
+
+        <div id="winnerScreen" class="winner-screen">
+            <div class="winner-text" id="winnerText"></div>
+            <button class="play-again-btn" onclick="backToMenu()">🔄 שחק שוב</button>
+        </div>
+    </div>
+
+    <div class="feedback-message" id="feedbackMessage"></div>
+
+    <script>
+        let gameMode = 'single';
+        let difficulty = 'easy';
+        let currentPlayer = 1;
+        let round = 1;
+        let maxRounds = 8;
+        let score1 = 0;
+        let score2 = 0;
+        let correctAnswer = 0;
+        
+        // Catch game variables
+        let fruits = [];
+        let gameTime = 35;
+        let gameTimer = null;
+        let fruitInterval = null;
+        let currentGameScore = 0;
+        let caught = 0;
+        let gorillaX = 0;
+        let keys = {};
+        let animationFrame = null;
+        let fallSpeed = 2;
+        
+        const fruitTypes = ['🍎', '🍊', '🍌', '🍇', '🍓', '🍑', '🍉', '🥝']; // Colorful fruits!
+
+        function startGame(mode) {
+            gameMode = mode;
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('gameContainer').style.display = 'block';
+            
+            if (mode === 'single') {
+                document.getElementById('player2Card').style.display = 'none';
+            } else {
+                document.getElementById('player2Card').style.display = 'block';
+            }
+        }
+
+        function selectDifficulty(level) {
+            difficulty = level;
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            setTimeout(() => {
+                document.getElementById('difficultySelector').style.display = 'none';
+                document.getElementById('gameArena').style.display = 'block';
+                initGame();
+            }, 500);
+        }
+
+        function initGame() {
+            round = 1;
+            score1 = 0;
+            score2 = 0;
+            currentPlayer = 1;
+            updateScoreboard();
+            generateQuestion();
+        }
+
+        function generateQuestion() {
+            updateRoundInfo();
+            updateActivePlayer();
+            
+            document.getElementById('questionSection').style.display = 'block';
+            document.getElementById('catchGame').style.display = 'none';
+            
+            let question = '';
+            let answers = [];
+            let num1, num2;
+            
+            // הגדרות זהות למעוף הבלון
+            const difficulties = {
+                easy: { min: 1, max: 10 },      // קל: 1-10
+                medium: { min: 10, max: 20 },   // בינוני: 10-20
+                hard: { min: 20, max: 50 }      // קשה: 20-50
+            };
+            
+            const settings = difficulties[difficulty];
+            
+            if (difficulty === 'easy') {
+                // רק חיבור בטווח 1-10
+                num1 = Math.floor(Math.random() * settings.max) + settings.min;
+                num2 = Math.floor(Math.random() * settings.max) + settings.min;
+                question = `${num1} + ${num2} = ?`;
+                correctAnswer = num1 + num2;
+            } else if (difficulty === 'medium') {
+                // חיבור וחיסור בטווח 10-20
+                if (Math.random() < 0.5) {
+                    num1 = Math.floor(Math.random() * (settings.max - settings.min + 1)) + settings.min;
+                    num2 = Math.floor(Math.random() * (settings.max - settings.min + 1)) + settings.min;
+                    question = `${num1} + ${num2} = ?`;
+                    correctAnswer = num1 + num2;
+                } else {
+                    num1 = Math.floor(Math.random() * (settings.max - settings.min + 1)) + settings.min;
+                    num2 = Math.floor(Math.random() * num1) + 1; // וודא שהתוצאה חיובית
+                    question = `${num1} - ${num2} = ?`;
+                    correctAnswer = num1 - num2;
+                }
+            } else {
+                // hard: חיבור, חיסור וכפל בטווח 20-50
+                const type = Math.random();
+                if (type < 0.4) {
+                    num1 = Math.floor(Math.random() * (settings.max - settings.min + 1)) + settings.min;
+                    num2 = Math.floor(Math.random() * (settings.max - settings.min + 1)) + settings.min;
+                    question = `${num1} + ${num2} = ?`;
+                    correctAnswer = num1 + num2;
+                } else if (type < 0.7) {
+                    num1 = Math.floor(Math.random() * (settings.max - settings.min + 1)) + settings.min;
+                    num2 = Math.floor(Math.random() * num1) + 1;
+                    question = `${num1} - ${num2} = ?`;
+                    correctAnswer = num1 - num2;
+                } else {
+                    num1 = Math.floor(Math.random() * 9) + 2; // 2-10
+                    num2 = Math.floor(Math.random() * 9) + 2; // 2-10
+                    question = `${num1} × ${num2} = ?`;
+                    correctAnswer = num1 * num2;
+                }
+            }
+            
+            answers = [correctAnswer];
+            while (answers.length < 4) {
+                let wrongAnswer = correctAnswer + Math.floor(Math.random() * 10) - 5;
+                if (wrongAnswer !== correctAnswer && wrongAnswer > 0 && !answers.includes(wrongAnswer)) {
+                    answers.push(wrongAnswer);
+                }
+            }
+            
+            answers.sort(() => Math.random() - 0.5);
+            
+            document.getElementById('questionText').textContent = question;
+            
+            const answersGrid = document.getElementById('answersGrid');
+            answersGrid.innerHTML = '';
+            
+            answers.forEach(answer => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = answer;
+                btn.onclick = () => checkAnswer(answer, btn);
+                answersGrid.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(answer, btn) {
+            const buttons = document.querySelectorAll('.answer-btn');
+            buttons.forEach(b => b.disabled = true);
+            
+            if (answer === correctAnswer) {
+                btn.classList.add('correct');
+                playSound('correct');
+                showFeedback('✓ נכון!', 'correct');
+                
+                setTimeout(() => {
+                    startCatchGame();
+                }, 1000);
+            } else {
+                btn.classList.add('wrong');
+                playSound('wrong');
+                showFeedback('✗ לא נכון...', 'wrong');
+                
+                buttons.forEach(b => {
+                    if (parseInt(b.textContent) === correctAnswer) {
+                        b.classList.add('correct');
+                    }
+                });
+                
+                setTimeout(() => {
+                    nextTurn();
+                }, 2000);
+            }
+        }
+
+        function startCatchGame() {
+            document.getElementById('questionSection').style.display = 'none';
+            document.getElementById('catchGame').style.display = 'block';
+            
+            // גלילה אוטומטית למשחק
+            setTimeout(() => {
+                document.getElementById('catchGame').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }, 100);
+            
+            // Clear any existing fruits
+            document.querySelectorAll('.fruit, .score-popup').forEach(el => el.remove());
+            
+            fruits = [];
+            gameTime = 35;
+            currentGameScore = 0;
+            caught = 0;
+            keys = {};
+            fallSpeed = 2;
+            
+            const gameArea = document.getElementById('catchGame');
+            const rect = gameArea.getBoundingClientRect();
+            
+            // Position gorilla at center bottom
+            gorillaX = rect.width / 2 - 50;
+            const gorilla = document.getElementById('gorilla');
+            gorilla.style.left = gorillaX + 'px';
+            
+            document.getElementById('timeLeft').textContent = gameTime;
+            document.getElementById('currentScore').textContent = currentGameScore;
+            document.getElementById('caught').textContent = caught;
+            
+            // Add keyboard controls
+            document.addEventListener('keydown', handleKeyDown);
+            document.addEventListener('keyup', handleKeyUp);
+            
+            // Start timer
+            gameTimer = setInterval(() => {
+                gameTime--;
+                document.getElementById('timeLeft').textContent = gameTime;
+                
+                // Increase difficulty over time
+                if (gameTime % 10 === 0 && fallSpeed < 5) {
+                    fallSpeed += 0.5;
+                }
+                
+                if (gameTime <= 0) {
+                    endCatchGame();
+                }
+            }, 1000);
+            
+            // Start spawning fruits
+            spawnFruit();
+            fruitInterval = setInterval(() => {
+                spawnFruit();
+            }, 1500);
+            
+            // Start game loop
+            animationFrame = requestAnimationFrame(updateGame);
+        }
+
+        function handleKeyDown(e) {
+            keys[e.key] = true;
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                e.preventDefault();
+            }
+        }
+
+        function handleKeyUp(e) {
+            keys[e.key] = false;
+        }
+
+        function updateGame() {
+            const gameArea = document.getElementById('catchGame');
+            const rect = gameArea.getBoundingClientRect();
+            const gorilla = document.getElementById('gorilla');
+            
+            // Move gorilla
+            if (keys['ArrowLeft']) {
+                gorillaX = Math.max(0, gorillaX - 10);
+            }
+            if (keys['ArrowRight']) {
+                gorillaX = Math.min(rect.width - 100, gorillaX + 10);
+            }
+            
+            gorilla.style.left = gorillaX + 'px';
+            
+            // Check catches
+            const gorillaRect = {
+                left: gorillaX + 15,  // מרווח מצדדים
+                right: gorillaX + 85,
+                top: rect.height - 115,
+                bottom: rect.height - 25
+            };
+            
+            fruits.forEach(fruit => {
+                if (!fruit.caught) {
+                    const fruitRect = {
+                        left: fruit.x + 10,  // מרווח מסביב לפרי
+                        right: fruit.x + 50,
+                        top: fruit.y + 10,
+                        bottom: fruit.y + 50
+                    };
+                    
+                    // Check if caught by gorilla - בדיקה מדויקת יותר
+                    const horizontalOverlap = fruitRect.right >= gorillaRect.left && 
+                                            fruitRect.left <= gorillaRect.right;
+                    const verticalOverlap = fruitRect.bottom >= gorillaRect.top && 
+                                          fruitRect.top <= gorillaRect.bottom;
+                    
+                    if (horizontalOverlap && verticalOverlap) {
+                        
+                        // Caught!
+                        fruit.caught = true;
+                        caught++;
+                        
+                        const points = 5;
+                        currentGameScore += points;
+                        
+                        document.getElementById('caught').textContent = caught;
+                        document.getElementById('currentScore').textContent = currentGameScore;
+                        
+                        // Score popup
+                        showScorePopup(fruit.x, fruit.y, `+${points}`, '#4CAF50');
+                        
+                        playSound('catch');
+                        
+                        fruit.element.remove();
+                    }
+                    
+                    // Check if hit ground
+                    if (fruit.y > rect.height - 90) {
+                        fruit.caught = true;
+                        
+                        showScorePopup(fruit.x, fruit.y, '💔', '#f44336');
+                        
+                        fruit.element.remove();
+                    }
+                }
+            });
+            
+            animationFrame = requestAnimationFrame(updateGame);
+        }
+
+        function spawnFruit() {
+            const gameArea = document.getElementById('catchGame');
+            const rect = gameArea.getBoundingClientRect();
+            
+            const fruit = document.createElement('div');
+            fruit.className = 'fruit';
+            
+            // Random colorful fruit
+            const fruitType = fruitTypes[Math.floor(Math.random() * fruitTypes.length)];
+            fruit.textContent = fruitType;
+            
+            const startX = Math.random() * (rect.width - 60);
+            const startY = -60;
+            
+            fruit.style.left = startX + 'px';
+            fruit.style.top = startY + 'px';
+            
+            gameArea.appendChild(fruit);
+            
+            const fruitData = {
+                element: fruit,
+                x: startX,
+                y: startY,
+                caught: false,
+                type: fruitType
+            };
+            
+            fruits.push(fruitData);
+            
+            // Animate fruit
+            animateFruit(fruitData);
+        }
+
+        function animateFruit(fruitData) {
+            const animate = () => {
+                if (!fruitData.element.parentElement || fruitData.caught) {
+                    fruits = fruits.filter(f => f !== fruitData);
+                    return;
+                }
+                
+                fruitData.y += fallSpeed;
+                fruitData.x += Math.sin(fruitData.y / 50) * 0.8;
+                
+                fruitData.element.style.top = fruitData.y + 'px';
+                fruitData.element.style.left = fruitData.x + 'px';
+                
+                const gameArea = document.getElementById('catchGame');
+                const rect = gameArea.getBoundingClientRect();
+                
+                if (fruitData.y < rect.height) {
+                    requestAnimationFrame(animate);
+                } else {
+                    if (fruitData.element.parentElement) {
+                        fruitData.element.remove();
+                    }
+                    fruits = fruits.filter(f => f !== fruitData);
+                }
+            };
+            
+            animate();
+        }
+
+        function showScorePopup(x, y, text, color) {
+            const popup = document.createElement('div');
+            popup.className = 'score-popup';
+            popup.textContent = text;
+            popup.style.color = color;
+            popup.style.left = x + 'px';
+            popup.style.top = y + 'px';
+            document.getElementById('catchGame').appendChild(popup);
+            
+            setTimeout(() => popup.remove(), 1000);
+        }
+
+        function endCatchGame() {
+            clearInterval(gameTimer);
+            clearInterval(fruitInterval);
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+            }
+            
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('keyup', handleKeyUp);
+            
+            // Add score to player
+            if (currentPlayer === 1) {
+                score1 += currentGameScore;
+            } else {
+                score2 += currentGameScore;
+            }
+            
+            updateScoreboard();
+            
+            setTimeout(() => {
+                nextTurn();
+            }, 1500);
+        }
+
+        function nextTurn() {
+            if (gameMode === 'teams') {
+                currentPlayer = currentPlayer === 1 ? 2 : 1;
+            }
+            
+            if (currentPlayer === 1 || gameMode === 'single') {
+                round++;
+            }
+            
+            if (round > maxRounds) {
+                showWinner();
+            } else {
+                generateQuestion();
+            }
+        }
+
+        function updateScoreboard() {
+            document.getElementById('score1').textContent = score1;
+            document.getElementById('score2').textContent = score2;
+        }
+
+        function updateActivePlayer() {
+            const player1Card = document.getElementById('player1Card');
+            const player2Card = document.getElementById('player2Card');
+            const turnDisplay = document.getElementById('currentPlayerTurn');
+            
+            if (currentPlayer === 1) {
+                player1Card.classList.add('active');
+                player2Card.classList.remove('active');
+                if (turnDisplay) turnDisplay.textContent = 'תור שחקן 1 🦍';
+            } else {
+                player1Card.classList.remove('active');
+                player2Card.classList.add('active');
+                if (turnDisplay) turnDisplay.textContent = 'תור שחקן 2 🦍';
+            }
+        }
+
+        function updateRoundInfo() {
+            document.getElementById('roundInfo').textContent = `סיבוב ${round} מתוך ${maxRounds}`;
+        }
+
+        function showWinner() {
+            document.getElementById('gameArena').style.display = 'none';
+            document.getElementById('winnerScreen').style.display = 'block';
+            
+            playSound('win');
+            
+            let winnerText = '';
+            
+            if (gameMode === 'single') {
+                const maxPossible = maxRounds * 100; // כ-20 צנחנים לסיבוב × 5 נקודות
+                const percentage = (score1 / maxPossible) * 100;
+                let emoji = '';
+                let message = '';
+                
+                if (percentage >= 80) {
+                    emoji = '🏆🌟';
+                    message = 'מעולה! תפיסה מושלמת!';
+                } else if (percentage >= 60) {
+                    emoji = '🎯';
+                    message = 'יפה מאוד!';
+                } else if (percentage >= 40) {
+                    emoji = '👍';
+                    message = 'לא רע! המשך להתאמן!';
+                } else {
+                    emoji = '💪';
+                    message = 'המשך להתאמן!';
+                }
+                
+                winnerText = `<div style="font-size: 3em; margin-bottom: 20px;">${emoji}</div>
+                             <div style="font-size: 2em; margin-bottom: 20px;">${message}</div>
+                             <div style="font-size: 1.5em;">הניקוד שלך: ${score1}</div>`;
+            } else {
+                if (score1 > score2) {
+                    winnerText = `🏆 שחקן 1 ניצח!<br>${score1} נקודות נגד ${score2} נקודות`;
+                } else if (score2 > score1) {
+                    winnerText = `🏆 שחקן 2 ניצח!<br>${score2} נקודות נגד ${score1} נקודות`;
+                } else {
+                    winnerText = `🤝 תיקו!<br>שני השחקנים צברו ${score1} נקודות`;
+                }
+            }
+            
+            document.getElementById('winnerText').innerHTML = winnerText;
+        }
+
+        function showFeedback(message, type) {
+            const feedback = document.getElementById('feedbackMessage');
+            feedback.textContent = message;
+            feedback.className = 'feedback-message ' + type;
+            feedback.style.display = 'block';
+            
+            setTimeout(() => {
+                feedback.style.display = 'none';
+            }, 1500);
+        }
+
+        function playSound(type) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            if (type === 'correct') {
+                oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1);
+                oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.4);
+            } else if (type === 'wrong') {
+                oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(300, audioContext.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } else if (type === 'catch') {
+                oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.05);
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.15);
+            } else if (type === 'win') {
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, i) => {
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    osc.frequency.setValueAtTime(freq, audioContext.currentTime + i * 0.15);
+                    gain.gain.setValueAtTime(0.3, audioContext.currentTime + i * 0.15);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.15 + 0.3);
+                    osc.start(audioContext.currentTime + i * 0.15);
+                    osc.stop(audioContext.currentTime + i * 0.15 + 0.3);
+                });
+            }
+        }
+
+        function backToMenu() {
+            if (gameTimer) clearInterval(gameTimer);
+            if (fruitInterval) clearInterval(fruitInterval);
+            if (animationFrame) cancelAnimationFrame(animationFrame);
+            
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('keyup', handleKeyUp);
+            
+            document.getElementById('gameContainer').style.display = 'none';
+            document.getElementById('mainMenu').style.display = 'block';
+            document.getElementById('difficultySelector').style.display = 'block';
+            document.getElementById('gameArena').style.display = 'none';
+            document.getElementById('winnerScreen').style.display = 'none';
+            document.getElementById('questionSection').style.display = 'block';
+            document.getElementById('catchGame').style.display = 'none';
+            
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+        }
+    </script>
+</body>
+</html>
