@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מספרים עשרוניים - כיתה ד'</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; border-radius: 25px; padding: 40px; box-shadow: 0 25px 70px rgba(0,0,0,0.4); }
+        h1 { color: #667eea; text-align: center; margin-bottom: 15px; font-size: 3em; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .subtitle { text-align: center; color: #666; margin-bottom: 35px; font-size: 1.3em; }
+        .tabs { display: flex; gap: 12px; margin-bottom: 35px; flex-wrap: wrap; justify-content: center; }
+        .tab { padding: 16px 28px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px; cursor: pointer; font-size: 1.15em; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: white; }
+        .tab:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); background: linear-gradient(135deg, #7c8ef5 0%, #8a5eb8 100%); }
+        .tab.active { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); transform: scale(1.05); }
+        .content { display: none; }
+        .content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .lesson { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .lesson h2 { color: #ff6b6b; margin-bottom: 20px; font-size: 1.8em; }
+        .lesson p { font-size: 1.2em; line-height: 1.8; margin-bottom: 15px; color: #333; }
+        .example { background: white; padding: 20px; border-right: 5px solid #667eea; margin: 20px 0; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
+        .example h3 { color: #f093fb; margin-bottom: 12px; font-size: 1.3em; }
+        
+        .decimal-display { 
+            font-family: 'Courier New', monospace; 
+            background: #f8f9fa; 
+            padding: 30px; 
+            border-radius: 10px; 
+            margin: 15px 0; 
+            text-align: center; 
+            font-size: 2em;
+            font-weight: bold;
+            direction: ltr;
+        }
+        
+        .place-value-table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .place-value-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            font-size: 1.2em;
+        }
+        .place-value-table td {
+            padding: 15px;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .game { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .game h2 { margin-bottom: 20px; font-size: 2em; }
+        .question-counter { text-align: center; font-size: 1.3em; margin: 15px 0; color: #fff; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px; }
+        .score { text-align: center; font-size: 1.8em; margin: 25px 0; color: #fff; font-weight: bold; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; }
+        .problem-display { 
+            font-size: 1.5em; 
+            text-align: center; 
+            margin: 30px 0; 
+            padding: 25px; 
+            background: rgba(255,255,255,0.3); 
+            border-radius: 15px; 
+            font-weight: bold; 
+            min-height: 150px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        input[type="text"], input[type="number"] { 
+            width: 200px; 
+            padding: 15px; 
+            font-size: 1.8em; 
+            border: 4px solid white; 
+            border-radius: 10px; 
+            text-align: center; 
+            margin: 10px; 
+            font-weight: bold;
+            direction: ltr;
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        button { background: white; color: #667eea; border: none; padding: 14px 35px; font-size: 1.2em; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-weight: bold; box-shadow: 0 6px 12px rgba(0,0,0,0.2); margin: 5px; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+        .feedback { padding: 80px 120px !important; border-radius: 25px; margin-top: 30px; font-size: 2.2em; text-align: center; font-weight: bold; min-height: 160px !important; min-width: 500px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: popIn 0.3s ease-out; display: flex; align-items: center; justify-content: center; }
+        .correct { background: linear-gradient(135deg, #51cf66 0%, #40c057 100%) !important; color: white !important; }
+        .incorrect { background: linear-gradient(135deg, #ff6b6b 0%, #fa5252 100%) !important; color: white !important; }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .controls { text-align: center; margin: 25px 0; }
+        .steps { background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin: 20px 0; text-align: right; }
+        .steps p { margin: 10px 0; font-size: 1.1em; }
+        
+        .decimal-point { color: #e74c3c; font-weight: bold; font-size: 1.2em; }
+        .highlight-tenths { background: #ffeb3b; padding: 5px; border-radius: 5px; }
+        .highlight-hundredths { background: #8bc34a; padding: 5px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>מספרים עשרוניים</h1>
+        <div class="subtitle">כיתה ד' - בואו ללמוד מספרים עשרוניים!</div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('lesson1')">📚 שיעור: קריאה וכתיבה</button>
+            <button class="tab" onclick="switchTab('game1')">🎮 משחק: קריאה וכתיבה</button>
+            <button class="tab" onclick="switchTab('lesson2')">📚 שיעור: ערך מקומי</button>
+            <button class="tab" onclick="switchTab('game2')">🎯 משחק: ערך מקומי</button>
+            <button class="tab" onclick="switchTab('lesson3')">📚 שיעור: השוואה וסידור</button>
+            <button class="tab" onclick="switchTab('game3')">🏆 משחק: השוואה</button>
+            <button class="tab" onclick="switchTab('lesson4')">📚 שיעור: חיבור וחיסור</button>
+            <button class="tab" onclick="switchTab('game4')">⭐ משחק: חיבור וחיסור</button>
+            <button class="tab" onclick="switchTab('lesson5')">📚 שיעור: הקשר לשברים</button>
+            <button class="tab" onclick="switchTab('game5')">🎲 משחק: שברים ועשרוניים</button>
+        </div>
+        
+        <div id="lesson1" class="content active">
+            <div class="lesson">
+                <h2>קריאה וכתיבה של מספרים עשרוניים</h2>
+                <p>מספר עשרוני הוא מספר שיש בו נקודה עשרונית. החלק משמאל לנקודה הוא חלק שלם, והחלק מימין הוא חלק שברי.</p>
+                
+                <div class="example">
+                    <h3>מהי נקודה עשרונית?</h3>
+                    <p>הנקודה העשרונית מפרידה בין השלמים לבין החלקים הקטנים יותר:</p>
+                    <div class="decimal-display">
+                        3<span class="decimal-point">.</span>5
+                    </div>
+                    <div class="steps">
+                        <p><strong>3</strong> = החלק השלם (שלושה שלמים)</p>
+                        <p><strong class="decimal-point">.</strong> = הנקודה העשרונית</p>
+                        <p><strong>5</strong> = עשיריות (חמש עשיריות)</p>
+                        <p><strong>נקרא:</strong> "שלוש נקודה חמש" או "שלוש וחמש עשיריות"</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>עשיריות ומאיות</h3>
+                    <p>המקום הראשון אחרי הנקודה הוא <strong>עשיריות</strong>, והמקום השני הוא <strong>מאיות</strong>:</p>
+                    <div class="decimal-display">
+                        2<span class="decimal-point">.</span><span class="highlight-tenths">3</span><span class="highlight-hundredths">7</span>
+                    </div>
+                    <div class="steps">
+                        <p><strong>2</strong> = שניים שלמים</p>
+                        <p><strong style="background: #ffeb3b; padding: 3px;">3</strong> = שלוש עשיריות</p>
+                        <p><strong style="background: #8bc34a; padding: 3px;">7</strong> = שבע מאיות</p>
+                        <p><strong>נקרא:</strong> "שתיים נקודה שלושים ושבע" או "שניים ושלושים ושבע מאיות"</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמאות נוספות</h3>
+                    <table style="width: 100%; margin-top: 15px;">
+                        <tr style="background: #f0f0f0;">
+                            <td style="padding: 10px; font-size: 1.3em; direction: ltr;"><strong>0.4</strong></td>
+                            <td style="padding: 10px;">אפס נקודה ארבע (ארבע עשיריות)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; font-size: 1.3em; direction: ltr;"><strong>1.25</strong></td>
+                            <td style="padding: 10px;">אחד נקודה עשרים וחמש (אחד ועשרים וחמש מאיות)</td>
+                        </tr>
+                        <tr style="background: #f0f0f0;">
+                            <td style="padding: 10px; font-size: 1.3em; direction: ltr;"><strong>5.08</strong></td>
+                            <td style="padding: 10px;">חמש נקודה אפס שמונה (חמישה ושמונה מאיות)</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="example">
+                    <h3>טיפ חשוב!</h3>
+                    <p>כשאין ספרות אחרי הנקודה, אפשר לא לכתוב את הנקודה: <strong>5.0 = 5</strong></p>
+                    <p>אבל אם יש אפס באמצע, הוא חשוב: <strong>2.05 ≠ 2.5</strong></p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game1" class="content">
+            <div class="game">
+                <h2>משחק קריאה וכתיבה</h2>
+                <div class="question-counter">שאלה <span id="qc1">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="sc1">0</span></div>
+                <div class="problem-display" id="prob1"></div>
+                <div class="controls">
+                    <input type="text" id="ans1" placeholder="תשובה">
+                    <br><br>
+                    <button onclick="checkAnswer(1)">בדוק</button>
+                </div>
+                <div id="fb1" class="feedback"></div>
+            </div>
+        </div>
+        
+        <div id="lesson2" class="content">
+            <div class="lesson">
+                <h2>ערך מקומי עשרוני</h2>
+                <p>כל ספרה במספר עשרוני יש לה ערך שונה בהתאם למיקום שלה!</p>
+                
+                <div class="example">
+                    <h3>טבלת ערך מקומי</h3>
+                    <p>בואו נראה את המספר <span style="direction: ltr; display: inline-block; font-weight: bold;">34.56</span> בטבלת ערך מקומי:</p>
+                    <table class="place-value-table" dir="ltr">
+                        <tr>
+                            <th>עשרות</th>
+                            <th>אחדות</th>
+                            <th style="background: #e74c3c;">נקודה</th>
+                            <th>עשיריות</th>
+                            <th>מאיות</th>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>4</td>
+                            <td style="background: #ffe0e0;">.</td>
+                            <td>5</td>
+                            <td>6</td>
+                        </tr>
+                    </table>
+                    <div class="steps">
+                        <p><strong>3</strong> במקום העשרות = 30</p>
+                        <p><strong>4</strong> במקום האחדות = 4</p>
+                        <p><strong>5</strong> במקום העשיריות = 0.5</p>
+                        <p><strong>6</strong> במקום המאיות = 0.06</p>
+                        <p><strong>סה"כ:</strong> <span style="direction: ltr; display: inline-block;">30 + 4 + 0.5 + 0.06 = 34.56</span></p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה: פירוק מספר לפי ערך מקומי</h3>
+                    <div class="decimal-display">
+                        52.73
+                    </div>
+                    <div class="steps">
+                        <p><span style="direction: ltr; display: inline-block;">52.73 = <strong>50</strong> + <strong>2</strong> + <strong>0.7</strong> + <strong>0.03</strong></span></p>
+                        <p>או בצורה אחרת:</p>
+                        <p><span style="direction: ltr; display: inline-block;">52.73</span> = 5 עשרות + 2 אחדות + 7 עשיריות + 3 מאיות</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>חשיבות המיקום</h3>
+                    <p>שימו לב איך משתנה הערך כשמזיזים ספרה:</p>
+                    <div style="margin: 20px 0;">
+                        <p style="font-size: 1.3em;"><strong style="direction: ltr; display: inline-block;">0.5</strong> = חמש עשיריות = חצי</p>
+                        <p style="font-size: 1.3em;"><strong style="direction: ltr; display: inline-block;">0.05</strong> = חמש מאיות = חלק קטן בהרבה!</p>
+                        <p style="font-size: 1.3em;"><strong style="direction: ltr; display: inline-block;">5.0</strong> = חמישה שלמים = פי 10 מ-<span style="direction: ltr; display: inline-block;">0.5</span>!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game2" class="content">
+            <div class="game">
+                <h2>משחק ערך מקומי</h2>
+                <div class="question-counter">שאלה <span id="qc2">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="sc2">0</span></div>
+                <div class="problem-display" id="prob2"></div>
+                <div class="controls">
+                    <input type="text" id="ans2" placeholder="תשובה">
+                    <br><br>
+                    <button onclick="checkAnswer(2)">בדוק</button>
+                </div>
+                <div id="fb2" class="feedback"></div>
+            </div>
+        </div>
+        
+        <div id="lesson3" class="content">
+            <div class="lesson">
+                <h2>השוואה וסידור מספרים עשרוניים</h2>
+                <p>כדי להשוות מספרים עשרוניים, משווים ספרה אחר ספרה מימין לשמאל!</p>
+                
+                <div class="example">
+                    <h3>דוגמה 1: השוואת 3.4 ו-3.7</h3>
+                    <div class="steps">
+                        <p><strong>שלב 1:</strong> משווים את החלק השלם - שניהם 3 ✓</p>
+                        <p><strong>שלב 2:</strong> משווים את העשיריות - 4 מול 7</p>
+                        <p>כיוון ש-4 < 7, אז: <strong style="direction: ltr; font-size: 1.3em;">3.4 < 3.7</strong></p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: השוואת 2.35 ו-2.8</h3>
+                    <div class="steps">
+                        <p><strong>שלב 1:</strong> החלק השלם - שניהם 2 ✓</p>
+                        <p><strong>שלב 2:</strong> העשיריות - 3 מול 8</p>
+                        <p>3 < 8, אז: <strong style="direction: ltr; font-size: 1.3em;">2.35 < 2.8</strong></p>
+                        <p><strong>טיפ:</strong> לא משנה שיש עוד ספרה (5) ב-2.35!</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 3: השוואת 5.23 ו-5.230</h3>
+                    <div class="steps">
+                        <p>אפסים בסוף לא משנים את הערך!</p>
+                        <p><strong style="direction: ltr; font-size: 1.3em;">5.23 = 5.230</strong></p>
+                        <p>כמו שאומרים: "עשרים ושלוש מאיות" = "עשרים ושלוש מאיות ואפס אלפיות"</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>סידור מספרים</h3>
+                    <p>בואו נסדר מהקטן לגדול: 1.8, 1.08, 1.85, 1.5</p>
+                    <div class="steps">
+                        <p><strong>שלב 1:</strong> כולם מתחילים ב-1, אז משווים עשיריות:</p>
+                        <p style="margin-right: 30px;">1.08 יש 0 עשיריות (הכי קטן)</p>
+                        <p style="margin-right: 30px;">1.5 יש 5 עשיריות</p>
+                        <p style="margin-right: 30px;">1.8 ו-1.85 יש 8 עשיריות</p>
+                        <p><strong>שלב 2:</strong> בין 1.8 ל-1.85 - משווים מאיות:</p>
+                        <p style="margin-right: 30px;">1.8 (או 1.80) יש 0 מאיות</p>
+                        <p style="margin-right: 30px;">1.85 יש 5 מאיות</p>
+                        <p><strong>הסדר:</strong> <span style="direction: ltr; font-size: 1.3em;">1.08 < 1.5 < 1.8 < 1.85</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game3" class="content">
+            <div class="game">
+                <h2>משחק השוואת מספרים</h2>
+                <div class="question-counter">שאלה <span id="qc3">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="sc3">0</span></div>
+                <div class="problem-display" id="prob3"></div>
+                <div class="controls">
+                    <button onclick="checkComp('<')"><</button>
+                    <button onclick="checkComp('=')">=</button>
+                    <button onclick="checkComp('>')">></button>
+                </div>
+                <div id="fb3" class="feedback"></div>
+            </div>
+        </div>
+        
+        <div id="lesson4" class="content">
+            <div class="lesson">
+                <h2>חיבור וחיסור מספרים עשרוניים</h2>
+                <p>כשמחברים או מחסרים מספרים עשרוניים, חשוב לסדר אותם נכון - נקודה מתחת לנקודה!</p>
+                
+                <div class="example">
+                    <h3>חיבור מספרים עשרוניים</h3>
+                    <p>בואו נחבר: 3.4 + 2.3</p>
+                    <div style="background: #f8f9fa; padding: 20px; margin: 15px 0; border-radius: 10px;">
+                        <pre style="font-family: 'Courier New', monospace; font-size: 1.8em; text-align: center; margin: 0; direction: ltr;">  3.4
++ 2.3
+-----
+  5.7</pre>
+                    </div>
+                    <div class="steps">
+                        <p><strong>שלב 1:</strong> מסדרים את המספרים - נקודה מתחת לנקודה</p>
+                        <p><strong>שלב 2:</strong> מחברים את המאיות (אם יש)</p>
+                        <p><strong>שלב 3:</strong> מחברים את העשיריות: <span style="direction: ltr; display: inline-block;">4 + 3 = 7</span></p>
+                        <p><strong>שלב 4:</strong> מחברים את השלמים: <span style="direction: ltr; display: inline-block;">3 + 2 = 5</span></p>
+                        <p><strong>תשובה:</strong> 5.7</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>חיבור עם אורכים שונים</h3>
+                    <p>בואו נחבר: 5.2 + 1.75</p>
+                    <div style="background: #f8f9fa; padding: 20px; margin: 15px 0; border-radius: 10px;">
+                        <pre style="font-family: 'Courier New', monospace; font-size: 1.8em; text-align: center; margin: 0; direction: ltr;">  5.20
++ 1.75
+------
+  6.95</pre>
+                    </div>
+                    <div class="steps">
+                        <p><strong>טריק:</strong> אפשר להוסיף 0 כדי שיהיה אותו אורך: 5.2 = 5.20</p>
+                        <p>עכשיו מחברים: 20 + 75 = 95 מאיות, ו-5 + 1 = 6 שלמים</p>
+                        <p><strong>תשובה:</strong> 6.95</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>חיבור עם "עודף" (העברה)</h3>
+                    <p>בואו נחבר: 4.8 + 1.9</p>
+                    <div style="background: #f8f9fa; padding: 20px; margin: 15px 0; border-radius: 10px;">
+                        <pre style="font-family: 'Courier New', monospace; font-size: 1.8em; text-align: center; margin: 0; direction: ltr;">  <span style="color: #e74c3c; font-size: 0.8em;">¹</span>
+  4.8
++ 1.9
+-----
+  6.7</pre>
+                    </div>
+                    <div class="steps">
+                        <p><strong>שלב 1:</strong> מחברים עשיריות: <span style="direction: ltr; display: inline-block;">8 + 9 = 17</span></p>
+                        <p style="margin-right: 30px;">17 עשיריות = 1 שלם + 7 עשיריות</p>
+                        <p style="margin-right: 30px;">כותבים 7, ועוברים 1 לעמודת השלמים</p>
+                        <p><strong>שלב 2:</strong> מחברים שלמים: <span style="direction: ltr; display: inline-block;">4 + 1 + 1 = 6</span></p>
+                        <p style="margin-right: 30px;">(ה-1 האחרון זה מה שעבר מהעשיריות)</p>
+                        <p><strong>תשובה:</strong> 6.7</p>
+                        <p style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                            <strong>💡 זכרו:</strong> כשיש עודף בעשיריות - מעבירים לשלמים, בדיוק כמו במספרים רגילים!
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>חיסור מספרים עשרוניים</h3>
+                    <p>בואו נחסר: 4.7 - 2.3</p>
+                    <div style="background: #f8f9fa; padding: 20px; margin: 15px 0; border-radius: 10px;">
+                        <pre style="font-family: 'Courier New', monospace; font-size: 1.8em; text-align: center; margin: 0; direction: ltr;">  4.7
+- 2.3
+-----
+  2.4</pre>
+                    </div>
+                    <div class="steps">
+                        <p><strong>שלב 1:</strong> נקודה מתחת לנקודה</p>
+                        <p><strong>שלב 2:</strong> מחסרים עשיריות: <span style="direction: ltr; display: inline-block;">7 - 3 = 4</span></p>
+                        <p><strong>שלב 3:</strong> מחסרים שלמים: <span style="direction: ltr; display: inline-block;">4 - 2 = 2</span></p>
+                        <p><strong>תשובה:</strong> 2.4</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>טיפ חשוב!</h3>
+                    <p>תמיד וודאו שהנקודות העשרוניות מסודרות אחת מתחת לשנייה!</p>
+                    <p style="color: #e74c3c; font-weight: bold;">⚠️ טעות נפוצה: לא לסדר את המספרים לפי אורך, אלא לפי הנקודה העשרונית!</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game4" class="content">
+            <div class="game">
+                <h2>משחק חיבור וחיסור</h2>
+                <div class="question-counter">שאלה <span id="qc4">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="sc4">0</span></div>
+                <div class="problem-display" id="prob4"></div>
+                <div class="controls">
+                    <input type="text" id="ans4" placeholder="תשובה">
+                    <br><br>
+                    <button onclick="checkAnswer(4)">בדוק</button>
+                </div>
+                <div id="fb4" class="feedback"></div>
+            </div>
+        </div>
+        
+        <div id="lesson5" class="content">
+            <div class="lesson">
+                <h2>הקשר בין שברים למספרים עשרוניים</h2>
+                <p>כל מספר עשרוני אפשר לכתוב כשבר, וכל שבר אפשר להפוך למספר עשרוני!</p>
+                
+                <div class="example">
+                    <h3>עשיריות כשברים</h3>
+                    <p>כל ספרה אחרי הנקודה מייצגת שבר עשרוני:</p>
+                    <div style="margin: 20px 0;">
+                        <div style="display: flex; justify-content: center; gap: 40px; align-items: center; margin: 15px 0;">
+                            <div style="font-size: 1.5em; direction: ltr;"><strong>0.1</strong></div>
+                            <div style="font-size: 1.3em;">=</div>
+                            <div style="display: inline-flex; flex-direction: column; align-items: center;">
+                                <div style="padding: 5px 15px; border-bottom: 3px solid #333; font-size: 1.3em; font-weight: bold;">1</div>
+                                <div style="padding: 5px 15px; font-size: 1.3em; font-weight: bold;">10</div>
+                            </div>
+                            <div style="color: #666;">(עשירית אחת)</div>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: center; gap: 40px; align-items: center; margin: 15px 0;">
+                            <div style="font-size: 1.5em; direction: ltr;"><strong>0.5</strong></div>
+                            <div style="font-size: 1.3em;">=</div>
+                            <div style="display: inline-flex; flex-direction: column; align-items: center;">
+                                <div style="padding: 5px 15px; border-bottom: 3px solid #333; font-size: 1.3em; font-weight: bold;">5</div>
+                                <div style="padding: 5px 15px; font-size: 1.3em; font-weight: bold;">10</div>
+                            </div>
+                            <div style="font-size: 1.3em;">=</div>
+                            <div style="display: inline-flex; flex-direction: column; align-items: center;">
+                                <div style="padding: 5px 15px; border-bottom: 3px solid #333; font-size: 1.3em; font-weight: bold;">1</div>
+                                <div style="padding: 5px 15px; font-size: 1.3em; font-weight: bold;">2</div>
+                            </div>
+                            <div style="color: #666;">(חצי)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>מאיות כשברים</h3>
+                    <p>שתי ספרות אחרי הנקודה = מאיות:</p>
+                    <div style="margin: 20px 0;">
+                        <div style="display: flex; justify-content: center; gap: 40px; align-items: center; margin: 15px 0;">
+                            <div style="font-size: 1.5em; direction: ltr;"><strong>0.25</strong></div>
+                            <div style="font-size: 1.3em;">=</div>
+                            <div style="display: inline-flex; flex-direction: column; align-items: center;">
+                                <div style="padding: 5px 15px; border-bottom: 3px solid #333; font-size: 1.3em; font-weight: bold;">25</div>
+                                <div style="padding: 5px 15px; font-size: 1.3em; font-weight: bold;">100</div>
+                            </div>
+                            <div style="font-size: 1.3em;">=</div>
+                            <div style="display: inline-flex; flex-direction: column; align-items: center;">
+                                <div style="padding: 5px 15px; border-bottom: 3px solid #333; font-size: 1.3em; font-weight: bold;">1</div>
+                                <div style="padding: 5px 15px; font-size: 1.3em; font-weight: bold;">4</div>
+                            </div>
+                            <div style="color: #666;">(רבע)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>איך להמיר מעשרוני לשבר?</h3>
+                    <p><strong>הכלל הפשוט:</strong> כותבים את הספרות אחרי הנקודה כמונה, והמכנה הוא 10, 100, 1000... לפי מספר הספרות.</p>
+                    
+                    <div style="margin: 20px 0;">
+                        <p style="font-size: 1.3em;"><strong>דוגמה 1: </strong><span style="direction: ltr; display: inline-block;">0.3</span></p>
+                        <div class="steps">
+                            <p><strong>שלב 1:</strong> כמה ספרות אחרי הנקודה? ספרה אחת (3)</p>
+                            <p><strong>שלב 2:</strong> המכנה הוא 10 (עשיריות)</p>
+                            <p><strong>תשובה:</strong></p>
+                            <div style="text-align: center; margin: 15px 0;">
+                                <div style="display: inline-flex; flex-direction: column; align-items: center;">
+                                    <div style="padding: 5px 15px; border-bottom: 3px solid #333; font-size: 1.3em; font-weight: bold;">3</div>
+                                    <div style="padding: 5px 15px; font-size: 1.3em; font-weight: bold;">10</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <p style="font-size: 1.3em;"><strong>דוגמה 2: </strong><span style="direction: ltr; display: inline-block;">0.25</span></p>
+                        <div class="steps">
+                            <p><strong>שלב 1:</strong> כמה ספרות אחרי הנקודה? שתי ספרות (25)</p>
+                            <p><strong>שלב 2:</strong> המכנה הוא 100 (מאיות)</p>
+                            <p><strong>תשובה:</strong></p>
+                            <div style="text-align: center; margin: 15px 0;">
+                                <div style="display: inline-flex; flex-direction: column; align-items: center;">
+                                    <div style="padding: 5px 20px; border-bottom: 3px solid #333; font-size: 1.5em; font-weight: bold;">25</div>
+                                    <div style="padding: 5px 20px; font-size: 1.5em; font-weight: bold;">100</div>
+                                </div>
+                            </div>
+                            <p style="background: #e3f2fd; padding: 10px; border-radius: 8px; margin-top: 10px;">
+                                <strong>💡 טוב לדעת:</strong> 25/100 זה בדיוק כמו 1/4 (רבע) - כי 25 זה רבע של 100!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>איך להמיר משבר לעשרוני?</h3>
+                    <p><strong>הדרך:</strong> מחלקים את המונה במכנה!</p>
+                    
+                    <div style="margin: 20px 0;">
+                        <p style="font-size: 1.3em;"><strong>דוגמה 1:</strong></p>
+                        <div style="text-align: center; margin: 15px 0;">
+                            <div style="display: inline-flex; flex-direction: column; align-items: center;">
+                                <div style="padding: 5px 15px; border-bottom: 3px solid #333; font-size: 1.3em; font-weight: bold;">1</div>
+                                <div style="padding: 5px 15px; font-size: 1.3em; font-weight: bold;">4</div>
+                            </div>
+                        </div>
+                        <div class="steps">
+                            <p><strong>מחלקים:</strong> <span style="direction: ltr; display: inline-block;">1 ÷ 4 = 0.25</span></p>
+                            <p><strong>תשובה:</strong> 0.25</p>
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <p style="font-size: 1.3em;"><strong>דוגמה 2:</strong></p>
+                        <div style="text-align: center; margin: 15px 0;">
+                            <div style="display: inline-flex; flex-direction: column; align-items: center;">
+                                <div style="padding: 5px 15px; border-bottom: 3px solid #333; font-size: 1.3em; font-weight: bold;">3</div>
+                                <div style="padding: 5px 15px; font-size: 1.3em; font-weight: bold;">5</div>
+                            </div>
+                        </div>
+                        <div class="steps">
+                            <p><strong>מחלקים:</strong> <span style="direction: ltr; display: inline-block;">3 ÷ 5 = 0.6</span></p>
+                            <p style="margin-right: 30px;">למה 0.6? כי 5 נכנס ב-30 בדיוק 6 פעמים</p>
+                            <p><strong>תשובה:</strong> 0.6</p>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                        <p><strong>💡 טיפ:</strong> לפעמים קל להמיר לעשיריות או מאיות קודם:</p>
+                        <p style="margin-right: 20px;">לדוגמה:</p>
+                        <div style="text-align: center; margin: 15px 0; direction: ltr; display: flex; align-items: center; justify-content: center; gap: 15px;">
+                            <div style="display: inline-flex; flex-direction: column; align-items: center;">
+                                <div style="padding: 5px 15px; border-bottom: 3px solid #333; font-size: 1.3em; font-weight: bold;">3</div>
+                                <div style="padding: 5px 15px; font-size: 1.3em; font-weight: bold;">5</div>
+                            </div>
+                            <span style="font-size: 1.5em;">=</span>
+                            <div style="display: inline-flex; flex-direction: column; align-items: center;">
+                                <div style="padding: 5px 15px; border-bottom: 3px solid #333; font-size: 1.3em; font-weight: bold;">6</div>
+                                <div style="padding: 5px 15px; font-size: 1.3em; font-weight: bold;">10</div>
+                            </div>
+                            <span style="font-size: 1.5em;">=</span>
+                            <span style="font-size: 1.3em; font-weight: bold;">0.6</span>
+                        </div>
+                        <p style="margin-right: 20px;">(כפלנו מונה ומכנה ב-2)</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>שברים פשוטים שכדאי לזכור</h3>
+                    <div class="steps">
+                        <p><strong>שברים פשוטים שכדאי לזכור:</strong></p>
+                        <table style="width: 100%; margin-top: 15px;">
+                            <tr style="background: #f0f0f0;">
+                                <td style="padding: 10px; text-align: center;">
+                                    <div style="display: inline-flex; flex-direction: column; align-items: center;">
+                                        <div style="padding: 5px 10px; border-bottom: 2px solid #333; font-weight: bold;">1</div>
+                                        <div style="padding: 5px 10px; font-weight: bold;">2</div>
+                                    </div>
+                                </td>
+                                <td style="padding: 10px; font-size: 1.3em; direction: ltr;"><strong>= 0.5</strong></td>
+                                <td style="padding: 10px;">(חצי)</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; text-align: center;">
+                                    <div style="display: inline-flex; flex-direction: column; align-items: center;">
+                                        <div style="padding: 5px 10px; border-bottom: 2px solid #333; font-weight: bold;">1</div>
+                                        <div style="padding: 5px 10px; font-weight: bold;">4</div>
+                                    </div>
+                                </td>
+                                <td style="padding: 10px; font-size: 1.3em; direction: ltr;"><strong>= 0.25</strong></td>
+                                <td style="padding: 10px;">(רבע)</td>
+                            </tr>
+                            <tr style="background: #f0f0f0;">
+                                <td style="padding: 10px; text-align: center;">
+                                    <div style="display: inline-flex; flex-direction: column; align-items: center;">
+                                        <div style="padding: 5px 10px; border-bottom: 2px solid #333; font-weight: bold;">3</div>
+                                        <div style="padding: 5px 10px; font-weight: bold;">4</div>
+                                    </div>
+                                </td>
+                                <td style="padding: 10px; font-size: 1.3em; direction: ltr;"><strong>= 0.75</strong></td>
+                                <td style="padding: 10px;">(שלושה רבעים)</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; text-align: center;">
+                                    <div style="display: inline-flex; flex-direction: column; align-items: center;">
+                                        <div style="padding: 5px 10px; border-bottom: 2px solid #333; font-weight: bold;">1</div>
+                                        <div style="padding: 5px 10px; font-weight: bold;">5</div>
+                                    </div>
+                                </td>
+                                <td style="padding: 10px; font-size: 1.3em; direction: ltr;"><strong>= 0.2</strong></td>
+                                <td style="padding: 10px;">(חמישית)</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>מספרים מעורבים</h3>
+                    <p>מספר מעורב = חלק שלם + חלק שברי עשרוני:</p>
+                    <div style="display: flex; justify-content: center; gap: 40px; align-items: center; margin: 15px 0;">
+                        <div style="font-size: 1.8em; font-weight: bold;">
+                            <strong style="font-size: 1.5em;">2</strong>
+                            <div style="display: inline-flex; flex-direction: column; align-items: center;">
+                                <div style="padding: 5px 15px; border-bottom: 3px solid #333; font-size: 0.8em;">1</div>
+                                <div style="padding: 5px 15px; font-size: 0.8em;">4</div>
+                            </div>
+                        </div>
+                        <div style="font-size: 1.5em;">=</div>
+                        <div style="font-size: 1.8em; direction: ltr; font-weight: bold;">2.25</div>
+                    </div>
+                    <div class="steps">
+                        <p>שניים ורבע = 2 + 0.25 = 2.25</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game5" class="content">
+            <div class="game">
+                <h2>משחק המרה בין שברים לעשרוניים</h2>
+                <div class="question-counter">שאלה <span id="qc5">1</span> מתוך 12</div>
+                <div class="score">ניקוד: <span id="sc5">0</span></div>
+                <div class="problem-display" id="prob5"></div>
+                <div class="controls">
+                    <div id="decimal-input-5" style="display: none;">
+                        <input type="text" id="ans5" placeholder="תשובה">
+                    </div>
+                    <div id="fraction-input-5" style="display: none;">
+                        <div class="answer-fractions">
+                            <div class="fraction-input-group">
+                                <label>תשובה:</label>
+                                <div class="fraction-input-container">
+                                    <input type="number" id="n5" placeholder="מונה" style="width: 120px;">
+                                    <div class="fraction-divider"></div>
+                                    <input type="number" id="d5" placeholder="מכנה" style="width: 120px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br><br>
+                    <button onclick="checkAnswer(5)">בדוק</button>
+                </div>
+                <div id="fb5" class="feedback"></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+var score = {1:0, 2:0, 3:0, 4:0, 5:0};
+var qNum = {1:0, 2:0, 3:0, 4:0, 5:0};
+var qs = {1:[], 2:[], 3:[], 4:[], 5:[]};
+var curr = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}};
+var prev = {1:null, 2:null, 3:null, 4:null, 5:null};
+var isAnswering = {1:false, 2:false, 3:false, 4:false, 5:false};
+
+// Game 1: Reading and writing decimals
+function gen1(qn){
+    var type = Math.floor(Math.random() * 2);
+    if(type === 0) {
+        // Write decimal as number
+        var ones = Math.floor(Math.random() * 5) + 1;
+        var tenths = Math.floor(Math.random() * 10);
+        var text = ones + " נקודה " + tenths;
+        var example = qn === 0 ? '<br><small>(לדוגמה: 2.5)</small>' : '';
+        return {
+            html: '<div style="direction: rtl;">כתוב כמספר עשרוני: <strong>' + text + '</strong>' + example + '</div>',
+            ans: ones + "." + tenths
+        };
+    } else {
+        // Read decimal as text
+        var ones = Math.floor(Math.random() * 5) + 1;
+        var tenths = Math.floor(Math.random() * 10);
+        var dec = ones + "." + tenths;
+        var example = qn === 0 ? '<br><small>(כתוב רק את הספרות, לדוגמה: 2.5)</small>' : '';
+        return {
+            html: '<div style="direction: rtl;">איך קוראים: <strong style="direction: ltr;">' + dec + '</strong>?' + example + '</div>',
+            ans: dec
+        };
+    }
+}
+
+// Game 2: Place value
+function gen2(qn){
+    var types = ['ones', 'tenths', 'hundredths'];
+    var type = types[Math.floor(Math.random() * types.length)];
+    
+    // Generate unique digits to avoid confusion
+    var digits = [];
+    while(digits.length < 4) {
+        var d = Math.floor(Math.random() * 10);
+        if(digits.indexOf(d) === -1) digits.push(d);
+    }
+    
+    var ones = digits[0] === 0 ? digits[0] + 1 : digits[0];
+    var tenths = digits[1];
+    var hundredths = digits[2];
+    var num = ones + "." + tenths + hundredths;
+    
+    var question, answer;
+    if(type === 'ones') {
+        question = 'מה הערך של הספרה <strong>' + ones + '</strong> במקום האחדות במספר <strong style="direction: ltr;">' + num + '</strong>?';
+        answer = ones.toString();
+    } else if(type === 'tenths') {
+        var example = qn === 0 ? '<br><small>(לדוגמה: 0.3)</small>' : '';
+        question = 'מה הערך של הספרה <strong>' + tenths + '</strong> במקום העשיריות במספר <strong style="direction: ltr;">' + num + '</strong>?' + example;
+        answer = "0." + tenths;
+    } else {
+        var example = qn === 0 ? '<br><small>(לדוגמה: 0.03)</small>' : '';
+        question = 'מה הערך של הספרה <strong>' + hundredths + '</strong> במקום המאיות במספר <strong style="direction: ltr;">' + num + '</strong>?' + example;
+        answer = "0.0" + hundredths;
+    }
+    
+    return {
+        html: '<div style="direction: rtl;">' + question + '</div>',
+        ans: answer
+    };
+}
+
+// Game 3: Comparing decimals
+function gen3(){
+    var n1_ones = Math.floor(Math.random() * 5) + 1;
+    var n1_tenths = Math.floor(Math.random() * 10);
+    var n2_ones = Math.floor(Math.random() * 5) + 1;
+    var n2_tenths = Math.floor(Math.random() * 10);
+    
+    var num1 = parseFloat(n1_ones + "." + n1_tenths);
+    var num2 = parseFloat(n2_ones + "." + n2_tenths);
+    
+    // Display in RTL order so it matches Hebrew reading direction
+    var ans = num2 > num1 ? '>' : num2 < num1 ? '<' : '=';
+    
+    return {
+        html: '<div style="direction: rtl; font-size: 2em;">' + num2.toFixed(1) + ' __ ' + num1.toFixed(1) + '</div>',
+        ans: ans
+    };
+}
+
+// Game 4: Addition and subtraction
+function gen4(){
+    var op = Math.random() < 0.5 ? '+' : '-';
+    var n1 = (Math.floor(Math.random() * 50) + 10) / 10;
+    var n2 = (Math.floor(Math.random() * 30) + 5) / 10;
+    
+    if(op === '-' && n2 > n1) {
+        var temp = n1;
+        n1 = n2;
+        n2 = temp;
+    }
+    
+    var result = op === '+' ? n1 + n2 : n1 - n2;
+    result = Math.round(result * 10) / 10;
+    
+    return {
+        html: '<div style="direction: ltr; font-size: 2em;">' + n1.toFixed(1) + ' ' + op + ' ' + n2.toFixed(1) + ' = ?</div>',
+        ans: result.toFixed(1)
+    };
+}
+
+function gen5(qn){
+    var fractions = [
+        // שברים בסיסיים
+        {frac: '1/2', dec: '0.5', num: 1, den: 2},
+        {frac: '1/4', dec: '0.25', num: 1, den: 4},
+        {frac: '3/4', dec: '0.75', num: 3, den: 4},
+        {frac: '1/5', dec: '0.2', num: 1, den: 5},
+        {frac: '2/5', dec: '0.4', num: 2, den: 5},
+        {frac: '3/5', dec: '0.6', num: 3, den: 5},
+        {frac: '4/5', dec: '0.8', num: 4, den: 5},
+        // עשיריות
+        {frac: '1/10', dec: '0.1', num: 1, den: 10},
+        {frac: '2/10', dec: '0.2', num: 2, den: 10},
+        {frac: '3/10', dec: '0.3', num: 3, den: 10},
+        {frac: '4/10', dec: '0.4', num: 4, den: 10},
+        {frac: '5/10', dec: '0.5', num: 5, den: 10},
+        {frac: '6/10', dec: '0.6', num: 6, den: 10},
+        {frac: '7/10', dec: '0.7', num: 7, den: 10},
+        {frac: '8/10', dec: '0.8', num: 8, den: 10},
+        {frac: '9/10', dec: '0.9', num: 9, den: 10},
+        // מאיות עגולות
+        {frac: '10/100', dec: '0.1', num: 10, den: 100},
+        {frac: '20/100', dec: '0.2', num: 20, den: 100},
+        {frac: '25/100', dec: '0.25', num: 25, den: 100},
+        {frac: '50/100', dec: '0.5', num: 50, den: 100},
+        {frac: '75/100', dec: '0.75', num: 75, den: 100}
+    ];
+    
+    var f = fractions[Math.floor(Math.random() * fractions.length)];
+    var type = Math.floor(Math.random() * 2);
+    
+    if(type === 0) {
+        var parts = f.frac.split('/');
+        return {
+            html: '<div style="direction: rtl;">המר לעשרוני: <div style="display: inline-flex; flex-direction: column; align-items: center; margin: 0 10px;"><div style="padding: 5px 15px; border-bottom: 3px solid white; font-size: 1.5em;">' + parts[0] + '</div><div style="padding: 5px 15px; font-size: 1.5em;">' + parts[1] + '</div></div></div>',
+            ans: f.dec,
+            type: 'decimal'
+        };
+    } else {
+        return {
+            html: '<div style="direction: rtl;">המר לשבר: <strong style="direction: ltr; font-size: 1.5em;">' + f.dec + '</strong></div>',
+            num: f.num,
+            den: f.den,
+            type: 'fraction'
+        };
+    }
+}
+
+function initG(g){
+    qs[g]=[];
+    for(var i=0;i<20;i++){
+        if(g==1)qs[g].push(gen1());
+        else if(g==2)qs[g].push(gen2());
+        else if(g==3)qs[g].push(gen3());
+        else if(g==4)qs[g].push(gen4());
+        else qs[g].push(gen5());
+    }
+    nextQ(g);
+}
+
+function nextQ(g){
+    if(qNum[g]>=12){
+        var finalScore = score[g];
+        var percentage = Math.round(finalScore/12*100);
+        var emoji, msg;
+        
+        if(percentage === 100) {
+            emoji = '🌟';
+            msg = 'מושלם! אתה אלוף מספרים עשרוניים!';
+        } else if(percentage >= 80) {
+            emoji = '👏';
+            msg = 'מעולה! המשך כך!';
+        } else if(percentage >= 60) {
+            emoji = '💪';
+            msg = 'יפה! עוד קצת תרגול ותהיה מושלם!';
+        } else {
+            emoji = '📚';
+            msg = 'כדאי לחזור על החומר ולנסות שוב!';
+        }
+        
+        var summaryHTML = '<div style="text-align: center;">';
+        summaryHTML += '<div style="font-size: 3em; margin: 20px 0;">'+emoji+' סיימת את הסיבוב! '+emoji+'</div>';
+        summaryHTML += '<div style="font-size: 4em; color: white; font-weight: bold; margin: 20px 0;">'+finalScore+'/12</div>';
+        summaryHTML += '<div style="font-size:2em; color:white; font-weight:bold; margin:10px 0;">'+percentage+'%</div>';
+        summaryHTML += '<div style="font-size: 1.8em; margin: 20px 0;">'+msg+'</div>';
+        summaryHTML += '<button onclick="restartGame('+g+')" style="font-size: 1.3em; padding: 20px 40px; margin-top: 20px;">🔄 סיבוב נוסף</button>';
+        summaryHTML += '</div>';
+        
+        document.getElementById('prob'+g).innerHTML = summaryHTML;
+        document.getElementById('fb'+g).innerHTML='';
+        return;
+    }
+    
+    // Generate question based on current question number, avoid repeating previous question
+    var newQ;
+    var attempts = 0;
+    do {
+        if(g==1) newQ = gen1(qNum[g]);
+        else if(g==2) newQ = gen2(qNum[g]);
+        else if(g==3) newQ = qs[g][qNum[g]];
+        else if(g==4) newQ = qs[g][qNum[g]];
+        else newQ = gen5(qNum[g]);
+        attempts++;
+    } while(prev[g] && newQ.html === prev[g].html && attempts < 10);
+    
+    curr[g] = newQ;
+    prev[g] = newQ;
+    
+    document.getElementById('qc'+g).textContent=qNum[g]+1;
+    var probElem=document.getElementById('prob'+g);
+    if(probElem && curr[g]){
+        if(curr[g].html){
+            probElem.innerHTML=curr[g].html;
+        }else{
+            probElem.innerHTML='טוען שאלה...';
+        }
+    }
+    
+    // Show/hide appropriate input for game 5
+    if(g == 5) {
+        if(curr[g].type === 'decimal') {
+            document.getElementById('decimal-input-5').style.display = 'block';
+            document.getElementById('fraction-input-5').style.display = 'none';
+            document.getElementById('ans5').value = '';
+        } else {
+            document.getElementById('decimal-input-5').style.display = 'none';
+            document.getElementById('fraction-input-5').style.display = 'block';
+            document.getElementById('n5').value = '';
+            document.getElementById('d5').value = '';
+        }
+    } else if(g!=3) {
+        if(document.getElementById('ans'+g)) document.getElementById('ans'+g).value='';
+    }
+    
+    document.getElementById('fb'+g).innerHTML='';
+}
+
+function restartGame(g){
+    score[g]=0;
+    qNum[g]=0;
+    prev[g]=null;
+    document.getElementById('sc'+g).textContent='0';
+    initG(g);
+}
+
+function checkAnswer(g){
+    if(isAnswering[g]) return;
+    
+    // Check if game is finished
+    if(qNum[g] >= 12) return;
+    
+    var userAns, correct;
+    
+    if(g == 5) {
+        // Special handling for game 5
+        if(curr[g].type === 'decimal') {
+            userAns = document.getElementById('ans5').value.trim();
+            if(!userAns) return;
+            correct = userAns === curr[g].ans;
+        } else {
+            // Decimal to fraction - check mathematical equality
+            var userNum = parseInt(document.getElementById('n5').value);
+            var userDen = parseInt(document.getElementById('d5').value);
+            if(isNaN(userNum) || isNaN(userDen) || userDen === 0) return;
+            
+            // Compare the decimal values of the fractions
+            var userDecimal = userNum / userDen;
+            var correctDecimal = curr[g].num / curr[g].den;
+            correct = Math.abs(userDecimal - correctDecimal) < 0.001;
+        }
+    } else {
+        userAns = document.getElementById('ans'+g).value.trim();
+        if(!userAns) return;
+        correct = userAns === curr[g].ans;
+    }
+    
+    isAnswering[g] = true;
+    qNum[g]++;
+    
+    if(correct){
+        score[g]++;
+        playSound('correct');
+        document.getElementById('fb'+g).innerHTML='<div class="correct">✓ מצוין! תשובה נכונה! ✓</div>';
+    }else{
+        playSound('incorrect');
+        var correctAnswer;
+        if(g == 5 && curr[g].type === 'fraction') {
+            correctAnswer = curr[g].num + '/' + curr[g].den;
+        } else {
+            correctAnswer = curr[g].ans;
+        }
+        document.getElementById('fb'+g).innerHTML='<div class="incorrect">✗ טעות - תשובה אפשרית: '+correctAnswer+' ✗</div>';
+    }
+    document.getElementById('sc'+g).textContent=score[g];
+    
+    setTimeout(function(){
+        document.getElementById('fb'+g).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+    
+    setTimeout(function(){
+        isAnswering[g] = false;
+        nextQ(g);
+    },2000);
+}
+
+function checkComp(ans){
+    if(isAnswering[3]) return;
+    
+    // Check if game is finished
+    if(qNum[3] >= 12) return;
+    
+    isAnswering[3] = true;
+    qNum[3]++;
+    if(ans==curr[3].ans){
+        score[3]++;
+        playSound('correct');
+        document.getElementById('fb3').innerHTML='<div class="correct">✓ מצוין! תשובה נכונה! ✓</div>';
+    }else{
+        playSound('incorrect');
+        document.getElementById('fb3').innerHTML='<div class="incorrect">✗ טעות - נסה שוב! ✗</div>';
+    }
+    document.getElementById('sc3').textContent=score[3];
+    
+    setTimeout(function(){
+        document.getElementById('fb3').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+    
+    setTimeout(function(){
+        isAnswering[3] = false;
+        nextQ(3);
+    },2000);
+}
+
+function switchTab(tabId){
+    playSound('click');
+    var tabs=document.querySelectorAll('.tab');
+    var contents=document.querySelectorAll('.content');
+    for(var i=0;i<contents.length;i++)contents[i].classList.remove('active');
+    for(var i=0;i<tabs.length;i++)tabs[i].classList.remove('active');
+    document.getElementById(tabId).classList.add('active');
+    event.target.classList.add('active');
+    
+    if(tabId.includes('game')){
+        var gameNum = parseInt(tabId.replace('game',''));
+        score[gameNum]=0;
+        qNum[gameNum]=0;
+        document.getElementById('sc'+gameNum).textContent='0';
+        document.getElementById('qc'+gameNum).textContent='1';
+        document.getElementById('fb'+gameNum).innerHTML='';
+        initG(gameNum);
+    }
+}
+
+function playSound(type){
+    var ctx=new(window.AudioContext||window.webkitAudioContext)();
+    if(type=='click'){
+        var o=ctx.createOscillator();
+        var g=ctx.createGain();
+        o.connect(g);g.connect(ctx.destination);
+        o.type='sine';o.frequency.value=600;
+        g.gain.setValueAtTime(0.15,ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.15);
+        o.start(ctx.currentTime);o.stop(ctx.currentTime+0.15);
+    }else if(type=='correct'){
+        var notes=[523.25,659.25,783.99];
+        for(var i=0;i<notes.length;i++){
+            var o=ctx.createOscillator();
+            var g=ctx.createGain();
+            o.connect(g);g.connect(ctx.destination);
+            o.type='sine';o.frequency.value=notes[i];
+            g.gain.setValueAtTime(0.1,ctx.currentTime+i*0.1);
+            g.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+i*0.1+0.3);
+            o.start(ctx.currentTime+i*0.1);
+            o.stop(ctx.currentTime+i*0.1+0.3);
+        }
+    }else if(type=='incorrect'){
+        var o=ctx.createOscillator();
+        var g=ctx.createGain();
+        o.connect(g);g.connect(ctx.destination);
+        o.type='sine';o.frequency.value=200;
+        g.gain.setValueAtTime(0.15,ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.3);
+        o.start(ctx.currentTime);o.stop(ctx.currentTime+0.3);
+    }
+}
+
+window.onload=function(){
+    initG(1);
+    initG(2);
+    initG(3);
+    initG(4);
+    initG(5);
+    
+    document.addEventListener('wheel', function(e) {
+        if (document.activeElement.type === 'number' || document.activeElement.type === 'text') {
+            document.activeElement.blur();
+        }
+    });
+};
+</script>
+</body>
+</html>
+                    
