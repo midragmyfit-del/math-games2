@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אומדן ובדיקת סבירות - כיתה ד'</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; border-radius: 25px; padding: 40px; box-shadow: 0 25px 70px rgba(0,0,0,0.4); }
+        h1 { color: #667eea; text-align: center; margin-bottom: 15px; font-size: 3em; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .subtitle { text-align: center; color: #666; margin-bottom: 35px; font-size: 1.3em; }
+        .tabs { display: flex; gap: 12px; margin-bottom: 35px; flex-wrap: wrap; justify-content: center; }
+        .tab { padding: 16px 28px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px; cursor: pointer; font-size: 1.15em; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: white; }
+        .tab:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); background: linear-gradient(135deg, #7c8ff0 0%, #8759ab 100%); }
+        .tab.active { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); transform: scale(1.05); }
+        .content { display: none; }
+        .content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .lesson { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .lesson h2 { color: #667eea; margin-bottom: 20px; font-size: 1.8em; }
+        .lesson p { font-size: 1.2em; line-height: 1.8; margin-bottom: 15px; color: #333; }
+        .example { background: white; padding: 20px; border-right: 5px solid #667eea; margin: 20px 0; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
+        .example h3 { color: #f5576c; margin-bottom: 12px; font-size: 1.3em; }
+        .game { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .game h2 { margin-bottom: 20px; font-size: 2em; }
+        .question-counter { text-align: center; font-size: 1.3em; margin: 15px 0; color: #fff; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px; }
+        .score { text-align: center; font-size: 1.8em; margin: 25px 0; color: #fff; font-weight: bold; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; }
+        .problem-display { font-size: 1.5em; text-align: center; margin: 30px 0; padding: 25px; background: rgba(255,255,255,0.3); border-radius: 15px; line-height: 1.8; direction: ltr; }
+        input[type="number"] { width: 250px; padding: 15px; font-size: 1.5em; border: 4px solid white; border-radius: 10px; text-align: center; margin: 10px; font-weight: bold; }
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
+        button { background: white; color: #667eea; border: none; padding: 14px 35px; font-size: 1.2em; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-weight: bold; box-shadow: 0 6px 12px rgba(0,0,0,0.2); margin: 5px; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+        .feedback { padding: 20px; border-radius: 12px; margin-top: 20px; font-size: 1.3em; text-align: center; font-weight: bold; }
+        .correct { background: #51cf66; color: white; }
+        .incorrect { background: #ff6b6b; color: white; }
+        .controls { text-align: center; margin: 25px 0; }
+        .round-complete { background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%); padding: 40px; border-radius: 20px; text-align: center; color: white; margin: 20px 0; }
+        .round-complete h3 { font-size: 2.5em; margin-bottom: 20px; }
+        .round-complete p { font-size: 1.5em; margin: 15px 0; }
+        .new-round-btn { background: white; color: #51cf66; font-size: 1.5em; padding: 20px 40px; margin-top: 20px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; box-shadow: 0 8px 16px rgba(0,0,0,0.2); transition: all 0.3s; }
+        .new-round-btn:hover { transform: scale(1.05); box-shadow: 0 12px 24px rgba(0,0,0,0.3); }
+        .steps { background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin: 20px 0; text-align: right; }
+        .steps p { margin: 10px 0; font-size: 1.1em; }
+        .formula-box { background: #fff3cd; border: 3px solid #ffc107; padding: 15px; border-radius: 10px; margin: 15px 0; text-align: center; font-size: 1.3em; font-weight: bold; color: #856404; }
+        .strategy-box { background: #e7f5ff; border: 3px solid #339af0; padding: 20px; border-radius: 10px; margin: 15px 0; text-align: right; }
+        .strategy-box h4 { color: #1971c2; margin-bottom: 10px; font-size: 1.2em; }
+        .strategy-box p { font-size: 1.1em; line-height: 1.6; margin: 8px 0; }
+        .calc-box { direction: ltr; text-align: left; font-size: 1.4em; margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; font-family: 'Courier New', monospace; white-space: pre; display: inline-block; color: #2d3436; font-weight: bold; }
+        .tip { color: #0d5a3a; font-weight: bold; font-size: 1.05em; margin-top: 10px; }
+        .estimate-box { background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%); border: 3px solid #f39c12; padding: 20px; border-radius: 10px; margin: 15px 0; text-align: center; }
+        .estimate-box h4 { color: #d35400; margin-bottom: 15px; font-size: 1.3em; }
+        .compare-row { display: flex; justify-content: center; align-items: center; gap: 20px; margin: 15px 0; flex-wrap: wrap; }
+        .compare-box { background: white; padding: 15px 25px; border-radius: 8px; font-size: 1.3em; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .arrow { font-size: 2em; color: #d35400; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>אומדן ובדיקת סבירות 🎯</h1>
+        <div class="subtitle">כיתה ד' - למדו לחשוב לפני שמחשבים!</div>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="lesson1">📚 שיעור: מה זה אומדן?</button>
+            <button class="tab" data-tab="game1">🎮 משחק: אומדן</button>
+            <button class="tab" data-tab="lesson2">📚 שיעור: בדיקת סבירות</button>
+            <button class="tab" data-tab="game2">🎲 משחק: מצא טעויות</button>
+            <button class="tab" data-tab="game3">🎯 משחק: אומדן מהיר</button>
+        </div>
+        
+        <!-- שיעור 1 -->
+        <div id="lesson1" class="content active">
+            <div class="lesson">
+                <h2>מה זה אומדן ולמה הוא חשוב?</h2>
+                <p>אומדן זה הערכה מהירה של תוצאה בלי לחשב בדיוק.</p>
+                <p>למה צריך אומדן? כדי לדעת בערך מה התשובה לפני שמחשבים!</p>
+                
+                <div class="formula-box">אומדן = הערכה מהירה וקרובה לתוצאה האמיתית</div>
+                
+                <div class="estimate-box">
+                    <h4>💡 איך עושים אומדן?</h4>
+                    <p style="font-size: 1.2em; color: #2d3436; line-height: 1.8;">
+                        <strong>שלב 1:</strong> מעגלים כל מספר למאה או לאלף הקרוב<br>
+                        <strong>שלב 2:</strong> מחשבים עם המספרים המעוגלים<br>
+                        <strong>שלב 3:</strong> זו התוצאה המשוערת!
+                    </p>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: אומדן בחיבור</h3>
+                    <p><strong>בעיה:</strong> אמדו את התוצאה של:</p>
+                    <div class="calc-box">387 + 512 = ?</div>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p><strong>שלב 1:</strong> מעגלים למאות הקרובות</p>
+                        <div class="compare-row">
+                            <div class="compare-box">387</div>
+                            <div class="arrow">→</div>
+                            <div class="compare-box" style="background: #51cf66; color: white;">400</div>
+                        </div>
+                        <div class="compare-row">
+                            <div class="compare-box">512</div>
+                            <div class="arrow">→</div>
+                            <div class="compare-box" style="background: #51cf66; color: white;">500</div>
+                        </div>
+                        <p><strong>שלב 2:</strong> מחשבים עם המספרים המעוגלים</p>
+                        <div class="calc-box">400 + 500 = 900</div>
+                        <p><strong>אומדן:</strong> התוצאה בערך 900</p>
+                        <p class="tip">💡 התשובה המדויקת: 899 - קרוב מאוד!</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: אומדן בחיסור</h3>
+                    <p><strong>בעיה:</strong> אמדו את התוצאה של:</p>
+                    <div class="calc-box">846 - 298 = ?</div>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p><strong>שלב 1:</strong> מעגלים למאות</p>
+                        <div class="calc-box">846 → 850
+298 → 300</div>
+                        <p><strong>שלב 2:</strong> מחשבים</p>
+                        <div class="calc-box">850 - 300 = 550</div>
+                        <p><strong>אומדן:</strong> התוצאה בערך 550</p>
+                        <p class="tip">💡 התשובה המדויקת: 548 - מצוין!</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 3: אומדן עם אלפים</h3>
+                    <p><strong>בעיה:</strong> אמדו את התוצאה של:</p>
+                    <div class="calc-box">3,420 + 5,780 = ?</div>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p><strong>שלב 1:</strong> מעגלים לאלפים</p>
+                        <div class="calc-box">3,420 → 3,000
+5,780 → 6,000</div>
+                        <p><strong>שלב 2:</strong> מחשבים</p>
+                        <div class="calc-box">3,000 + 6,000 = 9,000</div>
+                        <p><strong>אומדן:</strong> התוצאה בערך 9,000</p>
+                        <p class="tip">💡 התשובה המדויקת: 9,200</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 4: מתי משתמשים באומדן?</h3>
+                    <div class="steps">
+                        <p>✓ לפני חישוב - לדעת מה לצפות</p>
+                        <p>✓ אחרי חישוב - לבדוק שלא טעינו</p>
+                        <p>✓ בקניות - כמה בערך עולה?</p>
+                        <p>✓ בחיי היום-יום - הערכות מהירות</p>
+                    </div>
+                </div>
+                
+                <div class="strategy-box">
+                    <h4>🎯 טיפים לאומדן טוב:</h4>
+                    <p>✓ תמיד עגלו למספר עגול (100, 500, 1,000)</p>
+                    <p>✓ ככל שהמספרים יותר עגולים - האומדן יותר קל</p>
+                    <p>✓ האומדן לא צריך להיות מדויק - רק קרוב!</p>
+                    <p>✓ תרגלו הרבה - ככה נהיה מהירים</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 1 -->
+        <div id="game1" class="content">
+            <div class="game">
+                <h2>משחק אומדן</h2>
+                <div class="question-counter">שאלה <span id="q-count1">1</span> מתוך 10</div>
+                <div class="score">ניקוד: <span id="score1">0</span></div>
+                <div class="problem-display" id="problem1">טוען...</div>
+                <div class="controls">
+                    <input type="number" id="answer1" placeholder="הכנס אומדן">
+                    <br><br>
+                    <button onclick="checkAns(1);">בדוק</button>
+                </div>
+                <div id="feedback1"></div>
+                <div id="round-end1" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <!-- שיעור 2 -->
+        <div id="lesson2" class="content">
+            <div class="lesson">
+                <h2>בדיקת סבירות - איך יודעים שלא טעינו?</h2>
+                <p>בדיקת סבירות זה לבדוק אם התשובה הגיונית!</p>
+                
+                <div class="formula-box">אם התשובה רחוקה מהאומדן - בדקו שוב!</div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: תשובה לא הגיונית</h3>
+                    <p><strong>בעיה:</strong> דני חישב:</p>
+                    <div class="calc-box">  234
++ 189
+_____
+  823</div>
+                    <p><strong>שאלה:</strong> האם התשובה הגיונית?</p>
+                    <div class="steps">
+                        <p><strong>בדיקה:</strong></p>
+                        <p>נעשה אומדן:</p>
+                        <div class="calc-box">234 → 200
+189 → 200
+200 + 200 = 400</div>
+                        <p>דני קיבל 823, האומדן 400</p>
+                        <p><strong>תשובה:</strong> ❌ לא הגיוני! ההפרש גדול מדי</p>
+                        <p class="tip">💡 התשובה הנכונה: 423</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: תשובה הגיונית</h3>
+                    <p><strong>בעיה:</strong> שרה חישבה:</p>
+                    <div class="calc-box">  567
++ 432
+_____
+  999</div>
+                    <p><strong>שאלה:</strong> האם התשובה הגיונית?</p>
+                    <div class="steps">
+                        <p><strong>בדיקה:</strong></p>
+                        <p>נעשה אומדן:</p>
+                        <div class="calc-box">567 → 600
+432 → 400
+600 + 400 = 1,000</div>
+                        <p>שרה קיבלה 999, האומדן 1,000</p>
+                        <p><strong>תשובה:</strong> ✓ הגיוני! קרוב מאוד</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 3: טעויות נפוצות</h3>
+                    <div class="steps">
+                        <p><strong>טעות 1: שכחו לעבור</strong></p>
+                        <div class="calc-box">  456
++ 378
+_____
+  724  ❌</div>
+                        <p>אומדן: 500 + 400 = 900, אבל קיבלנו 724 - משהו לא בסדר!</p>
+                        <br>
+                        <p><strong>טעות 2: חיסור שגוי</strong></p>
+                        <div class="calc-box">  800
+- 234
+_____
+  666  ❌</div>
+                        <p>אומדן: 800 - 200 = 600, קרוב אבל...</p>
+                        <p class="tip">💡 התשובה הנכונה: 566</p>
+                    </div>
+                </div>
+                
+                <div class="strategy-box">
+                    <h4>💡 כיצד בודקים סבירות:</h4>
+                    <p><strong>שלב 1:</strong> עשה אומדן של התרגיל</p>
+                    <p><strong>שלב 2:</strong> השווה את התשובה שלך לאומדן</p>
+                    <p><strong>שלב 3:</strong> אם ההפרש גדול - יש טעות!</p>
+                    <p><strong>שלב 4:</strong> חשוב שוב ובדוק</p>
+                    <br>
+                    <p>✓ אם התשובה קרובה לאומדן - כנראה נכון</p>
+                    <p>✓ אם התשובה רחוקה מהאומדן - בדוק שוב!</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 2 -->
+        <div id="game2" class="content">
+            <div class="game">
+                <h2>משחק מצא טעויות</h2>
+                <div class="question-counter">שאלה <span id="q-count2">1</span> מתוך 10</div>
+                <div class="score">ניקוד: <span id="score2">0</span></div>
+                <div class="problem-display" id="problem2">טוען...</div>
+                <div class="controls">
+                    <button onclick="checkAns(2, 'correct');">נכון</button>
+                    <button onclick="checkAns(2, 'wrong');">יש טעות</button>
+                </div>
+                <div id="feedback2"></div>
+                <div id="round-end2" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <!-- משחק 3 -->
+        <div id="game3" class="content">
+            <div class="game">
+                <h2>משחק אומדן מהיר</h2>
+                <div class="question-counter">שאלה <span id="q-count3">1</span> מתוך 10</div>
+                <div class="score">ניקוד: <span id="score3">0</span></div>
+                <div class="problem-display" id="problem3">טוען...</div>
+                <div class="controls">
+                    <input type="number" id="answer3" placeholder="הכנס אומדן">
+                    <br><br>
+                    <button onclick="checkAns(3);">בדוק</button>
+                </div>
+                <div id="feedback3"></div>
+                <div id="round-end3" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+var scores = {1: 0, 2: 0, 3: 0};
+var currentQuestion = {1: 0, 2: 0, 3: 0};
+var questionBank = {1: [], 2: [], 3: []};
+var gameData = {1: {}, 2: {}, 3: {}};
+var answerLocked = {1: false, 2: false, 3: false};
+
+function generateQ1(n) {
+    var qs = [
+        {a: 387, b: 512, op: '+', est: 900, exact: 899},
+        {a: 846, b: 298, op: '-', est: 550, exact: 548},
+        {a: 234, b: 456, op: '+', est: 700, exact: 690},
+        {a: 673, b: 189, op: '-', est: 500, exact: 484},
+        {a: 456, b: 378, op: '+', est: 800, exact: 834},
+        {a: 921, b: 534, op: '-', est: 400, exact: 387},
+        {a: 345, b: 267, op: '+', est: 600, exact: 612},
+        {a: 756, b: 423, op: '-', est: 300, exact: 333},
+        {a: 567, b: 389, op: '+', est: 1000, exact: 956},
+        {a: 834, b: 267, op: '-', est: 600, exact: 567},
+        {a: 423, b: 198, op: '+', est: 600, exact: 621},
+        {a: 678, b: 345, op: '-', est: 300, exact: 333},
+        {a: 234, b: 567, op: '+', est: 800, exact: 801},
+        {a: 892, b: 456, op: '-', est: 400, exact: 436},
+        {a: 345, b: 456, op: '+', est: 800, exact: 801},
+        {a: 756, b: 289, op: '-', est: 500, exact: 467},
+        {a: 478, b: 334, op: '+', est: 800, exact: 812},
+        {a: 934, b: 578, op: '-', est: 400, exact: 356},
+        {a: 567, b: 234, op: '+', est: 800, exact: 801},
+        {a: 823, b: 456, op: '-', est: 400, exact: 367}
+    ];
+    var q = qs[n];
+    return {
+        t: '\u202B' + 'אמדו את התוצאה:' + '\u202C' + '<br><div class="calc-box" style="font-size: 1.6em; margin: 15px auto;">' + q.a + ' ' + q.op + ' ' + q.b + ' = ?</div>' + '\u202B' + '(עגלו למאות ואז חשבו)' + '\u202C',
+        a: q.est,
+        exact: q.exact,
+        tolerance: 100
+    };
+}
+
+function generateQ2(n) {
+    var qs = [
+        {prob: '234 + 189', ans: 823, correct: false, real: 423},
+        {prob: '567 + 432', ans: 999, correct: true, real: 999},
+        {prob: '456 + 378', ans: 834, correct: true, real: 834},
+        {prob: '789 - 234', ans: 655, correct: false, real: 555},
+        {prob: '345 + 267', ans: 612, correct: true, real: 612},
+        {prob: '823 - 456', ans: 467, correct: false, real: 367},
+        {prob: '678 + 234', ans: 912, correct: true, real: 912},
+        {prob: '934 - 567', ans: 467, correct: false, real: 367},
+        {prob: '456 + 345', ans: 801, correct: true, real: 801},
+        {prob: '756 - 289', ans: 567, correct: false, real: 467},
+        {prob: '234 + 456', ans: 690, correct: true, real: 690},
+        {prob: '892 - 456', ans: 536, correct: false, real: 436},
+        {prob: '567 + 389', ans: 956, correct: true, real: 956},
+        {prob: '745 - 278', ans: 567, correct: false, real: 467},
+        {prob: '345 + 456', ans: 801, correct: true, real: 801},
+        {prob: '867 - 389', ans: 578, correct: false, real: 478},
+        {prob: '478 + 334', ans: 812, correct: true, real: 812},
+        {prob: '923 - 567', ans: 456, correct: false, real: 356},
+        {prob: '234 + 567', ans: 801, correct: true, real: 801},
+        {prob: '834 - 456', ans: 478, correct: false, real: 378}
+    ];
+    var q = qs[n];
+    return {
+        t: '\u202B' + 'האם החישוב נכון?' + '\u202C' + '<br><div class="calc-box" style="font-size: 1.6em; margin: 15px auto;">' + q.prob + ' = ' + q.ans + '</div>',
+        a: q.correct ? 'correct' : 'wrong',
+        real: q.real
+    };
+}
+
+function generateQ3(n) {
+    var qs = [
+        {a: 3420, b: 5780, op: '+', est: 9000, exact: 9200},
+        {a: 7650, b: 2340, op: '-', est: 5000, exact: 5310},
+        {a: 4567, b: 3234, op: '+', est: 8000, exact: 7801},
+        {a: 8923, b: 4567, op: '-', est: 4000, exact: 4356},
+        {a: 2345, b: 6789, op: '+', est: 9000, exact: 9134},
+        {a: 9876, b: 3456, op: '-', est: 6000, exact: 6420},
+        {a: 5432, b: 2789, op: '+', est: 8000, exact: 8221},
+        {a: 7234, b: 4890, op: '-', est: 2000, exact: 2344},
+        {a: 3567, b: 4234, op: '+', est: 8000, exact: 7801},
+        {a: 8456, b: 2678, op: '-', est: 6000, exact: 5778},
+        {a: 4234, b: 3567, op: '+', est: 8000, exact: 7801},
+        {a: 9234, b: 4567, op: '-', est: 5000, exact: 4667},
+        {a: 6789, b: 2345, op: '+', est: 9000, exact: 9134},
+        {a: 7890, b: 3456, op: '-', est: 4000, exact: 4434},
+        {a: 2456, b: 5678, op: '+', est: 8000, exact: 8134},
+        {a: 8567, b: 3789, op: '-', est: 5000, exact: 4778},
+        {a: 3456, b: 4567, op: '+', est: 8000, exact: 8023},
+        {a: 9123, b: 4234, op: '-', est: 5000, exact: 4889},
+        {a: 5678, b: 2345, op: '+', est: 8000, exact: 8023},
+        {a: 7456, b: 2890, op: '-', est: 5000, exact: 4566}
+    ];
+    var q = qs[n];
+    return {
+        t: '\u202B' + 'אומדן מהיר - מספרים גדולים!' + '\u202C' + '<br><div class="calc-box" style="font-size: 1.6em; margin: 15px auto;">' + q.a.toLocaleString('he-IL') + ' ' + q.op + ' ' + q.b.toLocaleString('he-IL') + ' = ?</div>' + '\u202B' + '(עגל לאלפים ואז חשב)' + '\u202C',
+        a: q.est,
+        exact: q.exact,
+        tolerance: 1000
+    };
+}
+
+function initGame(g) {
+    questionBank[g] = [];
+    var order = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
+    order.sort(function() { return Math.random() - 0.5; });
+    for (var i = 0; i < 10; i++) {
+        var q;
+        if (g === 1) q = generateQ1(order[i]);
+        else if (g === 2) q = generateQ2(order[i]);
+        else q = generateQ3(order[i]);
+        questionBank[g].push(q);
+    }
+    nextQ(g);
+}
+
+function nextQ(g) {
+    if (currentQuestion[g] >= 10) {
+        document.getElementById('feedback' + g).innerHTML = '';
+        showEnd(g);
+        return;
+    }
+    answerLocked[g] = false;
+    gameData[g] = questionBank[g][currentQuestion[g]];
+    document.getElementById('q-count' + g).textContent = currentQuestion[g] + 1;
+    document.getElementById('problem' + g).innerHTML = gameData[g].t;
+    document.getElementById('feedback' + g).innerHTML = '';
+    if (g === 1 || g === 3) {
+        document.getElementById('answer' + g).value = '';
+    }
+}
+
+function checkAns(g, choice) {
+    if (answerLocked[g]) return;
+    
+    var correct = false;
+    var feedbackMsg = '';
+    
+    if (g === 2) {
+        correct = choice === gameData[g].a;
+        answerLocked[g] = true;
+        currentQuestion[g]++;
+        
+        if (correct) {
+            scores[g]++;
+            playSound('correct');
+            feedbackMsg = 'נכון מעולה! ✔';
+        } else {
+            playSound('incorrect');
+            if (gameData[g].a === 'correct') {
+                feedbackMsg = 'לא נכון. החישוב נכון! אין טעות בחישוב.';
+            } else {
+                feedbackMsg = 'לא נכון. יש טעות בחישוב!<br><div class="calc-box" style="margin-top: 10px;">התשובה הנכונה: ' + gameData[g].real + '</div>';
+            }
+        }
+        document.getElementById('feedback' + g).innerHTML = '<div class="feedback ' + (correct ? 'correct' : 'incorrect') + '">' + feedbackMsg + '</div>';
+        document.getElementById('score' + g).textContent = scores[g];
+        
+        setTimeout(function() {
+            document.getElementById('feedback' + g).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+        
+        setTimeout(function() { nextQ(g); }, 3500);
+        
+    } else {
+        var ans = parseFloat(document.getElementById('answer' + g).value);
+        if (isNaN(ans)) return;
+        
+        var diff = Math.abs(ans - gameData[g].a);
+        correct = diff <= gameData[g].tolerance;
+        
+        answerLocked[g] = true;
+        currentQuestion[g]++;
+        
+        if (correct) {
+            scores[g]++;
+            playSound('correct');
+            feedbackMsg = 'מצוין! אומדן טוב! ✔<br><div class="calc-box" style="margin-top: 10px;">האומדן שלך: ' + ans + '<br>האומדן הצפוי: ' + gameData[g].a + '<br>התשובה המדויקת: ' + gameData[g].exact + '</div>';
+        } else {
+            playSound('incorrect');
+            feedbackMsg = 'האומדן לא מספיק קרוב<br><div class="calc-box" style="margin-top: 10px;">האומדן שלך: ' + ans + '<br>האומדן הצפוי: ' + gameData[g].a + '<br>התשובה המדויקת: ' + gameData[g].exact + '</div>';
+        }
+        
+        document.getElementById('feedback' + g).innerHTML = '<div class="feedback ' + (correct ? 'correct' : 'incorrect') + '">' + feedbackMsg + '</div>';
+        document.getElementById('score' + g).textContent = scores[g];
+        
+        setTimeout(function() {
+            document.getElementById('feedback' + g).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+        
+        setTimeout(function() { nextQ(g); }, 4000);
+    }
+}
+
+function showEnd(g) {
+    var roundEndEl = document.getElementById('round-end' + g);
+    var problemEl = document.getElementById('problem' + g);
+    var controlsEl = document.querySelector('#game' + g + ' .controls');
+    var feedbackEl = document.getElementById('feedback' + g);
+    
+    if (controlsEl) controlsEl.style.display = 'none';
+    if (feedbackEl) {
+        feedbackEl.innerHTML = '';
+        feedbackEl.style.display = 'none';
+    }
+    
+    var pct = Math.round((scores[g] / 10) * 100);
+    var msg = pct >= 80 ? 'מעולה! 🌟🎉' : pct >= 60 ? 'יפה מאוד! 👏' : 'כל הכבוד! 💪';
+    roundEndEl.innerHTML = '<div class="round-complete"><h3>סיימת!</h3><p>' + msg + '</p><p>ציון: ' + scores[g] + '/10 (' + pct + '%)</p><button class="new-round-btn" onclick="resetGame(' + g + ')">סיבוב נוסף</button></div>';
+    roundEndEl.style.display = 'block';
+    problemEl.style.display = 'none';
+}
+
+function resetGame(g) {
+    scores[g] = 0;
+    currentQuestion[g] = 0;
+    answerLocked[g] = false;
+    questionBank[g] = [];
+    
+    document.getElementById('score' + g).textContent = '0';
+    document.getElementById('round-end' + g).style.display = 'none';
+    document.getElementById('feedback' + g).innerHTML = '';
+    document.getElementById('feedback' + g).style.display = 'block';
+    document.getElementById('problem' + g).style.display = 'block';
+    
+    var controlsEl = document.querySelector('#game' + g + ' .controls');
+    if (controlsEl) controlsEl.style.display = 'block';
+    
+    if (g === 1 || g === 3) {
+        document.getElementById('answer' + g).value = '';
+    }
+    
+    initGame(g);
+}
+
+window.onload = function() {
+    var tabs = document.querySelectorAll('.tab');
+    for (var i = 0; i < tabs.length; i++) {
+        (function(tab) {
+            tab.onclick = function() {
+                playSound('click');
+                var tabId = tab.getAttribute('data-tab');
+                var allContent = document.querySelectorAll('.content');
+                var allTabs = document.querySelectorAll('.tab');
+                for (var j = 0; j < allContent.length; j++) allContent[j].classList.remove('active');
+                for (var k = 0; k < allTabs.length; k++) allTabs[k].classList.remove('active');
+                document.getElementById(tabId).classList.add('active');
+                tab.classList.add('active');
+                
+                if (tabId === 'game1' || tabId === 'game2' || tabId === 'game3') {
+                    var gameNum = parseInt(tabId.replace('game', ''));
+                    scores[gameNum] = 0;
+                    currentQuestion[gameNum] = 0;
+                    answerLocked[gameNum] = false;
+                    questionBank[gameNum] = [];
+                    document.getElementById('score' + gameNum).textContent = '0';
+                    document.getElementById('round-end' + gameNum).style.display = 'none';
+                    document.getElementById('problem' + gameNum).style.display = 'block';
+                    document.getElementById('feedback' + gameNum).innerHTML = '';
+                    document.getElementById('feedback' + gameNum).style.display = 'block';
+                    
+                    var controlsEl = document.querySelector('#game' + gameNum + ' .controls');
+                    if (controlsEl) controlsEl.style.display = 'block';
+                    
+                    if (gameNum === 1 || gameNum === 3) {
+                        document.getElementById('answer' + gameNum).value = '';
+                    }
+                    
+                    setTimeout(function() { initGame(gameNum); }, 50);
+                }
+            };
+        })(tabs[i]);
+    }
+    
+    document.addEventListener('wheel', function(e) {
+        if (document.activeElement.type === 'number') document.activeElement.blur();
+    });
+};
+
+function playSound(type) {
+    try {
+        var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (type === 'click') {
+            var osc = audioContext.createOscillator();
+            var gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.type = 'sine';
+            osc.frequency.value = 600;
+            gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + 0.15);
+        } else if (type === 'correct') {
+            var notes = [523.25, 659.25, 783.99];
+            for (var i = 0; i < notes.length; i++) {
+                (function(index) {
+                    var osc = audioContext.createOscillator();
+                    var gain = audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    osc.type = 'sine';
+                    osc.frequency.value = notes[index];
+                    gain.gain.setValueAtTime(0.1, audioContext.currentTime + index * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + index * 0.1 + 0.3);
+                    osc.start(audioContext.currentTime + index * 0.1);
+                    osc.stop(audioContext.currentTime + index * 0.1 + 0.3);
+                })(i);
+            }
+        } else if (type === 'incorrect') {
+            var osc = audioContext.createOscillator();
+            var gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.type = 'sine';
+            osc.frequency.value = 200;
+            gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + 0.3);
+        }
+    } catch (e) {
+        console.log('Audio not supported');
+    }
+}
+    </script>
+</body>
+</html>
