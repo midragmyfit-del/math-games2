@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>חישובי זמן - כיתה ג'</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; border-radius: 25px; padding: 40px; box-shadow: 0 25px 70px rgba(0,0,0,0.4); }
+        h1 { color: #667eea; text-align: center; margin-bottom: 15px; font-size: 3em; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .subtitle { text-align: center; color: #666; margin-bottom: 35px; font-size: 1.3em; }
+        .tabs { display: flex; gap: 12px; margin-bottom: 35px; flex-wrap: wrap; justify-content: center; }
+        .tab { padding: 16px 28px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px; cursor: pointer; font-size: 1.15em; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: white; }
+        .tab:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); background: linear-gradient(135deg, #7c8ff0 0%, #8759ab 100%); }
+        .tab.active { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); transform: scale(1.05); }
+        .content { display: none; }
+        .content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .lesson { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .lesson h2 { color: #667eea; margin-bottom: 20px; font-size: 1.8em; }
+        .lesson p { font-size: 1.2em; line-height: 1.8; margin-bottom: 15px; color: #333; }
+        .example { background: white; padding: 20px; border-right: 5px solid #667eea; margin: 20px 0; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
+        .example h3 { color: #f5576c; margin-bottom: 12px; font-size: 1.3em; }
+        .game { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 20px; margin-bottom: 25px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .game h2 { margin-bottom: 20px; font-size: 2em; }
+        .question-counter { text-align: center; font-size: 1.3em; margin: 15px 0; color: #fff; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px; }
+        .score { text-align: center; font-size: 1.8em; margin: 25px 0; color: #fff; font-weight: bold; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; }
+        .problem-display { font-size: 1.3em; text-align: right; margin: 30px 0; padding: 25px; background: rgba(255,255,255,0.3); border-radius: 15px; line-height: 1.8; }
+        input[type="number"] { width: 250px; padding: 15px; font-size: 1.5em; border: 4px solid white; border-radius: 10px; text-align: center; margin: 10px; font-weight: bold; }
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
+        button { background: white; color: #667eea; border: none; padding: 14px 35px; font-size: 1.2em; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-weight: bold; box-shadow: 0 6px 12px rgba(0,0,0,0.2); margin: 5px; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+        .feedback { padding: 20px; border-radius: 12px; margin-top: 20px; font-size: 1.3em; text-align: center; font-weight: bold; }
+        .correct { background: #51cf66; color: white; }
+        .incorrect { background: #ff6b6b; color: white; }
+        .controls { text-align: center; margin: 25px 0; }
+        .round-complete { background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%); padding: 40px; border-radius: 20px; text-align: center; color: white; margin: 20px 0; }
+        .round-complete h3 { font-size: 2.5em; margin-bottom: 20px; }
+        .round-complete p { font-size: 1.5em; margin: 15px 0; }
+        .new-round-btn { background: white; color: #51cf66; font-size: 1.5em; padding: 20px 40px; margin-top: 20px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; box-shadow: 0 8px 16px rgba(0,0,0,0.2); transition: all 0.3s; }
+        .new-round-btn:hover { transform: scale(1.05); box-shadow: 0 12px 24px rgba(0,0,0,0.3); }
+        .steps { background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin: 20px 0; text-align: right; }
+        .steps p { margin: 10px 0; font-size: 1.1em; }
+        .formula-box { background: #fff3cd; border: 3px solid #ffc107; padding: 15px; border-radius: 10px; margin: 15px 0; text-align: center; font-size: 1.3em; font-weight: bold; color: #856404; }
+        .strategy-box { background: #e7f5ff; border: 3px solid #339af0; padding: 20px; border-radius: 10px; margin: 15px 0; text-align: right; }
+        .strategy-box h4 { color: #1971c2; margin-bottom: 10px; font-size: 1.2em; }
+        .strategy-box p { font-size: 1.1em; line-height: 1.6; margin: 8px 0; }
+        .clock-box { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border: 3px solid #667eea; padding: 20px; border-radius: 10px; margin: 15px 0; text-align: center; }
+        .clock-box h4 { color: #667eea; margin-bottom: 15px; font-size: 1.3em; }
+        .clock { width: 200px; height: 200px; border: 8px solid #667eea; border-radius: 50%; position: relative; margin: 20px auto; background: white; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .clock-center { width: 16px; height: 16px; background: #667eea; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; }
+        .hour-hand { width: 6px; height: 50px; background: #333; position: absolute; bottom: 50%; left: 50%; transform-origin: bottom center; border-radius: 3px 3px 0 0; margin-left: -3px; transform: rotate(-90deg); }
+        .minute-hand { width: 4px; height: 70px; background: #667eea; position: absolute; bottom: 50%; left: 50%; transform-origin: bottom center; border-radius: 2px 2px 0 0; margin-left: -2px; transform: rotate(-90deg); }
+        .clock-number { position: absolute; font-size: 1.2em; font-weight: bold; color: #333; }
+        .time-table { width: 100%; margin: 15px 0; border-collapse: collapse; }
+        .time-table td, .time-table th { padding: 12px; text-align: center; border: 2px solid #667eea; font-size: 1.1em; }
+        .time-table th { background: #667eea; color: white; font-weight: bold; }
+        .time-table td { background: white; }
+        .calc-box { direction: ltr; text-align: left; font-size: 1.4em; margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; font-family: 'Courier New', monospace; white-space: pre; display: inline-block; color: #2d3436; font-weight: bold; }
+        .tip { color: #0d5a3a; font-weight: bold; font-size: 1.05em; margin-top: 10px; }
+        .input-group { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; margin: 20px 0; }
+        .input-label { font-size: 1.2em; color: white; font-weight: bold; }
+        input[type="number"].small { width: 100px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>חישובי זמן ⏰</h1>
+        <div class="subtitle">כיתה ג' - למדו לקרוא שעון ולחשב זמן!</div>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="lesson1">📚 שיעור: קריאת שעון</button>
+            <button class="tab" data-tab="game1">🎮 משחק: קריאת שעון</button>
+            <button class="tab" data-tab="lesson2">📚 שיעור: יחידות זמן</button>
+            <button class="tab" data-tab="game2">🎲 משחק: המרות זמן</button>
+            <button class="tab" data-tab="lesson3">📚 שיעור: חישובי זמן</button>
+            <button class="tab" data-tab="game3">⏱️ משחק: חישובי זמן</button>
+        </div>
+        
+        <!-- שיעור 1 -->
+        <div id="lesson1" class="content active">
+            <div class="lesson">
+                <h2>קריאת שעון</h2>
+                <p>בואו נלמד לקרוא שעון אנלוגי (עם מחוגים) ודיגיטלי!</p>
+                
+                <div class="formula-box">1 שעה = 60 דקות | 1 דקה = 60 שניות</div>
+                
+                <div class="clock-box">
+                    <h4>⏰ השעון שלנו</h4>
+                    <div class="clock" id="demo-clock">
+                        <div class="clock-number" style="top: 10px; left: 50%; transform: translateX(-50%);">12</div>
+                        <div class="clock-number" style="top: 50%; right: 10px; transform: translateY(-50%);">3</div>
+                        <div class="clock-number" style="bottom: 10px; left: 50%; transform: translateX(-50%);">6</div>
+                        <div class="clock-number" style="top: 50%; left: 10px; transform: translateY(-50%);">9</div>
+                        <div class="hour-hand" id="demo-hour" style="transform: rotate(90deg);"></div>
+                        <div class="minute-hand" id="demo-minute" style="transform: rotate(0deg);"></div>
+                        <div class="clock-center"></div>
+                    </div>
+                    <p style="font-size: 1.3em; font-weight: bold; color: #667eea;">השעה: 3:00</p>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: קריאת שעות שלמות</h3>
+                    <p><strong>בעיה:</strong> המחוג הקצר (שעות) מצביע על 5 והמחוג הארוך (דקות) על 12. מה השעה?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>✓ המחוג הקצר = שעות</p>
+                        <p>✓ המחוג הארוך על 12 = 0 דקות</p>
+                        <p><strong>תשובה:</strong> השעה 5:00 (חמש בדיוק)</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: חצי שעה</h3>
+                    <p><strong>בעיה:</strong> המחוג הקצר בין 7 ל-8, והמחוג הארוך על 6. מה השעה?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>✓ המחוג הארוך על 6 = 30 דקות (חצי שעה)</p>
+                        <p>✓ המחוג הקצר עבר את 7 = 7 שעות</p>
+                        <p><strong>תשובה:</strong> השעה 7:30 (שבע וחצי)</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 3: רבע שעה</h3>
+                    <p><strong>בעיה:</strong> המחוג הארוך על 3. כמה דקות זה?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">3 × 5 = 15</div>
+                        <p class="tip">💡 כל מספר בשעון = 5 דקות</p>
+                        <p><strong>תשובה:</strong> 15 דקות (רבע שעה)</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 4: חישוב דקות</h3>
+                    <p><strong>בעיה:</strong> המחוג הארוך על 9. מה השעה אם המחוג הקצר על 4?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">9 × 5 = 45</div>
+                        <p>45 דקות + 4 שעות</p>
+                        <p><strong>תשובה:</strong> השעה 4:45 (רבע לחמש)</p>
+                    </div>
+                </div>
+                
+                <div class="strategy-box">
+                    <h4>💡 טיפים חשובים:</h4>
+                    <p>✓ המחוג הקצר = שעות (זז לאט)</p>
+                    <p>✓ המחוג הארוך = דקות (זז מהר)</p>
+                    <p>✓ כל מספר בשעון = 5 דקות</p>
+                    <p>✓ 12 למעלה = תחילת השעה</p>
+                    <p>✓ 3 = 15 דקות (רבע)</p>
+                    <p>✓ 6 = 30 דקות (חצי)</p>
+                    <p>✓ 9 = 45 דקות (שלושת רבעים)</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 1 -->
+        <div id="game1" class="content">
+            <div class="game">
+                <h2>משחק קריאת שעון</h2>
+                <div class="question-counter">שאלה <span id="q-count1">1</span> מתוך 10</div>
+                <div class="score">ניקוד: <span id="score1">0</span></div>
+                <div class="problem-display" id="problem1">טוען...</div>
+                <div class="controls">
+                    <div class="input-group">
+                        <span class="input-label">שעות:</span>
+                        <input type="number" id="answer1-hours" class="small" placeholder="שעות" min="0" max="12">
+                        <span class="input-label">דקות:</span>
+                        <input type="number" id="answer1-minutes" class="small" placeholder="דקות" min="0" max="59">
+                    </div>
+                    <br>
+                    <button onclick="checkAns(1);">בדוק</button>
+                </div>
+                <div id="feedback1"></div>
+                <div id="round-end1" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <!-- שיעור 2 -->
+        <div id="lesson2" class="content">
+            <div class="lesson">
+                <h2>יחידות זמן</h2>
+                <p>בואו נכיר את יחידות הזמן השונות ונלמד להמיר ביניהן!</p>
+                
+                <div class="formula-box">שנייה < דקה < שעה < יום < שבוע < חודש < שנה</div>
+                
+                <table class="time-table">
+                    <tr>
+                        <th>יחידה</th>
+                        <th>שווה ל...</th>
+                    </tr>
+                    <tr>
+                        <td><strong>1 דקה</strong></td>
+                        <td>60 שניות</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1 שעה</strong></td>
+                        <td>60 דקות</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1 יום</strong></td>
+                        <td>24 שעות</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1 שבוע</strong></td>
+                        <td>7 ימים</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1 חודש</strong></td>
+                        <td>כ-30 ימים</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1 שנה</strong></td>
+                        <td>12 חודשים / 365 ימים</td>
+                    </tr>
+                </table>
+                
+                <div class="example">
+                    <h3>דוגמה 1: דקות לשניות</h3>
+                    <p><strong>בעיה:</strong> כמה שניות יש ב-5 דקות?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">5 × 60 = 300</div>
+                        <p><strong>תשובה:</strong> 300 שניות</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: שעות לדקות</h3>
+                    <p><strong>בעיה:</strong> כמה דקות יש ב-3 שעות?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">3 × 60 = 180</div>
+                        <p><strong>תשובה:</strong> 180 דקות</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 3: ימים לשעות</h3>
+                    <p><strong>בעיה:</strong> כמה שעות יש ב-2 ימים?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">2 × 24 = 48</div>
+                        <p><strong>תשובה:</strong> 48 שעות</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 4: שבועות לימים</h3>
+                    <p><strong>בעיה:</strong> כמה ימים יש ב-4 שבועות?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">4 × 7 = 28</div>
+                        <p><strong>תשובה:</strong> 28 ימים</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 5: המרה הפוכה</h3>
+                    <p><strong>בעיה:</strong> 120 דקות = כמה שעות?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">120 ÷ 60 = 2</div>
+                        <p><strong>תשובה:</strong> 2 שעות</p>
+                    </div>
+                </div>
+                
+                <div class="strategy-box">
+                    <h4>🎯 שלבים:</h4>
+                    <p>1. זהה את יחידת הזמן המקורית</p>
+                    <p>2. זהה את יחידת הזמן המבוקשת</p>
+                    <p>3. כפול או חלק לפי הצורך</p>
+                    <p>4. בדוק את התשובה</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 2 -->
+        <div id="game2" class="content">
+            <div class="game">
+                <h2>משחק המרות זמן</h2>
+                <div class="question-counter">שאלה <span id="q-count2">1</span> מתוך 10</div>
+                <div class="score">ניקוד: <span id="score2">0</span></div>
+                <div class="problem-display" id="problem2">טוען...</div>
+                <div class="controls">
+                    <input type="number" id="answer2" placeholder="הכנס תשובה">
+                    <br><br>
+                    <button onclick="checkAns(2);">בדוק</button>
+                </div>
+                <div id="feedback2"></div>
+                <div id="round-end2" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <!-- שיעור 3 -->
+        <div id="lesson3" class="content">
+            <div class="lesson">
+                <h2>חישובי זמן</h2>
+                <p>כשרוצים לדעת כמה זמן עבר או מתי משהו יסתיים - צריך לחשב!</p>
+                
+                <div class="formula-box">משך זמן = שעת סיום - שעת התחלה</div>
+                
+                <div class="example">
+                    <h3>דוגמה 1: חישוב משך זמן</h3>
+                    <p><strong>בעיה:</strong> השיעור התחיל ב-8:00 והסתיים ב-9:30. כמה זמן ארך?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>שלב 1: מ-8:00 עד 9:00 = 1 שעה</p>
+                        <p>שלב 2: מ-9:00 עד 9:30 = 30 דקות</p>
+                        <p>שלב 3: 1 שעה + 30 דקות</p>
+                        <p><strong>תשובה:</strong> שעה וחצי (90 דקות)</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 2: הוספת זמן</h3>
+                    <p><strong>בעיה:</strong> השיעור מתחיל ב-10:15 ונמשך 45 דקות. מתי הוא מסתיים?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>10:15 + 45 דקות</p>
+                        <p>15 + 45 = 60 דקות = 1 שעה</p>
+                        <p>10:00 + 1:00 = 11:00</p>
+                        <p><strong>תשובה:</strong> 11:00</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 3: חיסור זמן</h3>
+                    <p><strong>בעיה:</strong> הסרט מסתיים ב-20:30 ונמשך שעתיים. מתי הוא התחיל?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <div class="calc-box">20:30 - 2:00</div>
+                        <div class="calc-box">20:00 - 2:00 = 18:00</div>
+                        <div class="calc-box">18:00 + 0:30 = 18:30</div>
+                        <p><strong>תשובה:</strong> 18:30 (6:30 בערב)</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <h3>דוגמה 4: מעבר שעה</h3>
+                    <p><strong>בעיה:</strong> התחלנו לשחק ב-3:40 וסיימנו ב-4:25. כמה זמן שיחקנו?</p>
+                    <div class="steps">
+                        <p><strong>פתרון:</strong></p>
+                        <p>מ-3:40 עד 4:00 = 20 דקות</p>
+                        <p>מ-4:00 עד 4:25 = 25 דקות</p>
+                        <p>20 + 25 = 45 דקות</p>
+                        <p><strong>תשובה:</strong> 45 דקות</p>
+                    </div>
+                </div>
+                
+                <div class="strategy-box">
+                    <h4>💡 טיפים:</h4>
+                    <p>✓ תמיד עבור תחילה לשעה עגולה</p>
+                    <p>✓ אם יש יותר מ-60 דקות, המר לשעות</p>
+                    <p>✓ בדוק: התחלה + משך = סיום</p>
+                    <p>✓ שים לב למעבר בין השעות</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- משחק 3 -->
+        <div id="game3" class="content">
+            <div class="game">
+                <h2>משחק חישובי זמן</h2>
+                <div class="question-counter">שאלה <span id="q-count3">1</span> מתוך 10</div>
+                <div class="score">ניקוד: <span id="score3">0</span></div>
+                <div class="problem-display" id="problem3">טוען...</div>
+                <div class="controls">
+                    <input type="number" id="answer3" placeholder="הכנס תשובה">
+                    <br><br>
+                    <button onclick="checkAns(3);">בדוק</button>
+                </div>
+                <div id="feedback3"></div>
+                <div id="round-end3" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+var scores = {1: 0, 2: 0, 3: 0};
+var currentQuestion = {1: 0, 2: 0, 3: 0};
+var questionBank = {1: [], 2: [], 3: []};
+var gameData = {1: {}, 2: {}, 3: {}};
+var answerLocked = {1: false, 2: false, 3: false};
+
+function generateQ1(n) {
+    var qs = [
+        {hours: 3, minutes: 0},
+        {hours: 3, minutes: 30},
+        {hours: 6, minutes: 0},
+        {hours: 6, minutes: 30},
+        {hours: 9, minutes: 0},
+        {hours: 9, minutes: 30},
+        {hours: 12, minutes: 0},
+        {hours: 12, minutes: 30},
+        {hours: 3, minutes: 0},
+        {hours: 6, minutes: 0},
+        {hours: 9, minutes: 0},
+        {hours: 12, minutes: 0},
+        {hours: 3, minutes: 30},
+        {hours: 6, minutes: 30},
+        {hours: 9, minutes: 30},
+        {hours: 12, minutes: 30},
+        {hours: 3, minutes: 0},
+        {hours: 6, minutes: 0},
+        {hours: 9, minutes: 30},
+        {hours: 12, minutes: 30}
+    ];
+    var q = qs[n];
+    var text = 'מה השעה המוצגת בשעון?';
+    return {hours: q.hours, minutes: q.minutes, text: text};
+}
+
+function generateQ2(n) {
+    var qs = [
+        {t: 'כמה שניות יש ב-3 דקות?', a: 180},
+        {t: 'כמה דקות יש ב-2 שעות?', a: 120},
+        {t: 'כמה שעות יש ב-3 ימים?', a: 72},
+        {t: 'כמה ימים יש ב-2 שבועות?', a: 14},
+        {t: 'כמה שניות יש ב-5 דקות?', a: 300},
+        {t: 'כמה דקות יש ב-4 שעות?', a: 240},
+        {t: '180 שניות = כמה דקות?', a: 3},
+        {t: '120 דקות = כמה שעות?', a: 2},
+        {t: 'כמה שעות יש ביום אחד?', a: 24},
+        {t: 'כמה ימים יש ב-3 שבועות?', a: 21},
+        {t: 'כמה דקות יש בחצי שעה?', a: 30},
+        {t: 'כמה שניות יש ב-2 דקות?', a: 120},
+        {t: '240 דקות = כמה שעות?', a: 4},
+        {t: 'כמה שעות יש ב-2 ימים?', a: 48},
+        {t: 'כמה ימים יש ב-4 שבועות?', a: 28},
+        {t: 'כמה דקות יש ב-3 שעות?', a: 180},
+        {t: '300 שניות = כמה דקות?', a: 5},
+        {t: 'כמה שניות יש ב-4 דקות?', a: 240},
+        {t: 'כמה דקות יש ב-5 שעות?', a: 300},
+        {t: 'כמה ימים יש ב-5 שבועות?', a: 35}
+    ];
+    return {text: qs[n].t, answer: qs[n].a};
+}
+
+function generateQ3(n) {
+    var qs = [
+        {t: 'התחלתי ללמוד ב-14:00 וסיימתי ב-15:30. כמה דקות למדתי?', a: 90},
+        {t: 'שיחקתי כדורגל מ-16:00 עד 17:15. כמה דקות שיחקתי?', a: 75},
+        {t: 'הנסיעה מהבית לבית הספר לקחה מ-7:45 עד 8:15. כמה דקות נמשכה?', a: 30},
+        {t: 'המשחק התחיל ב-16:20 והסתיים ב-17:00. כמה דקות נמשך?', a: 40},
+        {t: 'קראתי ספר מ-13:00 עד 13:45. כמה דקות קראתי?', a: 45},
+        {t: 'שעתיים = כמה דקות?', a: 120},
+        {t: 'שחקנו בחצר מ-15:50 עד 16:25. כמה דקות שיחקנו?', a: 35},
+        {t: 'שעה וחצי = כמה דקות?', a: 90},
+        {t: 'טיילנו מ-8:00 בבוקר עד 14:00. כמה שעות טיילנו?', a: 6},
+        {t: 'עבדתי על השיעורים מ-10:30 עד 12:00. כמה דקות עבדתי?', a: 90},
+        {t: 'הסרט נמשך מ-19:30 עד 21:00. כמה דקות נמשך?', a: 90},
+        {t: 'נסעתי באוטובוס מ-12:25 עד 13:10. כמה דקות נמשכה הנסיעה?', a: 45},
+        {t: '3 שעות = כמה דקות?', a: 180},
+        {t: 'המסיבה נמשכה מ-18:30 עד 20:00. כמה דקות היא נמשכה?', a: 90},
+        {t: 'רצתי מ-6:50 עד 7:20. כמה דקות רצתי?', a: 30},
+        {t: '4 שעות = כמה דקות?', a: 240},
+        {t: 'שיחקתי במשחק מ-16:00 עד 16:45. כמה דקות שיחקתי?', a: 45},
+        {t: 'המשחק נמשך מ-14:00 עד 15:30. כמה דקות נמשך?', a: 90},
+        {t: 'היינו בים מ-10:00 עד 16:00. כמה שעות היינו בים?', a: 6},
+        {t: 'ציירתי מ-11:30 עד 12:30. כמה דקות ציירתי?', a: 60}
+    ];
+    return {text: qs[n].t, answer: qs[n].a};
+}
+
+function drawClock(hours, minutes, clockId, hourId, minuteId) {
+    var hourAngle = (hours % 12) * 30 + (minutes / 60) * 30;
+    var minuteAngle = minutes * 6;
+    
+    document.getElementById(hourId).style.transform = 'rotate(' + hourAngle + 'deg)';
+    document.getElementById(minuteId).style.transform = 'rotate(' + minuteAngle + 'deg)';
+}
+
+function initGame(g) {
+    questionBank[g] = [];
+    var order = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
+    order.sort(function() { return Math.random() - 0.5; });
+    for (var i = 0; i < 10; i++) {
+        var q;
+        if (g === 1) q = generateQ1(order[i]);
+        else if (g === 2) q = generateQ2(order[i]);
+        else q = generateQ3(order[i]);
+        questionBank[g].push(q);
+    }
+    nextQ(g);
+}
+
+function nextQ(g) {
+    if (currentQuestion[g] >= 10) {
+        document.getElementById('feedback' + g).innerHTML = '';
+        showEnd(g);
+        return;
+    }
+    answerLocked[g] = false;
+    gameData[g] = questionBank[g][currentQuestion[g]];
+    document.getElementById('q-count' + g).textContent = currentQuestion[g] + 1;
+    
+    if (g === 1) {
+        var clockHtml = '<div style="margin: 20px auto;"><div class="clock" id="game-clock' + g + '" style="margin: 0 auto;">';
+        clockHtml += '<div class="clock-number" style="top: 10px; left: 50%; transform: translateX(-50%);">12</div>';
+        clockHtml += '<div class="clock-number" style="top: 50%; right: 10px; transform: translateY(-50%);">3</div>';
+        clockHtml += '<div class="clock-number" style="bottom: 10px; left: 50%; transform: translateX(-50%);">6</div>';
+        clockHtml += '<div class="clock-number" style="top: 50%; left: 10px; transform: translateY(-50%);">9</div>';
+        clockHtml += '<div class="hour-hand" id="game-hour' + g + '"></div>';
+        clockHtml += '<div class="minute-hand" id="game-minute' + g + '"></div>';
+        clockHtml += '<div class="clock-center"></div>';
+        clockHtml += '</div></div>';
+        clockHtml += '<p style="font-size: 1.2em; margin-top: 20px;">' + gameData[g].text + '</p>';
+        document.getElementById('problem' + g).innerHTML = clockHtml;
+        
+        setTimeout(function() {
+            drawClock(gameData[g].hours, gameData[g].minutes, 'game-clock' + g, 'game-hour' + g, 'game-minute' + g);
+        }, 50);
+    } else {
+        document.getElementById('problem' + g).innerHTML = gameData[g].text;
+    }
+    
+    document.getElementById('feedback' + g).innerHTML = '';
+    if (g === 1) {
+        document.getElementById('answer1-hours').value = '';
+        document.getElementById('answer1-minutes').value = '';
+    } else {
+        document.getElementById('answer' + g).value = '';
+    }
+}
+
+function checkAns(g) {
+    if (answerLocked[g]) return;
+    
+    var correct = false;
+    
+    if (g === 1) {
+        var ansHours = parseInt(document.getElementById('answer1-hours').value);
+        var ansMinutes = parseInt(document.getElementById('answer1-minutes').value);
+        if (isNaN(ansHours) || isNaN(ansMinutes)) return;
+        correct = (ansHours === gameData[g].hours && ansMinutes === gameData[g].minutes);
+    } else {
+        var ans = parseFloat(document.getElementById('answer' + g).value);
+        if (isNaN(ans)) return;
+        correct = Math.abs(ans - gameData[g].answer) < 0.01;
+    }
+    
+    answerLocked[g] = true;
+    currentQuestion[g]++;
+    
+    if (correct) {
+        scores[g]++;
+        playSound('correct');
+        document.getElementById('feedback' + g).innerHTML = '<div class="feedback correct">נכון מעולה! ✔</div>';
+    } else {
+        playSound('incorrect');
+        var correctAns = '';
+        if (g === 1) {
+            correctAns = gameData[g].hours + ':' + (gameData[g].minutes < 10 ? '0' : '') + gameData[g].minutes;
+        } else {
+            correctAns = gameData[g].answer;
+        }
+        document.getElementById('feedback' + g).innerHTML = '<div class="feedback incorrect">לא נכון. התשובה: ' + correctAns + '</div>';
+    }
+    document.getElementById('score' + g).textContent = scores[g];
+    
+    setTimeout(function() {
+        document.getElementById('feedback' + g).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+    
+    setTimeout(function() { nextQ(g); }, 3000);
+}
+
+function showEnd(g) {
+    var roundEndEl = document.getElementById('round-end' + g);
+    var problemEl = document.getElementById('problem' + g);
+    var controlsEl = document.querySelector('#game' + g + ' .controls');
+    var feedbackEl = document.getElementById('feedback' + g);
+    
+    if (controlsEl) controlsEl.style.display = 'none';
+    if (feedbackEl) {
+        feedbackEl.innerHTML = '';
+        feedbackEl.style.display = 'none';
+    }
+    
+    var pct = Math.round((scores[g] / 10) * 100);
+    var msg = pct >= 80 ? 'מעולה! ⏰🌟' : pct >= 60 ? 'יפה מאוד! 👏' : 'כל הכבוד! 💪';
+    roundEndEl.innerHTML = '<div class="round-complete"><h3>סיימת!</h3><p>' + msg + '</p><p>ציון: ' + scores[g] + '/10 (' + pct + '%)</p><button class="new-round-btn" onclick="resetGame(' + g + ')">סיבוב נוסף</button></div>';
+    roundEndEl.style.display = 'block';
+    problemEl.style.display = 'none';
+}
+
+function resetGame(g) {
+    scores[g] = 0;
+    currentQuestion[g] = 0;
+    answerLocked[g] = false;
+    questionBank[g] = [];
+    
+    document.getElementById('score' + g).textContent = '0';
+    document.getElementById('round-end' + g).style.display = 'none';
+    document.getElementById('feedback' + g).innerHTML = '';
+    document.getElementById('feedback' + g).style.display = 'block';
+    document.getElementById('problem' + g).style.display = 'block';
+    
+    var controlsEl = document.querySelector('#game' + g + ' .controls');
+    if (controlsEl) controlsEl.style.display = 'block';
+    
+    if (g === 1) {
+        document.getElementById('answer1-hours').value = '';
+        document.getElementById('answer1-minutes').value = '';
+    } else {
+        document.getElementById('answer' + g).value = '';
+    }
+    
+    initGame(g);
+}
+
+window.onload = function() {
+    drawClock(3, 0, 'demo-clock', 'demo-hour', 'demo-minute');
+    
+    var tabs = document.querySelectorAll('.tab');
+    for (var i = 0; i < tabs.length; i++) {
+        (function(tab) {
+            tab.onclick = function() {
+                playSound('click');
+                var tabId = tab.getAttribute('data-tab');
+                var allContent = document.querySelectorAll('.content');
+                var allTabs = document.querySelectorAll('.tab');
+                for (var j = 0; j < allContent.length; j++) allContent[j].classList.remove('active');
+                for (var k = 0; k < allTabs.length; k++) allTabs[k].classList.remove('active');
+                document.getElementById(tabId).classList.add('active');
+                tab.classList.add('active');
+                
+                if (tabId === 'game1' || tabId === 'game2' || tabId === 'game3') {
+                    var gameNum = parseInt(tabId.replace('game', ''));
+                    scores[gameNum] = 0;
+                    currentQuestion[gameNum] = 0;
+                    answerLocked[gameNum] = false;
+                    questionBank[gameNum] = [];
+                    document.getElementById('score' + gameNum).textContent = '0';
+                    document.getElementById('round-end' + gameNum).style.display = 'none';
+                    document.getElementById('problem' + gameNum).style.display = 'block';
+                    document.getElementById('feedback' + gameNum).innerHTML = '';
+                    document.getElementById('feedback' + gameNum).style.display = 'block';
+                    
+                    if (gameNum === 1) {
+                        document.getElementById('answer1-hours').value = '';
+                        document.getElementById('answer1-minutes').value = '';
+                    } else {
+                        document.getElementById('answer' + gameNum).value = '';
+                    }
+                    
+                    var controlsEl = document.querySelector('#game' + gameNum + ' .controls');
+                    if (controlsEl) controlsEl.style.display = 'block';
+                    
+                    setTimeout(function() { initGame(gameNum); }, 50);
+                }
+            };
+        })(tabs[i]);
+    }
+    
+    document.addEventListener('wheel', function(e) {
+        if (document.activeElement.type === 'number') document.activeElement.blur();
+    });
+};
+
+function playSound(type) {
+    try {
+        var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (type === 'click') {
+            var osc = audioContext.createOscillator();
+            var gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.type = 'sine';
+            osc.frequency.value = 600;
+            gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + 0.15);
+        } else if (type === 'correct') {
+            var notes = [523.25, 659.25, 783.99];
+            for (var i = 0; i < notes.length; i++) {
+                (function(index) {
+                    var osc = audioContext.createOscillator();
+                    var gain = audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    osc.type = 'sine';
+                    osc.frequency.value = notes[index];
+                    gain.gain.setValueAtTime(0.1, audioContext.currentTime + index * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + index * 0.1 + 0.3);
+                    osc.start(audioContext.currentTime + index * 0.1);
+                    osc.stop(audioContext.currentTime + index * 0.1 + 0.3);
+                })(i);
+            }
+        } else if (type === 'incorrect') {
+            var osc = audioContext.createOscillator();
+            var gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.type = 'sine';
+            osc.frequency.value = 200;
+            gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + 0.3);
+        }
+    } catch (e) {
+        console.log('Audio not supported');
+    }
+}
+    </script>
+</body>
+</html>
