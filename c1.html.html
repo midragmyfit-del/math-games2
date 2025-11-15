@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>שיעור מתמטיקה לכיתה ג׳ - מספרים עד 10,000</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            text-align: center;
+            color: #5b21b6;
+            margin-bottom: 30px;
+        }
+        
+        .lesson-section {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-right: 6px solid #3730a3;
+        }
+        
+        .game-section {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-right: 6px solid #166534;
+        }
+        
+        .number-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .number-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .place-value-box {
+            display: inline-block;
+            padding: 15px 20px;
+            margin: 5px;
+            border-radius: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            min-width: 80px;
+        }
+        
+        .thousands { background: #fef3c7; color: #92400e; border: 3px solid #f59e0b; }
+        .hundreds { background: #fee2e2; color: #991b1b; border: 3px solid #dc2626; }
+        .tens { background: #dbeafe; color: #1e40af; border: 3px solid #3b82f6; }
+        .ones { background: #dcfce7; color: #166534; border: 3px solid #22c55e; }
+        
+        .game-button {
+            background: linear-gradient(45deg, #8b5cf6, #7c3aed);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+        
+        .game-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.6);
+        }
+        
+        .answer-input {
+            font-size: 28px;
+            padding: 15px;
+            border: 3px solid #d1d5db;
+            border-radius: 12px;
+            text-align: center;
+            width: 150px;
+            margin: 0 15px;
+            direction: ltr;
+        }
+        
+        .question {
+            font-size: 32px;
+            text-align: center;
+            margin: 25px 0;
+            color: #374151;
+            font-weight: bold;
+        }
+        
+        .feedback {
+            text-align: center;
+            font-size: 28px;
+            margin: 25px 0;
+            font-weight: bold;
+            min-height: 35px;
+        }
+        
+        .correct { color: #059669; }
+        .incorrect { color: #dc2626; }
+        
+        .score {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #92400e;
+            margin: 20px 0;
+            border: 2px solid #d97706;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .celebration {
+            display: none;
+            text-align: center;
+            font-size: 80px;
+            animation: bounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-40px); }
+            60% { transform: translateY(-20px); }
+        }
+        
+        .comparison-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin: 20px 0;
+            font-size: 36px;
+            font-weight: bold;
+        }
+        
+        .number-display {
+            background: linear-gradient(135deg, #ddd6fe, #c7d2fe);
+            padding: 20px 30px;
+            border-radius: 15px;
+            color: #5b21b6;
+            border: 3px solid #7c3aed;
+            direction: ltr;
+        }
+        
+        .symbol-button {
+            padding: 15px 25px;
+            font-size: 32px;
+            margin: 0 10px;
+            border: 3px solid #d1d5db;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .symbol-button:hover {
+            background: #f3f4f6;
+            transform: scale(1.1);
+        }
+        
+        .symbol-button.selected {
+            background: #8b5cf6;
+            color: white;
+            border-color: #7c3aed;
+        }
+        
+        .rounding-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .rounding-button {
+            padding: 20px;
+            font-size: 24px;
+            border: 3px solid #d1d5db;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            direction: ltr;
+            text-align: center;
+        }
+        
+        .rounding-button:hover {
+            background: #f3f4f6;
+            transform: translateX(-5px);
+        }
+        
+        .rounding-button.selected {
+            background: #8b5cf6;
+            color: white;
+            border-color: #7c3aed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 שיעור מתמטיקה לכיתה ג׳ 🎓</h1>
+            <p>מספרים עד 10,000 - ערך מקומי, השוואה ועיגול!</p>
+        </div>
+        
+        <div class="nav-buttons">
+            <button class="game-button" onclick="showSection('lesson')">📚 שיעור</button>
+            <button class="game-button" onclick="showSection('placevalue')">🎮 משחק ערך מקומי</button>
+            <button class="game-button" onclick="showSection('comparison')">🎮 משחק השוואה</button>
+            <button class="game-button" onclick="showSection('ordering')">🎮 משחק סידור מספרים</button>
+            <button class="game-button" onclick="showSection('rounding')">🎮 משחק עיגול מספרים</button>
+        </div>
+        
+        <div id="lesson" class="section active">
+            <div class="lesson-section">
+                <h2>📖 בואו נכיר מספרים עד 10,000!</h2>
+                <p><strong>בכיתה ג׳ נלמד על מספרים גדולים עד 10,000!</strong></p>
+                
+                <div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin: 20px 0; border: 2px solid #3730a3;">
+                    <h3>🎯 ערך מקומי - 4 מקומות!</h3>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <div class="place-value-box thousands">אלפים</div>
+                        <div class="place-value-box hundreds">מאות</div>
+                        <div class="place-value-box tens">עשרות</div>
+                        <div class="place-value-box ones">אחדות</div>
+                    </div>
+                    <p style="text-align: center; font-size: 18px;">כל ספרה יושבת במקום שלה ויש לה ערך משלה!</p>
+                </div>
+                
+                <h3>🔢 דוגמאות למספרים:</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin: 30px 0;">
+                    <div class="number-card">
+                        <div style="direction: ltr; font-size: 48px; font-weight: bold; color: #5b21b6; margin-bottom: 15px;">3,456</div>
+                        <h4>שלושת אלפים ארבע מאות חמישים ושישה</h4>
+                        <div style="margin: 20px 0;">
+                            <div style="margin: 10px 0;">
+                                <span class="place-value-box thousands">3</span>
+                                <span style="margin: 0 10px;">אלפים</span>
+                                <span style="direction: ltr; display: inline-block;">= 3,000</span>
+                            </div>
+                            <div style="margin: 10px 0;">
+                                <span class="place-value-box hundreds">4</span>
+                                <span style="margin: 0 10px;">מאות</span>
+                                <span style="direction: ltr; display: inline-block;">= 400</span>
+                            </div>
+                            <div style="margin: 10px 0;">
+                                <span class="place-value-box tens">5</span>
+                                <span style="margin: 0 10px;">עשרות</span>
+                                <span style="direction: ltr; display: inline-block;">= 50</span>
+                            </div>
+                            <div style="margin: 10px 0;">
+                                <span class="place-value-box ones">6</span>
+                                <span style="margin: 0 10px;">אחדות</span>
+                                <span style="direction: ltr; display: inline-block;">= 6</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 15px; font-size: 18px; color: #6b7280; direction: ltr; text-align: center;">3,000 + 400 + 50 + 6 = 3,456</div>
+                    </div>
+                    
+                    <div class="number-card">
+                        <div style="direction: ltr; font-size: 48px; font-weight: bold; color: #5b21b6; margin-bottom: 15px;">7,208</div>
+                        <h4>שבעת אלפים מאתיים ושמונה</h4>
+                        <div style="margin: 20px 0;">
+                            <div style="margin: 10px 0;">
+                                <span class="place-value-box thousands">7</span>
+                                <span style="margin: 0 10px;">אלפים</span>
+                                <span style="direction: ltr; display: inline-block;">= 7,000</span>
+                            </div>
+                            <div style="margin: 10px 0;">
+                                <span class="place-value-box hundreds">2</span>
+                                <span style="margin: 0 10px;">מאות</span>
+                                <span style="direction: ltr; display: inline-block;">= 200</span>
+                            </div>
+                            <div style="margin: 10px 0;">
+                                <span class="place-value-box tens">0</span>
+                                <span style="margin: 0 10px;">עשרות</span>
+                                <span style="direction: ltr; display: inline-block;">= 0</span>
+                            </div>
+                            <div style="margin: 10px 0;">
+                                <span class="place-value-box ones">8</span>
+                                <span style="margin: 0 10px;">אחדות</span>
+                                <span style="direction: ltr; display: inline-block;">= 8</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 15px; font-size: 18px; color: #6b7280; direction: ltr; text-align: center;">7,000 + 200 + 0 + 8 = 7,208</div>
+                    </div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #fef3c7, #fde68a); padding: 25px; border-radius: 15px; border: 3px solid #f59e0b; margin: 30px 0;">
+                    <h3 style="text-align: center; color: #92400e;">💡 איך משווים מספרים?</h3>
+                    <ol style="font-size: 18px; line-height: 2;">
+                        <li><strong>נסתכל על האלפים</strong> - מי שיש לו יותר אלפים, הוא הגדול!</li>
+                        <li><strong>אם האלפים שווים</strong> - נסתכל על המאות</li>
+                        <li><strong>אם המאות שוות</strong> - נסתכל על העשרות</li>
+                        <li><strong>אם העשרות שוות</strong> - נסתכל על האחדות</li>
+                    </ol>
+                    <div style="background: white; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                        <p style="text-align: center; font-size: 20px;"><strong>דוגמה:</strong></p>
+                        <p style="direction: ltr; text-align: center; font-size: 24px; color: #5b21b6;">5,432 > 5,289</p>
+                        <p style="text-align: center;">האלפים שווים (5), אבל המאות: 4 > 2</p>
+                    </div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #fee2e2, #fecaca); padding: 25px; border-radius: 15px; border: 3px solid #dc2626; margin: 30px 0;">
+                    <h3 style="text-align: center; color: #991b1b;">🎯 עיגול מספרים</h3>
+                    <p style="text-align: center; font-size: 18px;">עיגול עוזר לנו להעריך מספרים ולעשות חישובים מהירים במוח!</p>
+                    
+                    <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                        <h4>עיגול לעשרות הקרובות:</h4>
+                        <p style="direction: ltr; text-align: center; font-size: 24px;"><strong>3,456 ≈ 3,460</strong></p>
+                        <p style="text-align: center;">מסתכלים על האחדות: 6 גדול מ-5, אז עולים למעלה!</p>
+                    </div>
+                    
+                    <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                        <h4>עיגול למאות הקרובות:</h4>
+                        <p style="direction: ltr; text-align: center; font-size: 24px;"><strong>3,456 ≈ 3,500</strong></p>
+                        <p style="text-align: center;">מסתכלים על העשרות: 5 אומר עולים למעלה!</p>
+                    </div>
+                    
+                    <div style="background: #ddd6fe; padding: 20px; border-radius: 10px;">
+                        <h4 style="text-align: center;">📏 כלל העיגול:</h4>
+                        <p style="font-size: 18px; text-align: center;">
+                            <strong>0, 1, 2, 3, 4</strong> → עיגול למטה<br>
+                            <strong>5, 6, 7, 8, 9</strong> → עיגול למעלה
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="placevalue" class="section">
+            <div class="game-section">
+                <h2>🔢 משחק ערך מקומי</h2>
+                <div class="score">נקודות: <span id="scorePV">0</span></div>
+                <div id="questionPV" class="question"></div>
+                <div style="text-align: center; margin: 20px 0;">
+                    <input type="number" id="answerPV" class="answer-input" placeholder="?">
+                    <button class="game-button" onclick="checkAnswer('pv')">✓ בדוק</button>
+                </div>
+                <div id="feedbackPV" class="feedback"></div>
+                <div id="celebrationPV" class="celebration">🎉</div>
+                <button class="game-button" onclick="newQuestion('pv')" style="display: block; margin: 20px auto;">❓ שאלה חדשה</button>
+            </div>
+        </div>
+        
+        <div id="comparison" class="section">
+            <div class="game-section">
+                <h2>⚖️ משחק השוואת מספרים</h2>
+                <div class="score">נקודות: <span id="scoreComp">0</span></div>
+                <div style="margin: 30px 0;">
+                    <p style="text-align: center; font-size: 20px; margin-bottom: 20px;">בחרו את הסימן הנכון:</p>
+                    <div class="comparison-box">
+                        <div class="number-display" id="num1"></div>
+                        <div id="symbolChoice">?</div>
+                        <div class="number-display" id="num2"></div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin: 30px 0;">
+                    <button class="symbol-button" onclick="selectSymbol('<')">&lt;</button>
+                    <button class="symbol-button" onclick="selectSymbol('=')">=</button>
+                    <button class="symbol-button" onclick="selectSymbol('>')">></button>
+                </div>
+                <div style="text-align: center;">
+                    <button class="game-button" onclick="checkComparison()">✓ בדוק</button>
+                </div>
+                <div id="feedbackComp" class="feedback"></div>
+                <div id="celebrationComp" class="celebration">🎉</div>
+                <button class="game-button" onclick="newComparison()" style="display: block; margin: 20px auto;">❓ שאלה חדשה</button>
+            </div>
+        </div>
+        
+        <div id="ordering" class="section">
+            <div class="game-section">
+                <h2>📊 משחק סידור מספרים</h2>
+                <div class="score">נקודות: <span id="scoreOrder">0</span></div>
+                <p style="text-align: center; font-size: 20px; margin: 20px 0;">סדרו את המספרים מהקטן לגדול!</p>
+                <div id="numbersToOrder" style="display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin: 30px 0;"></div>
+                <div style="text-align: center; margin: 30px 0;">
+                    <p style="font-size: 18px; margin-bottom: 15px;">הקלידו את המספרים בסדר (מופרדים ברווח או פסיק):</p>
+                    <input type="text" id="orderAnswer" style="width: 400px; font-size: 20px; padding: 15px; border: 3px solid #d1d5db; border-radius: 12px; text-align: center; direction: ltr;">
+                </div>
+                <div style="text-align: center;">
+                    <button class="game-button" onclick="checkOrder()">✓ בדוק</button>
+                </div>
+                <div id="feedbackOrder" class="feedback"></div>
+                <div id="celebrationOrder" class="celebration">🎉</div>
+                <button class="game-button" onclick="newOrdering()" style="display: block; margin: 20px auto;">❓ שאלה חדשה</button>
+            </div>
+        </div>
+        
+        <div id="rounding" class="section">
+            <div class="game-section">
+                <h2>🎯 משחק עיגול מספרים</h2>
+                <div class="score">נקודות: <span id="scoreRound">0</span></div>
+                <div id="questionRound" class="question"></div>
+                <div class="rounding-options" id="roundingOptions"></div>
+                <div style="text-align: center;">
+                    <button class="game-button" onclick="checkRounding()">✓ בדוק</button>
+                </div>
+                <div id="feedbackRound" class="feedback"></div>
+                <div id="celebrationRound" class="celebration">🎉</div>
+                <button class="game-button" onclick="newRounding()" style="display: block; margin: 20px auto;">❓ שאלה חדשה</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let scores = { pv: 0, comp: 0, order: 0, round: 0 };
+        let currentQuestions = {};
+        let selectedSymbol = '';
+        let selectedRounding = '';
+        let audioContext;
+        
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        
+        function playClickSound() {
+            initAudio();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            const filter = audioContext.createBiquadFilter();
+            oscillator.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            oscillator.frequency.value = 523.25;
+            oscillator.type = 'triangle';
+            filter.type = 'lowpass';
+            filter.frequency.value = 2000;
+            filter.Q.value = 1;
+            gainNode.gain.setValueAtTime(0.12, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.2);
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.2);
+        }
+        
+        function playSuccessSound() {
+            initAudio();
+            const notes = [523.25, 659.25, 783.99, 1046.50];
+            notes.forEach((freq, i) => {
+                setTimeout(() => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    oscillator.frequency.value = freq;
+                    oscillator.type = 'sine';
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.3);
+                }, i * 100);
+            });
+        }
+        
+        function showSection(sectionId) {
+            playClickSound();
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            if (sectionId === 'placevalue') {
+                newQuestion('pv');
+            } else if (sectionId === 'comparison') {
+                newComparison();
+            } else if (sectionId === 'ordering') {
+                newOrdering();
+            } else if (sectionId === 'rounding') {
+                newRounding();
+            }
+        }
+        
+        function newQuestion(type) {
+            if (type === 'pv') {
+                let number, digits;
+                let hasUniqueDigits = false;
+                let attempts = 0;
+                while (!hasUniqueDigits && attempts < 100) {
+                    number = Math.floor(Math.random() * 9000) + 1000;
+                    digits = {
+                        thousands: Math.floor(number / 1000),
+                        hundreds: Math.floor((number % 1000) / 100),
+                        tens: Math.floor((number % 100) / 10),
+                        ones: number % 10
+                    };
+                    const digitArray = [digits.thousands, digits.hundreds, digits.tens, digits.ones];
+                    const uniqueDigits = new Set(digitArray);
+                    hasUniqueDigits = uniqueDigits.size === digitArray.length;
+                    attempts++;
+                }
+                const places = ['thousands', 'hundreds', 'tens', 'ones'];
+                const placeNames = ['אלפים', 'מאות', 'עשרות', 'אחדות'];
+                const placeIdx = Math.floor(Math.random() * 4);
+                const questionType = Math.random() > 0.5 ? 'digit' : 'value';
+                if (questionType === 'digit') {
+                    currentQuestions.pv = {
+                        answer: digits[places[placeIdx]],
+                        type: 'digit'
+                    };
+                    document.getElementById('questionPV').innerHTML = `
+                        <div style="direction: ltr; font-size: 42px; margin: 20px 0;">${number.toLocaleString()}</div>
+                        <div>מהי הספרה במקום ה${placeNames[placeIdx]}?</div>
+                    `;
+                } else {
+                    const multiplier = placeIdx === 0 ? 1000 : placeIdx === 1 ? 100 : placeIdx === 2 ? 10 : 1;
+                    currentQuestions.pv = {
+                        answer: digits[places[placeIdx]] * multiplier,
+                        type: 'value'
+                    };
+                    document.getElementById('questionPV').innerHTML = `
+                        <div style="direction: ltr; font-size: 42px; margin: 20px 0;">${number.toLocaleString()}</div>
+                        <div>מה הערך של הספרה ${digits[places[placeIdx]]} במספר הזה?</div>
+                    `;
+                }
+                document.getElementById('answerPV').value = '';
+                document.getElementById('feedbackPV').textContent = '';
+                document.getElementById('celebrationPV').style.display = 'none';
+            }
+        }
+        
+        function checkAnswer(type) {
+            if (type === 'pv') {
+                const userAnswer = parseInt(document.getElementById('answerPV').value);
+                const correctAnswer = currentQuestions.pv.answer;
+                const feedback = document.getElementById('feedbackPV');
+                const celebration = document.getElementById('celebrationPV');
+                if (userAnswer === correctAnswer) {
+                    feedback.textContent = '🎉 מצוין! התשובה נכונה!';
+                    feedback.className = 'feedback correct';
+                    scores.pv++;
+                    document.getElementById('scorePV').textContent = scores.pv;
+                    celebration.style.display = 'block';
+                    playSuccessSound();
+                    setTimeout(() => celebration.style.display = 'none', 2000);
+                } else {
+                    feedback.textContent = `התשובה הנכונה היא ${correctAnswer}. נסה שוב!`;
+                    feedback.className = 'feedback incorrect';
+                }
+            }
+        }
+        
+        function newComparison() {
+            playClickSound();
+            const num1 = Math.floor(Math.random() * 9000) + 1000;
+            let num2 = Math.floor(Math.random() * 9000) + 1000;
+            while (num1 === num2) {
+                num2 = Math.floor(Math.random() * 9000) + 1000;
+            }
+            currentQuestions.comp = { num1, num2 };
+            document.getElementById('num1').textContent = num1.toLocaleString();
+            document.getElementById('num2').textContent = num2.toLocaleString();
+            document.getElementById('symbolChoice').textContent = '?';
+            document.querySelectorAll('.symbol-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            selectedSymbol = '';
+            document.getElementById('feedbackComp').textContent = '';
+            document.getElementById('celebrationComp').style.display = 'none';
+        }
+        
+        function selectSymbol(symbol) {
+            playClickSound();
+            selectedSymbol = symbol;
+            const buttons = document.querySelectorAll('.symbol-button');
+            buttons.forEach(btn => {
+                btn.classList.remove('selected');
+                if (btn.textContent === symbol) {
+                    btn.classList.add('selected');
+                }
+            });
+            document.getElementById('symbolChoice').textContent = symbol;
+        }
+        
+        function checkComparison() {
+            if (!selectedSymbol) {
+                document.getElementById('feedbackComp').textContent = 'בחרו סימן!';
+                document.getElementById('feedbackComp').className = 'feedback incorrect';
+                return;
+            }
+            const { num1, num2 } = currentQuestions.comp;
+            let correctSymbol;
+            if (num1 < num2) correctSymbol = '<';
+            else if (num1 > num2) correctSymbol = '>';
+            else correctSymbol = '=';
+            const feedback = document.getElementById('feedbackComp');
+            const celebration = document.getElementById('celebrationComp');
+            if (selectedSymbol === correctSymbol) {
+                feedback.textContent = '🎉 מצוין! התשובה נכונה!';
+                feedback.className = 'feedback correct';
+                scores.comp++;
+                document.getElementById('scoreComp').textContent = scores.comp;
+                celebration.style.display = 'block';
+                playSuccessSound();
+                setTimeout(() => celebration.style.display = 'none', 2000);
+            } else {
+                feedback.textContent = `הסימן הנכון הוא ${correctSymbol}. נסה שוב!`;
+                feedback.className = 'feedback incorrect';
+            }
+        }
+        
+        function newOrdering() {
+            playClickSound();
+            const count = 4;
+            const numbers = [];
+            let attempts = 0;
+            for (let i = 0; i < count; i++) {
+                let num;
+                let innerAttempts = 0;
+                do {
+                    num = Math.floor(Math.random() * 9000) + 1000;
+                    innerAttempts++;
+                } while (numbers.includes(num) && innerAttempts < 50);
+                numbers.push(num);
+            }
+            currentQuestions.order = [...numbers].sort((a, b) => a - b);
+            const shuffled = [...numbers].sort(() => Math.random() - 0.5);
+            const container = document.getElementById('numbersToOrder');
+            container.innerHTML = '';
+            shuffled.forEach(num => {
+                const div = document.createElement('div');
+                div.className = 'number-display';
+                div.textContent = num.toLocaleString();
+                div.style.padding = '20px 30px';
+                div.style.fontSize = '28px';
+                container.appendChild(div);
+            });
+            document.getElementById('orderAnswer').value = '';
+            document.getElementById('feedbackOrder').textContent = '';
+            document.getElementById('celebrationOrder').style.display = 'none';
+        }
+        
+        function checkOrder() {
+            const userInput = document.getElementById('orderAnswer').value;
+            const userNumbers = userInput.split(/[\s,]+/).map(s => parseInt(s.replace(/,/g, ''))).filter(n => !isNaN(n));
+            const feedback = document.getElementById('feedbackOrder');
+            const celebration = document.getElementById('celebrationOrder');
+            if (userNumbers.length !== currentQuestions.order.length) {
+                feedback.textContent = 'הזינו את כל המספרים!';
+                feedback.className = 'feedback incorrect';
+                return;
+            }
+            const isCorrect = userNumbers.every((num, idx) => num === currentQuestions.order[idx]);
+            if (isCorrect) {
+                feedback.textContent = '🎉 מצוין! סידרת נכון!';
+                feedback.className = 'feedback correct';
+                scores.order++;
+                document.getElementById('scoreOrder').textContent = scores.order;
+                celebration.style.display = 'block';
+                playSuccessSound();
+                setTimeout(() => celebration.style.display = 'none', 2000);
+            } else {
+                const correctStr = currentQuestions.order.map(n => n.toLocaleString()).join(', ');
+                feedback.innerHTML = `הסדר הנכון הוא:<br><span style="direction: ltr; display: inline-block;">${correctStr}</span>`;
+                feedback.className = 'feedback incorrect';
+            }
+        }
+        
+        function newRounding() {
+            playClickSound();
+            const number = Math.floor(Math.random() * 9000) + 1000;
+            const roundTo = Math.random() > 0.5 ? 'tens' : 'hundreds';
+            let correctAnswer;
+            if (roundTo === 'tens') {
+                const ones = number % 10;
+                if (ones >= 5) {
+                    correctAnswer = number + (10 - ones);
+                } else {
+                    correctAnswer = number - ones;
+                }
+            } else {
+                const remainder = number % 100;
+                if (remainder >= 50) {
+                    correctAnswer = number + (100 - remainder);
+                } else {
+                    correctAnswer = number - remainder;
+                }
+            }
+            currentQuestions.round = { number, roundTo, correctAnswer };
+            const roundText = roundTo === 'tens' ? 'עשרות' : 'מאות';
+            document.getElementById('questionRound').innerHTML = `
+                <div style="direction: ltr; font-size: 42px; margin: 20px 0;">${number.toLocaleString()}</div>
+                <div>עגלו ל${roundText} הקרובות:</div>
+            `;
+            const options = [correctAnswer];
+            let attempts = 0;
+            while (options.length < 3 && attempts < 100) {
+                let wrongAnswer;
+                if (roundTo === 'tens') {
+                    const offset = (Math.random() > 0.5 ? 1 : -1) * 10 * (Math.floor(Math.random() * 3) + 1);
+                    wrongAnswer = correctAnswer + offset;
+                } else {
+                    const offset = (Math.random() > 0.5 ? 1 : -1) * 100 * (Math.floor(Math.random() * 3) + 1);
+                    wrongAnswer = correctAnswer + offset;
+                }
+                if (wrongAnswer > 0 && wrongAnswer <= 10000 && !options.includes(wrongAnswer)) {
+                    options.push(wrongAnswer);
+                }
+                attempts++;
+            }
+            while (options.length < 3) {
+                options.push(correctAnswer + (options.length * 100));
+            }
+            options.sort(() => Math.random() - 0.5);
+            const container = document.getElementById('roundingOptions');
+            container.innerHTML = '';
+            options.forEach(opt => {
+                const button = document.createElement('button');
+                button.className = 'rounding-button';
+                button.textContent = opt.toLocaleString();
+                button.onclick = () => selectRounding(opt, button);
+                container.appendChild(button);
+            });
+            selectedRounding = null;
+            document.getElementById('feedbackRound').textContent = '';
+            document.getElementById('celebrationRound').style.display = 'none';
+        }
+        
+        function selectRounding(value, button) {
+            playClickSound();
+            selectedRounding = value;
+            document.querySelectorAll('.rounding-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            button.classList.add('selected');
+        }
+        
+        function checkRounding() {
+            if (selectedRounding === null) {
+                document.getElementById('feedbackRound').textContent = 'בחרו תשובה!';
+                document.getElementById('feedbackRound').className = 'feedback incorrect';
+                return;
+            }
+            const { correctAnswer } = currentQuestions.round;
+            const feedback = document.getElementById('feedbackRound');
+            const celebration = document.getElementById('celebrationRound');
+            if (selectedRounding === correctAnswer) {
+                feedback.textContent = '🎉 מצוין! התשובה נכונה!';
+                feedback.className = 'feedback correct';
+                scores.round++;
+                document.getElementById('scoreRound').textContent = scores.round;
+                celebration.style.display = 'block';
+                playSuccessSound();
+                setTimeout(() => celebration.style.display = 'none', 2000);
+            } else {
+                feedback.innerHTML = `התשובה הנכונה היא <span style="direction: ltr; display: inline-block;">${correctAnswer.toLocaleString()}</span>`;
+                feedback.className = 'feedback incorrect';
+            }
+        }
+        
+        newQuestion('pv');
+        
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const activeSection = document.querySelector('.section.active');
+                if (activeSection.id === 'placevalue') {
+                    checkAnswer('pv');
+                } else if (activeSection.id === 'ordering') {
+                    checkOrder();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
