@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מאסטר מתמטיקה - תוכנת לימוד מתמטיקה לכיתות ג-ד'</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f9fafb;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 36px;
+        }
+
+        .header-cta {
+            background: white;
+            color: #667eea;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .header-cta:hover {
+            transform: scale(1.05);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: fadeInUp 0.8s;
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+            animation: fadeInUp 1s;
+        }
+
+        .hero-benefits {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .benefit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+        }
+
+        .benefit-icon {
+            font-size: 24px;
+        }
+
+        .cta-primary {
+            background: #fbbf24;
+            color: #1f2937;
+            padding: 20px 50px;
+            font-size: 22px;
+            border-radius: 50px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.6);
+        }
+
+        .no-credit-card {
+            margin-top: 15px;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Video Section */
+        .video-section {
+            padding: 60px 0;
+            background: white;
+        }
+
+        .video-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #f3f4f6;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .video-placeholder {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 400px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Trust Section */
+        .trust-section {
+            background: #f9fafb;
+            padding: 60px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: #1f2937;
+        }
+
+        .trust-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .trust-item {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .trust-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .trust-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .trust-item h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 60px 0;
+            background: white;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .testimonial {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 15px;
+            border-right: 4px solid #667eea;
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        .testimonial-author {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .testimonial-role {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* Pricing */
+        .pricing {
+            padding: 60px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: white;
+            color: #1f2937;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .pricing-card.featured {
+            border: 4px solid #fbbf24;
+            position: relative;
+        }
+
+        .badge {
+            background: #fbbf24;
+            color: #1f2937;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .price {
+            font-size: 48px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .price-period {
+            font-size: 18px;
+            color: #6b7280;
+        }
+
+        .features-list {
+            text-align: right;
+            list-style: none;
+            margin: 30px 0;
+        }
+
+        .features-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .features-list li:before {
+            content: "✔ ";
+            color: #10b981;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        /* FAQ */
+        .faq {
+            padding: 60px 0;
+            background: #f9fafb;
+        }
+
+        .faq-item {
+            background: white;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .faq-question {
+            padding: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #667eea;
+            transition: background 0.3s;
+        }
+
+        .faq-question:hover {
+            background: #f3f4f6;
+        }
+
+        .faq-answer {
+            padding: 0 25px 25px;
+            line-height: 1.8;
+            color: #4b5563;
+            display: none;
+        }
+
+        /* Contact */
+        .contact {
+            padding: 60px 0;
+            background: white;
+            text-align: center;
+        }
+
+        .contact-methods {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .contact-method {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 18px;
+            background: #f3f4f6;
+            padding: 20px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #1f2937;
+            transition: all 0.3s;
+        }
+
+        .contact-method:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        footer {
+            background: #1f2937;
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+            }
+
+            .hero-benefits {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cta-primary {
+                padding: 15px 35px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🎓</span>
+                    מאסטר מתמטיקה
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>הילדים שלכם יאהבו מתמטיקה! 🚀</h1>
+            <p class="hero-subtitle">תוכנת לימוד חכמה שהופכת מתמטיקה למשחק מרתק<br>לכיתות א'-ד' • גילאי 6-10</p>
+            
+            <div class="hero-benefits">
+                <div class="benefit">
+                    <span class="benefit-icon">✔</span>
+                    <span>שיפור ציונים מוכח</span>
+                </div>
+                <div class="benefit">
+                    <span class="benefit-icon">✔</span>
+                    <span>20-25 דקות ביום</span>
+                </div>
+                <div class="benefit">
+                    <span class="benefit-icon">✔</span>
+                    <span>פותח על ידי מורים מנוסים</span>
+                </div>
+            </div>
+
+            <p style="margin-top: 30px; font-size: 18px; opacity: 0.9;">רוצים לדעת יותר? גללו למטה לשאלות ותשובות או צרו קשר ⬇️</p>
+        </div>
+    </section>
+
+    <!-- Trust Section -->
+    <section class="trust-section">
+        <div class="container">
+            <h2 class="section-title">למה הורים בוחרים במאסטר מתמטיקה?</h2>
+            <div class="trust-items">
+                <div class="trust-item">
+                    <div class="trust-icon">🎯</div>
+                    <h3>התאמה אישית</h3>
+                    <p>כל ילד מתקדם בקצב שלו, ומגיע לשיפור משמעותי</p>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">⭐</div>
+                    <h3>מערכת תגמול</h3>
+                    <p>כוכבים, פרסים וקופונים שהופכים את הדרך לחוויה</p>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">📊</div>
+                    <h3>מעקב התקדמות</h3>
+                    <p>עקבו אחר התקדמות הילד - אילו שיעורים הוא עשה ובכמה אחוזים השתפר</p>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">🎓</div>
+                    <h3>מבוסס תכנית לימודים</h3>
+                    <p>תוכן המותאם במדויק לתכנית הלימודים</p>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">💚</div>
+                    <h3>ללא התחייבות</h3>
+                    <p>בטלו מתי שתרצו בלחיצה אחת - אין חוזה, אין קשירה</p>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">💰</div>
+                    <h3>מחיר נגיש לכולם</h3>
+                    <p>רק ₪42/חודש - פחות מ-₪1.5 ליום! כי כל ילד ראוי לחינוך איכותי</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">מה הורים אומרים</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial">
+                    <p class="testimonial-text">"הבן שלי בכיתה ג' היה מתקשה במתמטיקה. תוך 3 חודשים עם מאסטר מתמטיקה, הציונים שלו עלו מ-70 ל-95! הוא אפילו מבקש ממני לתרגל..."</p>
+                    <p class="testimonial-author">שרה כהן</p>
+                    <p class="testimonial-role">אמא לתומר, כיתה ג'</p>
+                </div>
+                <div class="testimonial">
+                    <p class="testimonial-text">"סוף סוף תוכנה שבאמת עובדת! הבת שלי אוהבת את מערכת הכוכבים והיא מתרגשת כל פעם שהיא פותחת את התוכנה. מומלץ בחום!"</p>
+                    <p class="testimonial-author">דוד לוי</p>
+                    <p class="testimonial-role">אבא לנועה, כיתה ג'</p>
+                </div>
+                <div class="testimonial">
+                    <p class="testimonial-text">"כמורה לכיתה ד, המלצתי על התוכנה לכל ההורים בכיתה. זה משלים בצורה מושלמת את מה שאנחנו עושים בכיתה!"</p>
+                    <p class="testimonial-author">מיכל אברהם</p>
+                    <p class="testimonial-role">מורה לכיתה ד, תל אביב</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq">
+        <div class="container">
+            <h2 class="section-title">שאלות נפוצות</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    כמה זמן ביום הילד צריך לתרגל?
+                    <span>▼</span>
+                </div>
+                <div class="faq-answer">
+                    מומלץ 20-25 דקות ביום, 3-5 פעמים בשבוע. המערכת מתוכננת לפגישות ממוקדות שמשאירות את הילדים רעבים ליותר! זה הזמן האידיאלי לשיפור משמעותי בלי לעייף את הילד.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    מה קורה אם זה לא מתאים לילד שלי?
+                    <span>▼</span>
+                </div>
+                <div class="faq-answer">
+                    אין בעיה! תוכלו לבטל בכל עת בשליחת הודעה לוואטסאפ או למייל - ללא התחייבות. תקבלו אישור ביטול למייל שנרשמתם איתו באופן מיידי.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    איך אני יודע שהילד באמת משתפר?
+                    <span>▼</span>
+                </div>
+                <div class="faq-answer">
+                    בסוף כל משחק יש מדד ציון, תוכלו לראות את ההתקדמות והנושאים שהוא מתרגל. בנוסף, תשימו לב לשיפור בביטחון העצמי שלו ובציונים בבית הספר!
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    למה המחיר כל כך נגיש?
+                    <span>▼</span>
+                </div>
+                <div class="faq-answer">
+                    ב-₪42 לחודש (פחות מ-₪1.5 ליום!) אנחנו רוצים שכל ילד יוכל ללמוד מתמטיקה איכותית. בלי עלויות של מורים פרטיים, בלי נסיעות - רק לימוד חכם ומהנה.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    האם זה עובד על טאבלט וטלפון?
+                    <span>▼</span>
+                </div>
+                <div class="faq-answer">
+                    בהחלט! התוכנה עובדת בכל דפדפן אינטרנט - מחשב, טאבלט, טלפון. הצורה האופטימלית לשימוש היא במחשב!
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact">
+        <div class="container">
+            <h2 class="section-title">יש שאלות? אנחנו כאן בשבילכם!</h2>
+            <p style="font-size: 18px; color: #6b7280; margin-bottom: 20px;">
+                אל תהססו לפנות אלינו - נשמח לעזור!
+            </p>
+            <div class="contact-methods">
+                <a href="https://wa.me/972506853737" class="contact-method" target="_blank">
+                    <span style="font-size: 28px;">💬</span>
+                    <span>WhatsApp - 050-685-3737</span>
+                </a>
+                <a href="mailto:mastermath1000@gmail.com" class="contact-method">
+                    <span style="font-size: 28px;">📧</span>
+                    <span>אימייל - mastermath1000@gmail.com</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 מאסטר מתמטיקה | כל הזכויות שמורות</p>
+            <p style="margin-top: 10px; font-size: 14px;">
+                <a href="#" style="color: white; margin: 0 10px;">תנאי שימוש</a> | 
+                <a href="#" style="color: white; margin: 0 10px;">מדיניות פרטיות</a>
+            </p>
+        </div>
+    </footer>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // FAQ Toggle
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const isOpen = answer.style.display === 'block';
+                
+                // Close all answers
+                document.querySelectorAll('.faq-answer').forEach(a => a.style.display = 'none');
+                
+                // Toggle current answer
+                answer.style.display = isOpen ? 'none' : 'block';
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                i
