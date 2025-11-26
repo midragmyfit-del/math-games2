@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תנאי שימוש - מאסטר מתמטיקה</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 5%;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 30px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .header-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .last-updated {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: #764ba2;
+            margin-bottom: 1rem;
+            padding-right: 1rem;
+            border-right: 5px solid #f093fb;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            color: #667eea;
+            margin: 1.5rem 0 0.8rem 0;
+        }
+
+        p, li {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            padding-right: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.8rem;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .info-box h3 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-box p, .info-box li {
+            color: white;
+        }
+
+        .info-box ul {
+            color: white;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-right: 5px solid #ffc107;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+
+        .warning-box h3 {
+            color: #856404;
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .warning-box p, .warning-box li {
+            color: #856404;
+        }
+
+        .important-box {
+            background: #ffebee;
+            border-right: 5px solid #f44336;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+
+        .important-box h3 {
+            color: #c62828;
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .important-box p, .important-box li {
+            color: #c62828;
+        }
+
+        .contact-box {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .contact-box h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-info {
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .contact-info a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-bottom: 2px solid white;
+            transition: all 0.3s;
+        }
+
+        .contact-info a:hover {
+            opacity: 0.8;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #eee;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        strong {
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .numbered-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            border-right: 4px solid #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            p, li {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← חזרה לאתר הראשי</a>
+
+        <div class="header">
+            <div class="header-icon">📋</div>
+            <h1>תנאי שימוש</h1>
+            <p class="subtitle">מאסטר מתמטיקה - פלטפורמה חינוכית לילדי בית ספר</p>
+            <span class="last-updated">עדכון אחרון: נובמבר 2024</span>
+        </div>
+
+        <div class="info-box">
+            <h3>🎯 ברוכים הבאים!</h3>
+            <p>
+                תנאי שימוש אלה מסדירים את השימוש באתר "מאסטר מתמטיקה". על ידי גישה לאתר או שימוש בו, הנך מאשר כי קראת, הבנת והסכמת לתנאים אלה במלואם. אם אינך מסכים לתנאים אלה, אנא הימנע משימוש באתר.
+            </p>
+        </div>
+
+        <div class="numbered-section">
+            <h2>1️⃣ הגדרות</h2>
+            <ul>
+                <li><strong>"האתר"</strong> - אתר "מאסטר מתמטיקה" וכל התכנים, המשחקים, השיעורים והחומרים המופיעים בו</li>
+                <li><strong>"המשתמש"</strong> - כל אדם המשתמש באתר, בין אם תלמיד, הורה, מורה או כל גולש אחר</li>
+                <li><strong>"התכנים"</strong> - כל החומרים הלימודיים, המשחקים, הממשקים, הקוד, התמונות והטקסטים באתר</li>
+                <li><strong>"בעל האתר"</strong> - היוצר והבעלים של מאסטר מתמטיקה</li>
+            </ul>
+        </div>
+
+        <div class="numbered-section">
+            <h2>2️⃣ תנאי גישה ושימוש</h2>
+            
+            <h3>✅ שימוש מותר:</h3>
+            <ul>
+                <li>גישה אישית לתכנים למטרות לימוד עצמי או הוראה</li>
+                <li>שימוש במשחקים והשיעורים בכיתה או בבית</li>
+                <li>הדפסת דפי עבודה לשימוש אישי</li>
+            </ul>
+
+            <h3>🚫 שימוש אסור:</h3>
+            <ul>
+                <li>העתקה, שכפול או הפצה של תכני האתר ללא אישור מפורש בכתב</li>
+                <li>שימוש מסחרי בתכנים (כגון מכירה, השכרה או שימוש בשיעורים פרטיים בתשלום)</li>
+                <li>שינוי, עיבוד או יצירת יצירות נגזרות מהתכנים</li>
+                <li>הסרת סימני זכויות יוצרים, לוגואים או קרדיטים</li>
+                <li>שימוש באתר לכל מטרה בלתי חוקית או מזיקה</li>
+                <li>ניסיון לפגוע באתר, לפרוץ אליו או להפריע לפעולתו התקינה</li>
+            </ul>
+        </div>
+
+        <div class="numbered-section">
+            <h2>3️⃣ זכויות קניין רוחני</h2>
+            <p>
+                כל התכנים באתר מוגנים בזכויות יוצרים על פי <strong>חוק זכויות יוצרים תשס"ח-2007</strong>. הבעלות המלאה על כל התכנים שייכת לבעל האתר. השימוש באתר אינו מעניק למשתמש כל זכות קניין או זכות שימוש מסחרי בתכנים.
+            </p>
+            <p>
+                לפרטים מלאים על זכויות יוצרים ורישיונות, עיין ב<a href="w2.html" style="color: #667eea; text-decoration: underline;">דף הרישיון וזכויות היוצרים</a>.
+            </p>
+        </div>
+
+        <div class="numbered-section">
+            <h2>4️⃣ פרטיות ואבטחת מידע</h2>
+            <p>
+                האתר אינו אוסף מידע אישי מזהה של המשתמשים. אנו עשויים לאסוף מידע סטטיסטי כללי על השימוש באתר (כגון מספר ביקורים, דפים נצפים) למטרות שיפור השירות בלבד.
+            </p>
+            <ul>
+                <li>אנו לא אוספים שמות, כתובות או פרטי קשר של משתמשים</li>
+                <li>אנו לא משתפים מידע עם צדדים שלישיים</li>
+                <li>אנו ממליצים להורים לפקח על שימוש הילדים באינטרנט</li>
+            </ul>
+        </div>
+
+        <div class="important-box">
+            <h3>⚖️ הפרת תנאי השימוש וסעדים משפטיים</h3>
+            <p><strong>הפרה של תנאי שימוש אלה עלולה להוביל להליכים משפטיים:</strong></p>
+            <ul>
+                <li>דרישה מיידית להפסקת השימוש הפוגע והסרת תכנים מפרים</li>
+                <li>הגשת תביעה אזרחית לפיצויים בגין נזקים, עד לסכום של <strong>100,000 ₪ לכל הפרה</strong></li>
+                <li>הגשת תלונה לרשויות אכיפת החוק במקרים של הפרת זכויות יוצרים</li>
+                <li>חסימת גישה של המשתמש המפר לאתר</li>
+            </ul>
+        </div>
+
+        <div class="numbered-section">
+            <h2>5️⃣ רישיונות מוסדיים ומסחריים</h2>
+            <p>
+                בתי ספר, גנים, מרכזי העשרה או ארגונים אחרים המעוניינים להשתמש באתר באופן מוסדי או מסחרי <strong>חייבים</strong> לקבל רישיון מתאים מבעל האתר.
+            </p>
+            <p>
+                הרישיון יכלול גישה רחבה, תמיכה טכנית, אפשרויות התאמה אישית ועוד. ליצירת קשר ולקבלת הצעת מחיר, השתמש בפרטי הקשר בתחתית הדף.
+            </p>
+        </div>
+
+        <div class="numbered-section">
+            <h2>6️⃣ שינויים בתנאי השימוש</h2>
+            <p>
+                בעל האתר רשאי לעדכן ולשנות תנאי שימוש אלה מעת לעת. כל שינוי ייכנס לתוקף עם פרסומו באתר. המשך השימוש באתר לאחר פרסום עדכון מהווה הסכמה לתנאים המעודכנים.
+            </p>
+            <p>
+                מומלץ לבדוק דף זה מעת לעת כדי להתעדכן בשינויים.
+            </p>
+        </div>
+
+        <div class="numbered-section">
+            <h2>7️⃣ דין וסמכות שיפוט</h2>
+            <p>
+                תנאי שימוש אלה יפורשו וייכנסו לתוקף על פי דיני מדינת ישראל. כל מחלוקת או תביעה הנובעת מתנאים אלה או מהשימוש באתר תהיה נתונה לסמכות השיפוט הבלעדית של בתי המשפט המוסמכים בישראל.
+            </p>
+        </div>
+
+        <div class="numbered-section">
+            <h2>8️⃣ צור קשר</h2>
+            <p>
+                לשאלות, הבהרות, בקשות רישיון או דיווח על הפרות, אנא צור קשר באמצעים הבאים:
+            </p>
+        </div>
+
+        <div class="contact-box">
+            <h3>📞 יצירת קשר</h3>
+            <div class="contact-info">
+                📱 WhatsApp: <a href="https://wa.me/972506853737">050-685-3737</a>
+            </div>
+            <div class="contact-info">
+                📧 Email: <a href="/cdn-cgi/l/email-protection#731e12000716011e12071b4243434333141e121a1f5d101c1e"><span class="__cf_email__" data-cfemail="9af7fbe9eeffe8f7fbeef2abaaaaaadafdf7fbf3f6b4f9f5f7">[email&#160;protected]</span></a>
+            </div>
+            <p style="margin-top: 1.5rem; font-size: 1rem;">
+                אנו מחויבים לענות לפניות תוך 48 שעות בימי עבודה
+            </p>
+        </div>
+
+        <div class="info-box" style="margin-top: 3rem;">
+            <h3>✨ תודה שאתם כאן!</h3>
+            <p>
+                אנו שמחים שבחרתם להשתמש במאסטר מתמטיקה. המטרה שלנו היא לספק חוויית לימוד איכותית, מהנה ויעילה לכל ילד. על ידי שמירה על תנאי השימוש, אתם עוזרים לנו להמשיך לפתח ולשפר את הפלטפורמה למען כולם.
+            </p>
+            <p>
+                <strong>בהצלחה בלימודים! 🎓📚</strong>
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>© 2024-2025 מאסטר מתמטיקה. כל הזכויות שמורות.</p>
+            <p>מוגן על פי חוק זכויות יוצרים תשס"ח-2007</p>
+            <p style="margin-top: 1rem;">
+                <a href="license.html" style="color: #667eea; text-decoration: underline; margin: 0 1rem;">רישיון וזכויות יוצרים</a> | 
+                <a href="terms.html" style=
