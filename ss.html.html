@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Mathematics - משחקי חשבון לילדים</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .free-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .video-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            aspect-ratio: 16 / 9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .play-button {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            cursor: pointer;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .play-button:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        .video-link {
+            position: relative;
+            display: block;
+            width: 100%;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .video-link:hover .play-button {
+            background: white;
+            transform: scale(1.15);
+        }
+
+        .video-link:hover .video-thumbnail {
+            filter: brightness(0.85);
+        }
+
+        .features {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .features h2 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .feature-icon {
+            font-size: 2em;
+            margin-top: 5px;
+            flex-shrink: 0;
+        }
+
+        .feature-text h3 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .feature-text p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .description {
+            background: #f8f9fa;
+            border-right: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .description p {
+            color: #555;
+            font-size: 1em;
+            line-height: 1.8;
+        }
+
+        .cta-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .cta-section h2 {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 50px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+        }
+
+        .cta-button:active {
+            transform: translateY(-1px);
+        }
+
+        .pricing {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .pricing h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .price {
+            font-size: 2.5em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .price-period {
+            color: #666;
+            font-size: 1em;
+        }
+
+        .grade-info {
+            background: #f0f4ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .grade-info h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .grade-info p {
+            color: #555;
+            font-size: 1em;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .subtitle {
+                font-size: 1em;
+            }
+
+            .cta-button {
+                padding: 15px 40px;
+                font-size: 1em;
+            }
+
+            header {
+                padding: 30px 20px;
+            }
+
+            .features {
+                padding: 30px 20px;
+            }
+
+            .cta-section {
+                padding: 30px 20px;
+            }
+
+            .price {
+                font-size: 2em;
+            }
+
+            .play-button {
+                width: 60px;
+                height: 60px;
+                font-size: 30px;
+            }
+        }
+
+        .whatsapp-icon {
+            display: inline-block;
+            margin-left: 10px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">🎓 Master Mathematics</div>
+            <h1>משחקי חשבון לילדים<br><span class="highlight">והרבה יותר מזה</span></h1>
+            <p class="subtitle">התוכנה המושלמת להצלחה במתמטיקה</p>
+            <div class="free-badge">✓ חינם לנסיון</div>
+        </header>
+
+        <!-- Video -->
+        <div class="video-container">
+            <p style="font-size: 1.1em; color: #667eea; font-weight: bold; margin-bottom: 20px; text-align: center;">
+                ▶️ הפעילו את הסרטון
+            </p>
+            <video width="100%" height="auto" controls style="border-radius: 15px; background: #000;">
+                <source src="https://res.cloudinary.com/ducia618h/video/upload/v1764343604/%D7%A9%D7%99%D7%95%D7%95%D7%A7_%D7%9E%D7%90%D7%A1%D7%98%D7%A8_7_l8h4pr.mp4" type="video/mp4">
+                הדפדפן שלך לא תומך בהשמעת וידאו.
+            </video>
+        </div>
+
+        <!-- Grade Info -->
+        <div class="grade-info">
+            <h3>📚 מיועד לכיתות א' עד ד'</h3>
+            <p>התוכנה מותאמת לכל רמה, מחיסור וחיבור בסיסי ועד לשברים וחילוק</p>
+        </div>
+
+        <!-- Features -->
+        <div class="features">
+            <h2>מה יש ב-Master Mathematics?</h2>
+            
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">🎮</div>
+                    <div class="feature-text">
+                        <h3>משחקים אינטרקטיביים</h3>
+                        <p>משחקים מרגשים שהופכים למתמטיקה לחוויה כיפית והוראה אמיתית</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">📖</div>
+                    <div class="feature-text">
+                        <h3>שיעורים אינטרקטיביים</h3>
+                        <p>הסברים ברורים ושלב אחרי שלב לכל נושא מתמטי</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">⭐</div>
+                    <div class="feature-text">
+                        <h3>מערכת כוכבים ופרסים</h3>
+                        <p>ילדים מקבלים כוכבים וכל התגמולים עבור כל משימה שהם משלימים</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-text">
+                        <h3>עקבוי התקדמות</h3>
+                        <p>עקבו אחרי ההתקדמות של הילד בזמן אמת ודעו בדיוק איפה הוא חזק או צריך עזרה</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="description">
+                <p>
+                    Master Mathematics היא פלטפורמה חינוכית המשלבת משחקים מסחררים עם תוכן מתמטי איכותי. 
+                    הילדים לא מרגישים שהם לומדים - הם פשוט משחקים ומתצטיינים בדרך!
+                </p>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-section">
+            <h2>בואו לנסות!</h2>
+            <p style="color: #666; margin-bottom: 30px; font-size: 1.1em;">
+                שלח לנו הודעה ב-WhatsApp כדי להתחיל נסיון חינמי עכשיו
+            </p>
+            <a href="https://wa.me/972506853737?text=שלום,%20אני%20מעוניין%20בתוכנת%20Master%20Mathematics" 
+               class="cta-button" target="_blank">
+                צור קשר ב-WhatsApp <span class="whatsapp-icon">💬</span>
+            </a>
+            <p style="color: #999; margin-top: 20px; font-size: 0.9em;">
+                נענה בדרך כלל תוך דקות ספורות
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2025 Master Mathematics. כל הזכויות שמורות.</p>
+        </footer>
+    </div>
+</body>
+</html>
